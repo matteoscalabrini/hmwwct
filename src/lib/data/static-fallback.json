@@ -1,0 +1,131 @@
+{
+  "metadata": {
+    "source": "CIA World Factbook 2024, IMF Article IV Consultations, UN Statistics Division",
+    "urls": [
+      "https://www.cia.gov/the-world-factbook/",
+      "https://www.imf.org/en/Publications/CR",
+      "https://unstats.un.org/home/"
+    ],
+    "year": 2023,
+    "note": "These values are used only when World Bank API returns null for a country. Clearly labeled in UI as 'static data'. All GDP in current USD."
+  },
+  "countries": {
+    "PRK": {
+      "gdp": 18000000000,
+      "population": 25970000,
+      "militaryPctGdp": 26.0,
+      "militaryBudgetUsd": 4000000000,
+      "tradeGdpPct": 5.0,
+      "dataYear": 2022,
+      "source": "CIA World Factbook 2024 — North Korea estimates are highly uncertain"
+    },
+    "SYR": {
+      "gdp": 21900000000,
+      "population": 22100000,
+      "militaryPctGdp": 8.0,
+      "militaryBudgetUsd": 1800000000,
+      "tradeGdpPct": 10.0,
+      "dataYear": 2021,
+      "source": "World Bank 2021 (last available), UN Economic Commission"
+    },
+    "YEM": {
+      "gdp": 18900000000,
+      "population": 36300000,
+      "militaryPctGdp": 4.0,
+      "militaryBudgetUsd": 400000000,
+      "tradeGdpPct": 15.0,
+      "dataYear": 2021,
+      "source": "IMF Article IV 2022, World Bank 2021 estimates"
+    },
+    "AFG": {
+      "gdp": 14580000000,
+      "population": 41128000,
+      "militaryPctGdp": 1.5,
+      "militaryBudgetUsd": 200000000,
+      "tradeGdpPct": 20.0,
+      "dataYear": 2022,
+      "source": "World Bank 2022, IMF Afghanistan estimates"
+    },
+    "SOM": {
+      "gdp": 7600000000,
+      "population": 17070000,
+      "militaryPctGdp": 3.0,
+      "militaryBudgetUsd": 30000000,
+      "tradeGdpPct": 40.0,
+      "dataYear": 2022,
+      "source": "IMF Article IV 2023, UN Somalia"
+    },
+    "SDN": {
+      "gdp": 42400000000,
+      "population": 47711000,
+      "militaryPctGdp": 1.6,
+      "militaryBudgetUsd": 500000000,
+      "tradeGdpPct": 14.0,
+      "dataYear": 2022,
+      "source": "IMF Article IV 2023, World Bank pre-conflict estimates"
+    },
+    "LBY": {
+      "gdp": 37000000000,
+      "population": 6812000,
+      "militaryPctGdp": 3.9,
+      "militaryBudgetUsd": 900000000,
+      "tradeGdpPct": 60.0,
+      "dataYear": 2022,
+      "source": "IMF Article IV 2023, CIA World Factbook"
+    },
+    "ERI": {
+      "gdp": 2100000000,
+      "population": 3550000,
+      "militaryPctGdp": 6.0,
+      "militaryBudgetUsd": 126000000,
+      "tradeGdpPct": 10.0,
+      "dataYear": 2021,
+      "source": "CIA World Factbook 2024 — minimal World Bank data available"
+    },
+    "TKM": {
+      "gdp": 53000000000,
+      "population": 6100000,
+      "militaryPctGdp": 1.8,
+      "militaryBudgetUsd": 954000000,
+      "tradeGdpPct": 35.0,
+      "dataYear": 2022,
+      "source": "IMF Article IV 2023, CIA World Factbook"
+    },
+    "MMR": {
+      "gdp": 65000000000,
+      "population": 54410000,
+      "militaryPctGdp": 3.5,
+      "militaryBudgetUsd": 1900000000,
+      "tradeGdpPct": 25.0,
+      "dataYear": 2022,
+      "source": "IMF 2023, World Bank Myanmar estimates post-coup"
+    },
+    "CUB": {
+      "gdp": 107350000000,
+      "population": 11110000,
+      "militaryPctGdp": 2.4,
+      "militaryBudgetUsd": 500000000,
+      "tradeGdpPct": 15.0,
+      "dataYear": 2022,
+      "source": "CIA World Factbook 2024, CEPAL/ECLAC"
+    },
+    "VEN": {
+      "gdp": 97000000000,
+      "population": 28300000,
+      "militaryPctGdp": 0.5,
+      "militaryBudgetUsd": 500000000,
+      "tradeGdpPct": 25.0,
+      "dataYear": 2022,
+      "source": "IMF Article IV 2023 — significant uncertainty due to economic crisis"
+    },
+    "TWN": {
+      "gdp": 760000000000,
+      "population": 23600000,
+      "militaryPctGdp": 2.5,
+      "militaryBudgetUsd": 19400000000,
+      "tradeGdpPct": 100.0,
+      "dataYear": 2023,
+      "source": "Taiwan DGBAS (Directorate-General of Budget, Accounting and Statistics) — not in World Bank as independent state"
+    }
+  }
+}

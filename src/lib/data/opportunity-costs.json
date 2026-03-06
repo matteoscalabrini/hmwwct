@@ -1,0 +1,89 @@
+{
+  "metadata": {
+    "sources": [
+      { "name": "World Bank Education Statistics", "url": "https://datatopics.worldbank.org/education/" },
+      { "name": "WHO Health Expenditure Database", "url": "https://www.who.int/data/gho/data/themes/health-financing" },
+      { "name": "UNICEF Supply Division Vaccine Prices", "url": "https://www.unicef.org/supply/documents/vaccine-price-data" },
+      { "name": "ILO Global Wage Report 2023", "url": "https://www.ilo.org/global/research/global-reports/global-wage-report/2022/lang--en/index.htm" },
+      { "name": "WHO/UNICEF JMP Water & Sanitation", "url": "https://washdata.org/" },
+      { "name": "USAID School Construction Costs", "url": "https://www.usaid.gov/education" },
+      { "name": "World Food Programme Annual Report 2023", "url": "https://www.wfp.org/annual-reports" }
+    ],
+    "year": 2023,
+    "note": "Unit costs are indicative international averages. Actual costs vary significantly by region."
+  },
+  "items": [
+    {
+      "id": "primary_schools",
+      "label": "Primary schools built",
+      "iconName": "School",
+      "unitCostUsd": 250000,
+      "unit": "schools",
+      "description": "Construction cost of a standard 6-classroom primary school in a developing country",
+      "sourceNote": "World Bank/USAID school construction program averages, 2022 USD"
+    },
+    {
+      "id": "hospital_beds",
+      "label": "Hospital beds (1 year)",
+      "iconName": "Heart",
+      "unitCostUsd": 45000,
+      "unit": "bed-years",
+      "description": "Annual operating cost per hospital bed in a public hospital (global average)",
+      "sourceNote": "WHO Global Health Expenditure Database 2023"
+    },
+    {
+      "id": "nurses",
+      "label": "Nurses (1 year salary)",
+      "iconName": "Users",
+      "unitCostUsd": 35000,
+      "unit": "nurse-years",
+      "description": "Average annual nurse compensation (global average including developing economies)",
+      "sourceNote": "ILO Global Wage Report 2023"
+    },
+    {
+      "id": "clean_water",
+      "label": "People with clean water access",
+      "iconName": "Droplets",
+      "unitCostUsd": 75,
+      "unit": "people",
+      "description": "Per-person infrastructure cost for sustainable clean water access",
+      "sourceNote": "WHO/UNICEF JMP Programme, 2023"
+    },
+    {
+      "id": "vaccines",
+      "label": "Childhood vaccine courses",
+      "iconName": "Syringe",
+      "unitCostUsd": 40,
+      "unit": "children",
+      "description": "Full childhood vaccine course (measles, polio, DPT, etc.) per child",
+      "sourceNote": "UNICEF Supply Division vaccine price data 2023"
+    },
+    {
+      "id": "meals",
+      "label": "School meals (1 year)",
+      "iconName": "Utensils",
+      "unitCostUsd": 50,
+      "unit": "children",
+      "description": "Annual cost of providing daily school meals to one child",
+      "sourceNote": "World Food Programme school feeding programme data 2023"
+    },
+    {
+      "id": "solar_homes",
+      "label": "Solar home systems",
+      "iconName": "Sun",
+      "unitCostUsd": 350,
+      "unit": "homes",
+      "description": "Basic solar home system providing electricity to one household",
+      "sourceNote": "World Bank Energy Sector Management Assistance Program 2023"
+    },
+    {
+      "id": "climate_forests",
+      "label": "Hectares of forest restored",
+      "iconName": "TreePine",
+      "unitCostUsd": 1500,
+      "unit": "hectares",
+      "description": "Cost of tropical forest restoration per hectare (planting + 5-year monitoring)",
+      "sourceNote": "IUCN Restoration Economics, World Bank BioCarbon Fund"
+    }
+  ]
+}

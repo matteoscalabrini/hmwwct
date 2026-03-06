@@ -1,0 +1,45 @@
+{
+  "metadata": {
+    "source": "Watson Institute Costs of War, Brown University",
+    "url": "https://watson.brown.edu/costsofwar/",
+    "year": 2023,
+    "keyReferences": [
+      "Crawford, N.C. (2021). The U.S. Budgetary Costs of the Post-9/11 Wars. Watson Institute. $8 trillion total (2001-2021).",
+      "Afghanistan direct war cost: $2.313 trillion (2001-2021, 20 years)",
+      "Iraq direct war cost: $2.058 trillion (2003-2011, 8 years)",
+      "Gulf War 1991: ~$102 billion (1990 USD), ~$250 billion (2023 USD)",
+      "Kargil War 1999: ~$7 billion total for both sides (2023 USD estimates)"
+    ]
+  },
+  "perSoldierDailyCostUsd": 850,
+  "operationalSurgeMultiplier": 2.5,
+  "historicalValidation": {
+    "afghanistan_occupation": {
+      "totalUsd": 2313000000000,
+      "durationYears": 20,
+      "annualAverageUsd": 115650000000,
+      "dailyAverageUsd": 316849000,
+      "source": "Watson Institute 2021 estimate"
+    },
+    "iraq_conventional_to_occupation": {
+      "totalUsd": 2058000000000,
+      "durationYears": 8,
+      "annualAverageUsd": 257250000000,
+      "dailyAverageUsd": 704795000,
+      "source": "Watson Institute 2021 estimate"
+    },
+    "gulf_war_conventional": {
+      "totalUsd": 250000000000,
+      "durationYears": 0.17,
+      "annualAverageUsd": 1470000000000,
+      "note": "Short, intense conflict. Inflation-adjusted to 2023 USD.",
+      "source": "CRS Report for Congress RL31585, inflation-adjusted"
+    },
+    "kargil_skirmish": {
+      "totalUsd": 7000000000,
+      "durationYears": 0.22,
+      "note": "Both sides combined, 2023 USD estimate",
+      "source": "Indian Ministry of Finance records, academic estimates"
+    }
+  }
+}

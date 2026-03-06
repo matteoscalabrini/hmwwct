@@ -1,0 +1,55 @@
+{
+  "metadata": {
+    "sources": [
+      { "name": "IEA Oil Market Report 2023", "url": "https://www.iea.org/reports/oil-market-report-december-2023" },
+      { "name": "USGS Mineral Commodity Summaries 2024", "url": "https://pubs.usgs.gov/publication/mcs2024" },
+      { "name": "FAO STAT Crops and Livestock", "url": "https://www.fao.org/faostat/en/#data/QCL" },
+      { "name": "IEA Natural Gas Market Report", "url": "https://www.iea.org/reports/gas-market-report-q4-2023" },
+      { "name": "World Bank Commodity Price Data", "url": "https://www.worldbank.org/en/research/commodity-markets" }
+    ],
+    "year": 2023,
+    "note": "globalGdpShockUsd is estimated additional cost to global economy from supply disruption (IMF commodity shock estimates)"
+  },
+  "oil": {
+    "RUS": { "pctWorldProduction": 12.1, "priceShockUsdPerBarrel": 15, "globalGdpShockUsd": 200000000000, "note": "World's 2nd largest oil producer. Sanctions already partially priced in post-2022." },
+    "SAU": { "pctWorldProduction": 11.2, "priceShockUsdPerBarrel": 25, "globalGdpShockUsd": 350000000000, "note": "Largest OPEC producer. Price spike would affect all import-dependent economies." },
+    "USA": { "pctWorldProduction": 19.0, "priceShockUsdPerBarrel": 5, "globalGdpShockUsd": 80000000000, "note": "Largest global producer but also largest consumer. Domestic conflict scenario only." },
+    "IRN": { "pctWorldProduction": 4.0, "priceShockUsdPerBarrel": 8, "globalGdpShockUsd": 100000000000, "note": "Strait of Hormuz vulnerability: ~20% of global oil transit." },
+    "IRQ": { "pctWorldProduction": 4.5, "priceShockUsdPerBarrel": 7, "globalGdpShockUsd": 90000000000, "note": "OPEC member, significant Gulf region production." },
+    "ARE": { "pctWorldProduction": 3.6, "priceShockUsdPerBarrel": 6, "globalGdpShockUsd": 70000000000, "note": "UAE, major Gulf producer." },
+    "KWT": { "pctWorldProduction": 2.7, "priceShockUsdPerBarrel": 5, "globalGdpShockUsd": 60000000000, "note": "OPEC member." },
+    "VEN": { "pctWorldProduction": 1.5, "priceShockUsdPerBarrel": 3, "globalGdpShockUsd": 30000000000, "note": "Heavily sanctioned, production already much reduced." },
+    "NGA": { "pctWorldProduction": 1.9, "priceShockUsdPerBarrel": 3, "globalGdpShockUsd": 40000000000, "note": "West Africa's largest producer." },
+    "LBY": { "pctWorldProduction": 1.1, "priceShockUsdPerBarrel": 2, "globalGdpShockUsd": 25000000000, "note": "Ongoing instability already discounts output." },
+    "KAZ": { "pctWorldProduction": 1.9, "priceShockUsdPerBarrel": 3, "globalGdpShockUsd": 35000000000, "note": "Landlocked; exports via Russia pipeline (additional vulnerability)." },
+    "NOR": { "pctWorldProduction": 2.0, "priceShockUsdPerBarrel": 4, "globalGdpShockUsd": 50000000000, "note": "Major European energy supplier." }
+  },
+  "naturalGas": {
+    "RUS": { "pctWorldProduction": 17.3, "priceShockPctGlobal": 8, "globalGdpShockUsd": 300000000000, "note": "Largest exporter to Europe. Conflict would fully sever European gas supply." },
+    "USA": { "pctWorldProduction": 22.0, "priceShockPctGlobal": 5, "globalGdpShockUsd": 100000000000, "note": "Largest producer, major LNG exporter." },
+    "IRN": { "pctWorldProduction": 6.0, "priceShockPctGlobal": 3, "globalGdpShockUsd": 80000000000, "note": "2nd largest reserves, Strait of Hormuz transit." },
+    "QAT": { "pctWorldProduction": 4.0, "priceShockPctGlobal": 3, "globalGdpShockUsd": 75000000000, "note": "World's largest LNG exporter per capita." },
+    "NOR": { "pctWorldProduction": 3.0, "priceShockPctGlobal": 2, "globalGdpShockUsd": 50000000000, "note": "Critical European pipeline gas supplier." },
+    "TKM": { "pctWorldProduction": 2.2, "priceShockPctGlobal": 1, "globalGdpShockUsd": 20000000000, "note": "Landlocked, exports to China." },
+    "DZA": { "pctWorldProduction": 2.3, "priceShockPctGlobal": 1.5, "globalGdpShockUsd": 30000000000, "note": "Key pipeline supplier to Southern Europe." }
+  },
+  "wheat": {
+    "RUS": { "pctWorldExports": 18.0, "foodSecurityCountriesAffected": 60, "globalGdpShockUsd": 50000000000, "note": "World's largest wheat exporter. 2022 disruption caused global food price spikes." },
+    "UKR": { "pctWorldExports": 12.0, "foodSecurityCountriesAffected": 46, "globalGdpShockUsd": 35000000000, "note": "'Breadbasket of Europe'. Conflict already disrupted 2022-2023 exports." },
+    "USA": { "pctWorldExports": 10.0, "foodSecurityCountriesAffected": 30, "globalGdpShockUsd": 25000000000, "note": "Major wheat exporter but many alternatives available." },
+    "CAN": { "pctWorldExports": 14.0, "foodSecurityCountriesAffected": 35, "globalGdpShockUsd": 30000000000, "note": "Major wheat exporter." },
+    "AUS": { "pctWorldExports": 13.0, "foodSecurityCountriesAffected": 30, "globalGdpShockUsd": 25000000000, "note": "Major Southern Hemisphere exporter." },
+    "IND": { "pctWorldExports": 5.0, "foodSecurityCountriesAffected": 20, "globalGdpShockUsd": 15000000000, "note": "Variable exporter, domestic consumption prioritized when drought occurs." }
+  },
+  "semiconductors": {
+    "TWN": { "pctWorldProduction": 63.0, "globalGdpShockUsd": 1500000000000, "note": "TSMC produces ~63% of world's advanced chips. A Taiwan conflict would trigger global electronics supply chain collapse." },
+    "KOR": { "pctWorldProduction": 18.0, "globalGdpShockUsd": 400000000000, "note": "Samsung, SK Hynix. Memory chips and logic chips." },
+    "CHN": { "pctWorldProduction": 9.0, "globalGdpShockUsd": 200000000000, "note": "Mature node chips, growing advanced capacity." }
+  },
+  "lithium": {
+    "AUS": { "pctWorldProduction": 47.0, "globalGdpShockUsd": 50000000000, "note": "World's largest lithium producer. Critical for EV batteries." },
+    "CHL": { "pctWorldProduction": 26.0, "globalGdpShockUsd": 30000000000, "note": "Atacama salt flat reserves." },
+    "CHN": { "pctWorldProduction": 15.0, "globalGdpShockUsd": 20000000000, "note": "Also controls most lithium refining." },
+    "ARG": { "pctWorldProduction": 6.0, "globalGdpShockUsd": 10000000000, "note": "'Lithium Triangle' with Chile and Bolivia." }
+  }
+}

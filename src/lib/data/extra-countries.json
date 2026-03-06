@@ -1,0 +1,35 @@
+{
+  "note": "Countries with geopolitical importance that are excluded from the REST Countries UN member filter. Metadata hand-curated from official sources.",
+  "countries": [
+    {
+      "cca2": "TW",
+      "cca3": "TWN",
+      "name": { "common": "Taiwan", "official": "Republic of China (Taiwan)" },
+      "flags": {
+        "png": "https://flagcdn.com/w320/tw.png",
+        "svg": "https://flagcdn.com/tw.svg"
+      },
+      "region": "Asia",
+      "subregion": "Eastern Asia",
+      "latlng": [23.5, 121.0],
+      "area": 35980,
+      "unMember": false,
+      "population": 23600000
+    },
+    {
+      "cca2": "XK",
+      "cca3": "XKX",
+      "name": { "common": "Kosovo", "official": "Republic of Kosovo" },
+      "flags": {
+        "png": "https://flagcdn.com/w320/xk.png",
+        "svg": "https://flagcdn.com/xk.svg"
+      },
+      "region": "Europe",
+      "subregion": "Southeast Europe",
+      "latlng": [42.35, 20.8],
+      "area": 10908,
+      "unMember": false,
+      "population": 1800000
+    }
+  ]
+}
