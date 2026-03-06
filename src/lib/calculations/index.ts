@@ -4,6 +4,7 @@ import { calculateMilitaryCost } from './military';
 import { calculateEconomicImpact } from './economic';
 import { calculateHumanitarianCost } from './humanitarian';
 import { calculateReconstructionCost } from './reconstruction';
+import { calculateRevenue } from './revenue';
 import { SCENARIOS } from '@/constants/conflict-scenarios';
 
 export function calculateWarCost(input: CalculationInput): WarCostResult {
@@ -35,6 +36,8 @@ export function calculateWarCost(input: CalculationInput): WarCostResult {
     humanitarianCategory.amountMax +
     reconstructionCategory.amountMax;
 
+  const revenue = calculateRevenue(input, point);
+
   // Deduplicated source list
   const allSources: Source[] = deduplicateSources([
     ...militaryCategory.sources,
@@ -53,6 +56,7 @@ export function calculateWarCost(input: CalculationInput): WarCostResult {
 
   return {
     total: { min, max, point },
+    revenue,
     breakdown: {
       military: militaryCategory,
       economic: economicCategory,

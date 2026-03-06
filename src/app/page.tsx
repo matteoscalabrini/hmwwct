@@ -32,20 +32,6 @@ export default function Home() {
       {/* HERO */}
       <div style={{ border: '1px solid var(--border)', background: 'var(--panel)' }} className="p-8 sm:p-14 space-y-8">
 
-        {/* Boot log */}
-        <div className="space-y-0.5 text-xs">
-          {BOOT_LOG.map((line, i) => (
-            <p key={i} className={i === BOOT_LOG.length - 1 ? 'cursor' : ''}>
-              <span style={{ color: TAG_COLOR[line.tag] ?? 'var(--text-dim)' }}>
-                [{line.tag}]&nbsp;
-              </span>
-              <span style={{ color: i === BOOT_LOG.length - 1 ? 'var(--text-dim)' : 'var(--text-muted)' }}>
-                {line.text}
-              </span>
-            </p>
-          ))}
-        </div>
-
         {/* Title — Workbench, one line */}
         <h1
           className="font-workbench glow"
@@ -62,6 +48,20 @@ export default function Home() {
           <p className="text-sm sm:text-lg font-bold leading-snug" style={{ color: 'var(--green-dim)' }}>
             WE THOUGHT THE PUBLIC SHOULD HAVE ACCESS TOO.
           </p>
+        </div>
+
+        {/* Boot log */}
+        <div className="space-y-0.5 text-xs">
+          {BOOT_LOG.map((line, i) => (
+            <p key={i} className={i === BOOT_LOG.length - 1 ? 'cursor' : ''}>
+              <span style={{ color: TAG_COLOR[line.tag] ?? 'var(--text-dim)' }}>
+                [{line.tag}]&nbsp;
+              </span>
+              <span style={{ color: i === BOOT_LOG.length - 1 ? 'var(--text-dim)' : 'var(--text-muted)' }}>
+                {line.text}
+              </span>
+            </p>
+          ))}
         </div>
 
         {/* CTAs */}

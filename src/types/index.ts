@@ -100,10 +100,31 @@ export interface HumanToll {
   note: string;
 }
 
+// ─── Revenue Estimate ─────────────────────────────────────────────────────────
+
+export interface RevenueItem {
+  label: string;
+  annualUsd: number;
+  totalUsd: number;
+  confidence: 'high' | 'medium' | 'low';
+  note: string;
+}
+
+export interface WarRevenueResult {
+  totalUsd: number;
+  annualRateUsd: number;
+  items: RevenueItem[];
+  netPositionUsd: number;        // revenue - total cost (almost always negative)
+  breakEvenYears: number | null; // null = never
+  assumptions: string[];
+  confidenceNote: string;
+}
+
 // ─── Final Result ─────────────────────────────────────────────────────────────
 
 export interface WarCostResult {
   total: { min: number; max: number; point: number };
+  revenue: WarRevenueResult;
   breakdown: {
     military: CostCategory;
     economic: CostCategory;

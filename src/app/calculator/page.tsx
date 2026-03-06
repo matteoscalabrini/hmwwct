@@ -12,6 +12,7 @@ import { OpportunityCost } from '@/components/OpportunityCost';
 import { HumanTollBanner } from '@/components/HumanTollBanner';
 import { ShareButton } from '@/components/ShareButton';
 import { DataFreshnessIndicator } from '@/components/DataFreshnessIndicator';
+import { RevenuePanel } from '@/components/RevenuePanel';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { formatCurrency, formatCurrencyRange, formatDuration } from '@/lib/utils/formatting';
 
@@ -265,6 +266,17 @@ function CalculatorContent() {
                 <OpportunityCost items={result.opportunityCosts} totalUsd={result.total.point} />
               </div>
             </div>
+          </div>
+
+          {/* Revenue / Net Position — full width */}
+          <div>
+            <p className="text-xs tracking-widest uppercase mb-1" style={{ color: 'var(--green-dim)' }}>
+              &gt; ESTIMATED REVENUE // BEST-CASE SCENARIO
+            </p>
+            <p className="text-xs mb-4" style={{ color: 'var(--text-muted)' }}>
+              // assumes aggressor wins and maintains full control — read assumptions before interpreting
+            </p>
+            <RevenuePanel revenue={result.revenue} totalCostUsd={result.total.point} />
           </div>
 
           <DataFreshnessIndicator
