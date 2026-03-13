@@ -20,7 +20,14 @@
 * { box-sizing: border-box; }
 
 /* ─── Base ────────────────────────────────────────────────────────────────── */
-html, body {
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-size: 120%;
+}
+
+body {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -29,15 +36,15 @@ html, body {
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'JetBrains Mono', 'Courier New', monospace;
-  font-size: 13px;
+  font-family: 'VT323', 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 19.5px;
   overflow: auto;
   -webkit-font-smoothing: antialiased;
 }
 
 /* ─── Typography ──────────────────────────────────────────────────────────── */
 .font-mono {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'VT323', 'JetBrains Mono', monospace;
 }
 
 .font-workbench {
@@ -45,7 +52,7 @@ body {
 }
 
 .font-sans {
-  font-family: 'Inter', sans-serif;
+  font-family: 'VT323', sans-serif;
 }
 
 /* ─── War-room grid background ───────────────────────────────────────────── */

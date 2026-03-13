@@ -60,6 +60,20 @@ export function ScenarioSelector({ value, onChange }: ScenarioSelectorProps) {
               borderLeft: selected ? `3px solid ${sev.color}` : '3px solid transparent',
               background: selected ? 'var(--surface-bright)' : 'var(--surface)',
             }}
+            onMouseEnter={(e) => {
+              if (!selected) {
+                e.currentTarget.style.borderColor = sev.color;
+                e.currentTarget.style.borderLeftColor = sev.color;
+                e.currentTarget.style.background = 'var(--surface-bright)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!selected) {
+                e.currentTarget.style.borderColor = 'var(--border)';
+                e.currentTarget.style.borderLeftColor = 'transparent';
+                e.currentTarget.style.background = 'var(--surface)';
+              }
+            }}
           >
             <div className="flex items-center justify-between gap-2 mb-0.5">
               <span
