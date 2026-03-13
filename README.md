@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# HMWWCT — How Much Would a War Cost There?
 
-## Getting Started
+An educational web calculator that estimates the economic and humanitarian cost of a hypothetical military conflict between any two countries, using real data from World Bank, SIPRI, UNHCR, IMF, and FRED.
 
-First, run the development server:
+**Live at:** [hmwwct.vercel.app](https://hmwwct.vercel.app) *(once deployed)*
+
+---
+
+## What it does
+
+Select an aggressor country, a target country, and a conflict scenario (skirmish / conventional / occupation). The calculator returns:
+
+- **Total estimated cost** — military operations, economic disruption, reconstruction
+- **Economic impact** — bilateral trade loss, GDP contraction, commodity shocks, sanctions
+- **Humanitarian toll** — displaced persons estimate with post-conflict tail
+- **Budget reallocation** — what the aggressor would have to cut to fund the war
+- **GDP comparison** — cost as a share of both countries' economies
+- **Cost per taxpayer** — burden on the aggressor's population
+
+All numbers cite real sources. No black boxes.
+
+---
+
+## Data sources
+
+| Source | Used for |
+|--------|----------|
+| World Bank API | GDP, population, military spending |
+| SIPRI | Military budget fallback data |
+| FRED (St. Louis Fed) | Live commodity prices (oil, gas, wheat), CPI |
+| IMF | GDP fallback when World Bank returns null |
+| UNHCR | Displacement ratios by conflict type |
+| Watson Institute | War cost anchors (US Afghanistan/Iraq benchmarks) |
+| REST Countries | Country metadata, flags, region |
+
+---
+
+## Methodology
+
+The full methodology is available at `/methodology` in the app. Key formulas:
+
+- **Military cost:** Watson-anchored daily rate × budget scale × distance discount × duration
+- **Economic impact:** Trade disruption + GDP contraction + commodity shock + sanctions
+- **Humanitarian:** UNHCR displacement ratio × conflict multiplier × per-person cost/year
+- **Reconstruction:** Annual rate (1–30% of target GDP) × duration
+
+---
+
+## Running locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+> **Note:** The build command is `node node_modules/next/dist/bin/next build` (not `npm run build`) due to a symlink issue on some setups.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Environment variables
 
-## Learn More
+```env
+FRED_API_KEY=your_key_here
+```
 
-To learn more about Next.js, take a look at the following resources:
+Get a free key at [fred.stlouisfed.org/docs/api/api_key.html](https://fred.stlouisfed.org/docs/api/api_key.html). The app degrades gracefully without it (commodity prices default to 2023 baselines).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Tech stack
 
-## Deploy on Vercel
+- Next.js 16 App Router + TypeScript
+- Tailwind CSS v4
+- Recharts
+- @tanstack/react-query
+- react-select
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Disclaimer
+
+For educational and policy analysis purposes only. All figures are estimates based on historical benchmarks and publicly available data. Not intended to advocate for or against any conflict.
