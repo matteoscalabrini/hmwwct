@@ -18,16 +18,17 @@ const SEVERITY: Record<string, { color: string; level: number }> = {
 
 function ThreatBars({ level, color, active }: { level: number; color: string; active: boolean }) {
   return (
-    <div className="flex items-end gap-0.5" style={{ height: 14 }}>
+    <div className="flex items-end gap-1" style={{ height: 16 }}>
       {[1, 2, 3, 4].map((i) => (
         <div
           key={i}
           style={{
-            width: 3,
+            width: 4,
             height: `${(i / 4) * 100}%`,
-            background: i <= level ? color : 'var(--border-bright)',
+            background: i <= level ? color : 'var(--border)',
             opacity: active ? 1 : 0.4,
             transition: 'all 0.15s',
+            borderRadius: 999,
           }}
         />
       ))}
@@ -44,7 +45,7 @@ const KEYS: Record<string, string> = {
 
 export function ScenarioSelector({ value, onChange }: ScenarioSelectorProps) {
   return (
-    <div className="grid grid-cols-1 gap-1">
+    <div className="grid grid-cols-1 gap-3">
       {Object.values(SCENARIOS).map((s) => {
         const selected = value === s.id;
         const sev = SEVERITY[s.id];
@@ -54,48 +55,47 @@ export function ScenarioSelector({ value, onChange }: ScenarioSelectorProps) {
             type="button"
             onClick={() => onChange(s.id)}
             aria-pressed={selected}
-            className="text-left px-3 py-2 transition-all focus:outline-none"
+            className="terminal-panel text-left transition-all focus:outline-none"
             style={{
-              border: selected ? `1px solid ${sev.color}` : '1px solid var(--border)',
-              borderLeft: selected ? `3px solid ${sev.color}` : '3px solid transparent',
-              background: selected ? 'var(--surface-bright)' : 'var(--surface)',
+              padding: '14px',
+              borderColor: selected ? sev.color : 'var(--border)',
+              background: selected ? 'linear-gradient(180deg, rgba(18, 33, 27, 0.95), rgba(14, 26, 21, 1))' : undefined,
+              boxShadow: selected ? `0 0 0 1px ${sev.color}, 0 0 24px color-mix(in srgb, ${sev.color} 18%, transparent)` : undefined,
             }}
             onMouseEnter={(e) => {
               if (!selected) {
                 e.currentTarget.style.borderColor = sev.color;
-                e.currentTarget.style.borderLeftColor = sev.color;
-                e.currentTarget.style.background = 'var(--surface-bright)';
+                e.currentTarget.style.background = 'rgba(84, 245, 214, 0.04)';
               }
             }}
             onMouseLeave={(e) => {
               if (!selected) {
                 e.currentTarget.style.borderColor = 'var(--border)';
-                e.currentTarget.style.borderLeftColor = 'transparent';
-                e.currentTarget.style.background = 'var(--surface)';
+                e.currentTarget.style.background = '';
               }
             }}
           >
-            <div className="flex items-center justify-between gap-2 mb-0.5">
+            <div className="flex items-center justify-between gap-2">
               <span
-                className="text-xs font-bold uppercase tracking-wider"
+                className="text-xs font-semibold uppercase tracking-[0.2em]"
                 style={{ color: selected ? sev.color : 'var(--text-muted)' }}
               >
                 {s.label}
               </span>
               <div className="flex items-center gap-2">
                 <ThreatBars level={sev.level} color={sev.color} active={selected} />
-                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                   [{KEYS[s.id]}]
                 </span>
               </div>
             </div>
-            <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+            <p className="mt-3 text-xs leading-6" style={{ color: selected ? 'var(--text-secondary)' : 'var(--text-muted)' }}>
               {s.description}
             </p>
-            <div className="mt-1">
+            <div className="mt-3">
               <span
-                className="text-xs tabular-nums"
-                style={{ color: 'var(--text-muted)' }}
+                className="text-xs tabular-nums uppercase tracking-[0.16em]"
+                style={{ color: selected ? 'var(--text-secondary)' : 'var(--text-muted)' }}
               >
                 {formatDuration(s.durationYears.min)} – {formatDuration(s.durationYears.max)}
               </span>

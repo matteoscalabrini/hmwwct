@@ -8,7 +8,7 @@ import {
 } from 'recharts';
 import { useState } from 'react';
 
-const CHART_COLORS = ['#6366f1', '#f59e0b', '#ef4444', '#06b6d4'];
+const CHART_COLORS = ['#54f5d6', '#d6ff6b', '#ff765b', '#f7bf63'];
 
 interface CostChartProps { result: WarCostResult; }
 type ChartView = 'bar' | 'pie';
@@ -23,29 +23,29 @@ export function CostChart({ result }: CostChartProps) {
   }));
 
   const tooltipStyle = {
-    background: '#111111',
-    border: '1px solid #2a2a2a',
-    borderRadius: 2,
+    background: '#0c1512',
+    border: '1px solid #2d5d49',
+    borderRadius: 6,
     fontSize: 12,
-    color: '#e5e5e5',
+    color: '#effaf4',
     fontFamily: 'JetBrains Mono, monospace',
   };
 
   return (
-    <div className="space-y-4">
+    <div className="terminal-panel space-y-4 px-5 py-5">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
+        <p className="terminal-kicker" style={{ color: 'var(--accent-cyan)' }}>
           Cost Distribution
         </p>
-        <div className="flex rounded-lg overflow-hidden" style={{ border: '1px solid var(--border)' }}>
+        <div className="flex overflow-hidden rounded-full border" style={{ borderColor: 'var(--border)' }}>
           {(['bar', 'pie'] as ChartView[]).map((v) => (
             <button
               key={v}
               onClick={() => setView(v)}
-              className="px-3 py-1 text-xs font-medium capitalize transition-colors"
+              className="px-3 py-1.5 text-xs font-medium uppercase tracking-[0.18em] transition-colors"
               style={{
-                background: view === v ? 'var(--accent-blue)' : 'transparent',
-                color: view === v ? '#fff' : 'var(--text-secondary)',
+                background: view === v ? 'rgba(84, 245, 214, 0.12)' : 'transparent',
+                color: view === v ? 'var(--accent-cyan)' : 'var(--text-secondary)',
               }}
             >
               {v}
@@ -60,14 +60,14 @@ export function CostChart({ result }: CostChartProps) {
             <XAxis
               type="number"
               tickFormatter={(v) => formatCurrency(v)}
-              tick={{ fontSize: 10, fill: '#999999' }}
+              tick={{ fontSize: 10, fill: '#73917f', fontFamily: 'JetBrains Mono, monospace' }}
               axisLine={false}
               tickLine={false}
             />
             <YAxis
               type="category"
               dataKey="name"
-              tick={{ fontSize: 10, fill: '#999999' }}
+              tick={{ fontSize: 10, fill: '#b4d6c4', fontFamily: 'JetBrains Mono, monospace' }}
               axisLine={false}
               tickLine={false}
               width={100}
@@ -75,10 +75,10 @@ export function CostChart({ result }: CostChartProps) {
             <Tooltip
               formatter={(v) => [formatCurrency(Number(v)), 'Point est.']}
               contentStyle={tooltipStyle}
-              itemStyle={{ color: '#e5e5e5' }}
-              labelStyle={{ color: '#999999' }}
+              itemStyle={{ color: '#effaf4' }}
+              labelStyle={{ color: '#73917f' }}
               wrapperStyle={{ zIndex: 10000 }}
-              cursor={{ fill: 'rgba(255,255,255,0.03)' }}
+              cursor={{ fill: 'rgba(84, 245, 214, 0.05)' }}
             />
             <Bar dataKey="value" isAnimationActive radius={[0, 4, 4, 0]}>
               {data.map((entry, i) => <Cell key={i} fill={entry.color} />)}
@@ -105,7 +105,7 @@ export function CostChart({ result }: CostChartProps) {
             </Pie>
             <Legend
               formatter={(value) => (
-                <span style={{ fontSize: 10, color: '#888888' }}>
+                <span style={{ fontSize: 10, color: '#73917f' }}>
                   {value}
                 </span>
               )}
@@ -113,8 +113,8 @@ export function CostChart({ result }: CostChartProps) {
             <Tooltip
               formatter={(v) => [formatCurrency(Number(v)), 'Point est.']}
               contentStyle={tooltipStyle}
-              itemStyle={{ color: '#e5e5e5' }}
-              labelStyle={{ color: '#999999' }}
+              itemStyle={{ color: '#effaf4' }}
+              labelStyle={{ color: '#73917f' }}
               wrapperStyle={{ zIndex: 10000 }}
             />
           </PieChart>
@@ -122,10 +122,10 @@ export function CostChart({ result }: CostChartProps) {
       )}
 
       <div className="space-y-1 text-center">
-        <p className="text-xs font-mono" style={{ color: 'var(--text-secondary)' }}>
+        <p className="text-xs font-mono uppercase tracking-[0.16em]" style={{ color: 'var(--text-secondary)' }}>
           Direct cost range: {formatCurrency(result.total.min)} — {formatCurrency(result.total.max)}
         </p>
-        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+        <p className="text-xs leading-6" style={{ color: 'var(--text-muted)' }}>
           Economic impact is charted above but excluded from the headline projected cost.
         </p>
       </div>

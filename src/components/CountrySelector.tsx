@@ -17,11 +17,13 @@ function toOption(c: RestCountryRaw): CountryOption {
 
 const FlagOption = (props: OptionProps<CountryOption>) => (
   <components.Option {...props}>
-    <div className="flex items-center gap-2.5 py-0.5">
+    <div className="flex items-center gap-2.5 py-1">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={props.data.flag} alt="" className="h-3 w-4.5 object-cover shrink-0" loading="lazy" />
-      <span className="text-xs uppercase tracking-wide">{props.data.label}</span>
-      <span className="text-xs ml-auto uppercase" style={{ color: 'var(--text-muted)', fontSize: '10px' }}>{props.data.value}</span>
+      <img src={props.data.flag} alt="" className="h-3 w-[18px] object-cover shrink-0" loading="lazy" />
+      <span className="text-xs uppercase tracking-[0.16em]">{props.data.label}</span>
+      <span className="ml-auto text-[10px] uppercase tracking-[0.2em]" style={{ color: 'var(--text-muted)' }}>
+        {props.data.value}
+      </span>
     </div>
   </components.Option>
 );
@@ -30,8 +32,8 @@ const FlagSingleValue = (props: SingleValueProps<CountryOption>) => (
   <components.SingleValue {...props}>
     <div className="flex items-center gap-2.5">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={props.data.flag} alt="" className="h-3 w-4.5 object-cover shrink-0" />
-      <span className="text-xs">{props.data.label}</span>
+      <img src={props.data.flag} alt="" className="h-3 w-[18px] object-cover shrink-0" />
+      <span className="text-xs uppercase tracking-[0.1em]">{props.data.label}</span>
       <span className="text-xs" style={{ color: 'var(--text-muted)' }}>[{props.data.value}]</span>
     </div>
   </components.SingleValue>
@@ -40,41 +42,43 @@ const FlagSingleValue = (props: SingleValueProps<CountryOption>) => (
 const selectStyles: StylesConfig<CountryOption> = {
   control: (base, state) => ({
     ...base,
-    background: 'var(--bg)',
-    border: `1px solid ${state.isFocused ? 'var(--accent-cyan)' : 'var(--border-bright)'}`,
-    borderRadius: '0',
-    boxShadow: state.isFocused ? '0 0 0 1px var(--accent-cyan)' : 'none',
+    background: 'linear-gradient(180deg, rgba(18, 33, 27, 0.96), rgba(9, 17, 13, 0.98))',
+    border: `1px solid ${state.isFocused ? 'var(--accent-cyan)' : 'var(--border)'}`,
+    borderRadius: '0.4rem',
+    boxShadow: state.isFocused ? '0 0 0 1px rgba(84, 245, 214, 0.25), 0 0 24px rgba(84, 245, 214, 0.08)' : 'none',
     color: 'var(--text)',
     fontSize: '12px',
     fontFamily: 'JetBrains Mono, monospace',
-    padding: '1px 4px',
-    minHeight: '36px',
+    letterSpacing: '0.05em',
+    padding: '4px 6px',
+    minHeight: '46px',
     '&:hover': { borderColor: 'var(--border-bright)' },
   }),
   menu: (base) => ({
     ...base,
-    background: 'var(--surface)',
+    background: 'linear-gradient(180deg, rgba(18, 33, 27, 0.98), rgba(9, 17, 13, 1))',
     border: '1px solid var(--border-bright)',
-    borderRadius: '0',
+    borderRadius: '0.4rem',
     zIndex: 100,
     overflow: 'hidden',
+    boxShadow: '0 24px 60px rgba(0, 0, 0, 0.4)',
   }),
-  menuList: (base) => ({ ...base, padding: '2px' }),
+  menuList: (base) => ({ ...base, padding: '4px' }),
   option: (base, state) => ({
     ...base,
-    background: state.isFocused ? 'var(--surface-bright)' : 'transparent',
+    background: state.isFocused ? 'rgba(84, 245, 214, 0.09)' : 'transparent',
     color: state.isFocused ? 'var(--text)' : 'var(--text-secondary)',
     fontSize: '12px',
     fontFamily: 'JetBrains Mono, monospace',
     cursor: 'pointer',
-    borderRadius: '0',
+    borderRadius: '0.35rem',
     margin: '0',
   }),
   singleValue: (base) => ({ ...base, color: 'var(--text)' }),
-  placeholder: (base) => ({ ...base, color: 'var(--text-muted)', fontSize: '12px' }),
+  placeholder: (base) => ({ ...base, color: 'var(--text-muted)', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.14em' }),
   input: (base) => ({ ...base, color: 'var(--text)', fontSize: '12px' }),
   indicatorSeparator: () => ({ display: 'none' }),
-  dropdownIndicator: (base) => ({ ...base, color: 'var(--text-muted)', padding: '4px 6px' }),
+  dropdownIndicator: (base) => ({ ...base, color: 'var(--text-muted)', padding: '4px 8px' }),
   loadingIndicator: (base) => ({ ...base, color: 'var(--accent-cyan)' }),
   noOptionsMessage: (base) => ({ ...base, color: 'var(--text-muted)', fontSize: '12px' }),
 };
@@ -101,9 +105,9 @@ export function CountrySelector({ aggressorCode, targetCode, onAggressorChange, 
   const targetOptions = countries.filter((c) => c.value !== aggressorCode);
 
   return (
-    <div className="space-y-3">
-      <div className="space-y-1.5">
-        <label className="block text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--accent-indigo)' }}>
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <label className="block text-xs font-semibold uppercase tracking-[0.22em]" style={{ color: 'var(--accent-indigo)' }}>
           AGGRESSOR
         </label>
         <Select
@@ -113,7 +117,7 @@ export function CountrySelector({ aggressorCode, targetCode, onAggressorChange, 
           onChange={(opt) => { if (opt && !Array.isArray(opt)) onAggressorChange((opt as CountryOption).value); }}
           components={{ Option: FlagOption, SingleValue: FlagSingleValue }}
           isLoading={loading}
-          placeholder="> Search..."
+          placeholder="Search country..."
           isSearchable
           styles={selectStyles}
           aria-label="Select aggressor country"
@@ -121,8 +125,8 @@ export function CountrySelector({ aggressorCode, targetCode, onAggressorChange, 
         />
       </div>
 
-      <div className="space-y-1.5">
-        <label className="block text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--accent-red)' }}>
+      <div className="space-y-2">
+        <label className="block text-xs font-semibold uppercase tracking-[0.22em]" style={{ color: 'var(--accent-red)' }}>
           TARGET
         </label>
         <Select
@@ -132,7 +136,7 @@ export function CountrySelector({ aggressorCode, targetCode, onAggressorChange, 
           onChange={(opt) => { if (opt && !Array.isArray(opt)) onTargetChange((opt as CountryOption).value); }}
           components={{ Option: FlagOption, SingleValue: FlagSingleValue }}
           isLoading={loading}
-          placeholder="> Search..."
+          placeholder="Search country..."
           isSearchable
           styles={selectStyles}
           aria-label="Select target country"

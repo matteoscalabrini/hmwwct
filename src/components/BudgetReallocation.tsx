@@ -78,19 +78,12 @@ export function BudgetReallocation({
   const warCostPctOfGdp = (annualWarCost / aggressorGdp) * 100;
 
   return (
-    <div
-      className="rounded-xl p-5 space-y-5"
-      style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
-    >
-      {/* Header */}
+    <div className="terminal-panel space-y-5 px-5 py-5">
       <div className="space-y-1">
-        <h3
-          className="text-xs font-bold tracking-widest uppercase"
-          style={{ color: 'var(--text-secondary)' }}
-        >
+        <h3 className="terminal-kicker" style={{ color: 'var(--accent-cyan)' }}>
           To fund this conflict, {aggressorName} would need to redirect:
         </h3>
-        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+        <p className="text-sm leading-7" style={{ color: 'var(--text-muted)' }}>
           Annual war cost:{' '}
           <span className="font-mono font-semibold" style={{ color: 'var(--accent-red)' }}>
             {formatCurrency(annualWarCost)}/year
@@ -101,7 +94,6 @@ export function BudgetReallocation({
         </p>
       </div>
 
-      {/* Chart */}
       <div className="w-full" style={{ height: 260 }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
@@ -113,50 +105,49 @@ export function BudgetReallocation({
             <XAxis
               type="number"
               tickFormatter={(v: number) => formatCurrency(v)}
-              tick={{ fill: '#666666', fontSize: 11, fontFamily: 'JetBrains Mono, monospace' }}
-              axisLine={{ stroke: '#1a1a1a' }}
+              tick={{ fill: '#73917f', fontSize: 11, fontFamily: 'JetBrains Mono, monospace' }}
+              axisLine={{ stroke: '#1b352b' }}
               tickLine={false}
             />
             <YAxis
               type="category"
               dataKey="name"
               width={120}
-              tick={{ fill: '#999999', fontSize: 11 }}
+              tick={{ fill: '#b4d6c4', fontSize: 11, fontFamily: 'JetBrains Mono, monospace' }}
               axisLine={false}
               tickLine={false}
             />
             <Tooltip
               contentStyle={{
-                background: '#111111',
-                border: '1px solid #2a2a2a',
-                borderRadius: 2,
+                background: '#0c1512',
+                border: '1px solid #2d5d49',
+                borderRadius: 6,
                 fontSize: 12,
                 fontFamily: 'JetBrains Mono, monospace',
               }}
-              labelStyle={{ color: '#e5e5e5', fontFamily: 'Inter, sans-serif' }}
-              itemStyle={{ color: '#e5e5e5' }}
+              labelStyle={{ color: '#effaf4', fontFamily: 'JetBrains Mono, monospace' }}
+              itemStyle={{ color: '#effaf4' }}
               formatter={(value: number | undefined) => formatCurrency(value ?? 0)}
             />
             <Legend
               iconType="square"
               iconSize={10}
-              wrapperStyle={{ fontSize: 11, color: '#888888', paddingTop: 8 }}
+              wrapperStyle={{ fontSize: 11, color: '#73917f', paddingTop: 8 }}
             />
             <Bar dataKey="Remaining" stackId="a" radius={[0, 0, 0, 0]}>
               {chartData.map((_, i) => (
-                <Cell key={i} fill="#2a2a2a" />
+                <Cell key={i} fill="#1f3b30" />
               ))}
             </Bar>
             <Bar dataKey="War Cost" stackId="a" radius={[0, 4, 4, 0]}>
               {chartData.map((_, i) => (
-                <Cell key={i} fill="#ef4444" />
+                <Cell key={i} fill="#ff765b" />
               ))}
             </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>
 
-      {/* Sector consumption summary */}
       <div className="space-y-2">
         {sectors.map((s) => (
           <div key={s.name} className="flex items-center justify-between text-xs gap-4">
@@ -175,13 +166,10 @@ export function BudgetReallocation({
         ))}
       </div>
 
-      {/* Callout */}
       {fullyConsumedSectors.length > 0 && (
         <div
-          className="rounded-lg px-4 py-3 text-xs leading-relaxed"
+          className="terminal-callout is-danger px-4 py-3 text-xs leading-6"
           style={{
-            background: 'rgba(239, 68, 68, 0.08)',
-            border: '1px solid rgba(239, 68, 68, 0.2)',
             color: 'var(--accent-red)',
           }}
         >
@@ -195,7 +183,7 @@ export function BudgetReallocation({
         </div>
       )}
 
-      <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+      <p className="text-xs leading-6" style={{ color: 'var(--text-muted)' }}>
         Budget shares based on OECD averages. Actual allocation varies by country.
       </p>
     </div>

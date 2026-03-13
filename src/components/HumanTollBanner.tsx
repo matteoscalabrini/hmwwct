@@ -7,31 +7,28 @@ interface HumanTollBannerProps {
 
 export function HumanTollBanner({ toll }: HumanTollBannerProps) {
   return (
-    <div
-      className="rounded-lg p-5"
-      style={{ border: '1px solid var(--accent-amber)', background: 'rgba(245,158,11,0.06)' }}
-    >
-      <p className="text-xs font-semibold mb-2" style={{ color: 'var(--accent-amber)' }}>
+    <div className="terminal-callout is-warn px-5 py-5">
+      <p className="terminal-kicker mb-3" style={{ color: 'var(--accent-amber)' }}>
         Human Toll — Not Monetized
       </p>
-      <p className="text-sm leading-relaxed" style={{ color: 'var(--accent-amber)' }}>
+      <p className="text-sm leading-7" style={{ color: 'var(--text)' }}>
         Est.{' '}
-        <strong>
+        <strong style={{ color: 'var(--accent-amber)' }}>
           {formatLargeNumber(toll.displacedPersonsMin)} –{' '}
           {formatLargeNumber(toll.displacedPersonsMax)} people
         </strong>{' '}
         displaced (point:{' '}
-        <strong>{formatLargeNumber(toll.displacedPersonsPoint)}</strong>).
+        <strong style={{ color: 'var(--accent-amber)' }}>{formatLargeNumber(toll.displacedPersonsPoint)}</strong>).
       </p>
-      <p className="mt-2 text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+      <p className="mt-3 text-xs leading-6" style={{ color: 'var(--text-secondary)' }}>
         {toll.note}
       </p>
       <a
         href={toll.source.url}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-1 text-xs underline"
-        style={{ color: 'var(--accent-amber)', opacity: 0.7 }}
+        className="mt-3 inline-flex text-xs underline underline-offset-2"
+        style={{ color: 'var(--accent-amber)' }}
       >
         Source: {toll.source.name} ({toll.source.year})
       </a>

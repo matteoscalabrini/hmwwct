@@ -1,5 +1,25 @@
 import type { Metadata } from 'next';
+import { JetBrains_Mono, VT323, Workbench } from 'next/font/google';
+import Link from 'next/link';
 import './globals.css';
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-jetbrains',
+});
+
+const vt323 = VT323({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-vt323',
+});
+
+const workbench = Workbench({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-workbench',
+});
 
 export const metadata: Metadata = {
   title: 'HMWWCT // STRATEGIC COST ANALYSIS SYSTEM',
@@ -21,65 +41,44 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=VT323&family=JetBrains+Mono:wght@400;500;700&family=Workbench&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html
+      lang="en"
+      className={`${jetbrainsMono.variable} ${vt323.variable} ${workbench.variable}`}
+    >
+      <head />
       <body>
-        <div className="min-h-screen flex flex-col" style={{ background: 'var(--bg)' }}>
-          {/* Status bar */}
-          <nav
-            className="shrink-0"
-            style={{
-              borderBottom: '1px solid var(--border)',
-              background: 'var(--surface)',
-            }}
-          >
-            <div className="max-w-screen-2xl mx-auto px-4 h-10 flex items-center justify-between">
-              {/* Left: system indicator */}
-              <a href="/" className="flex items-center gap-2">
-                <div
-                  className="w-1.5 h-1.5 rounded-full animate-pulse-dot"
-                  style={{
-                    background: 'var(--accent-emerald)',
-                    boxShadow: '0 0 6px var(--accent-emerald)',
-                  }}
-                />
-                <span
-                  className="text-xs font-bold tracking-widest uppercase"
-                  style={{ color: 'var(--text-secondary)', letterSpacing: '0.15em' }}
-                >
-                  HMWWCT
-                </span>
-                <span className="text-xs hidden sm:block" style={{ color: 'var(--text-muted)' }}>
-                  // STRATEGIC COST ANALYSIS
-                </span>
-              </a>
-              {/* Right: nav links */}
-              <div className="flex items-center gap-1 text-xs uppercase tracking-wider">
-                <a
-                  href="/calculator"
-                  className="px-3 py-1 transition-colors hover:text-[var(--accent-cyan)]"
-                  style={{ color: 'var(--text-muted)' }}
-                >
-                  [CALC]
-                </a>
-                <a
-                  href="/methodology"
-                  className="px-3 py-1 transition-colors hover:text-[var(--accent-cyan)]"
-                  style={{ color: 'var(--text-muted)' }}
-                >
-                  [METHOD]
-                </a>
+        <div className="min-h-screen flex flex-col">
+          <nav className="shrink-0 border-b" style={{ borderColor: 'var(--border)' }}>
+            <div className="max-w-screen-2xl mx-auto px-4 py-3 sm:px-6 lg:px-8">
+              <div className="terminal-panel-muted flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                <Link href="/" className="flex items-center gap-3 min-w-0">
+                  <div
+                    className="h-2.5 w-2.5 rounded-full animate-pulse-dot shrink-0"
+                    style={{
+                      background: 'var(--accent-emerald)',
+                      boxShadow: '0 0 10px rgba(105, 209, 127, 0.7)',
+                    }}
+                  />
+                  <div className="min-w-0">
+                    <div className="terminal-kicker" style={{ color: 'var(--accent-cyan)' }}>
+                      HMWWCT // STRATEGIC COST ANALYSIS
+                    </div>
+                    <p className="text-xs mt-1 truncate" style={{ color: 'var(--text-muted)' }}>
+                      Transparent war-cost modeling with cited public inputs
+                    </p>
+                  </div>
+                </Link>
+                <div className="flex items-center gap-2">
+                  <Link href="/calculator" className="terminal-button terminal-button-subtle">
+                    Open Calculator
+                  </Link>
+                  <Link href="/methodology" className="terminal-button terminal-button-subtle terminal-button-ghost">
+                    Methodology
+                  </Link>
+                </div>
               </div>
             </div>
           </nav>
-          {/* Main content */}
           <main className="flex-1">{children}</main>
         </div>
       </body>

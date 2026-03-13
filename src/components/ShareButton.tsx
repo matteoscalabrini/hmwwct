@@ -35,12 +35,8 @@ export function ShareButton({ aggressorCode, targetCode, scenario }: ShareButton
     <button
       type="button"
       onClick={handleShare}
-      className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg transition-all focus:outline-none"
-      style={{
-        border: '1px solid var(--border-bright)',
-        color: copied ? 'var(--accent-emerald)' : 'var(--text-secondary)',
-        background: 'var(--surface)',
-      }}
+      className={`terminal-button terminal-button-subtle ${copied ? '' : 'terminal-button-ghost'}`}
+      style={{ color: copied ? 'var(--accent-emerald)' : undefined }}
       aria-label="Share this calculation"
     >
       {copied ? <Check size={14} /> : <Share2 size={14} />}

@@ -5,6 +5,8 @@ import { fetchAllCountries, RestCountryRaw } from '@/lib/api/restcountries';
 import { enrichCountry } from '@/lib/utils/enrichCountry';
 import { calculateWarCost } from '@/lib/calculations';
 import { fetchCommodityPrices, fetchCpiScalar } from '@/lib/api/fred';
+import { fetchComtradeBilateralTrade } from '@/lib/api/comtrade';
+import { fetchAcledConflictSignal } from '@/lib/api/acled';
 import sanctionsData from '@/lib/data/sanctions-regimes.json';
 
 const VALID_SCENARIOS = new Set<ConflictScenario>(['precision_strike', 'skirmish', 'conventional', 'occupation']);
@@ -73,6 +75,11 @@ export async function POST(req: Request) {
     const aggressor = enrichCountry(aggressorRaw, aggressorLive);
     const target = enrichCountry(targetRaw, targetLive);
 
+    const [bilateralTrade, acledSignal] = await Promise.all([
+      fetchComtradeBilateralTrade(aggressorCode, targetCode, signal).catch(() => null),
+      fetchAcledConflictSignal(target.name, signal).catch(() => null),
+    ]);
+
     // Sanctions resolved from static literature-based dataset — no extra network call
     const aggressorSanctions = resolveSanctions(aggressorCode);
 
@@ -82,6 +89,8 @@ export async function POST(req: Request) {
       scenario,
       liveData: {
         commodityPrices,
+        bilateralTrade,
+        acledSignal,
         aggressorSanctions,
         cpiScalar,
       },

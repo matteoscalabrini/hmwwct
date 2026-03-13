@@ -82,6 +82,12 @@ export function calculateWarCost(input: CalculationInput): WarCostResult {
         : 'Live — World Bank API (monthly); IMF DataMapper fallback for data-sparse countries',
       sipri: 'SIPRI Military Expenditure Database 2023',
       unhcr: 'UNHCR POPSTATS 2023',
+      ...(input.liveData?.bilateralTrade
+        ? { comtrade: `Live bilateral trade from UN Comtrade API (${input.liveData.bilateralTrade.year}; fetched ${input.liveData.bilateralTrade.fetchedAt.slice(0, 10)})` }
+        : {}),
+      ...(input.liveData?.acledSignal
+        ? { acled: `Live ACLED political-violence events (${input.liveData.acledSignal.lookbackDays}d lookback; fetched ${input.liveData.acledSignal.fetchedAt.slice(0, 10)})` }
+        : {}),
       ...(input.liveData?.commodityPrices?.oilUsdPerBarrel !== null ||
         input.liveData?.commodityPrices?.gasUsdPerMmbtu !== null ||
         input.liveData?.commodityPrices?.wheatUsdPerTon !== null

@@ -1,6 +1,6 @@
 # HMWWCT — How Much Would a War Cost There?
 
-An educational web calculator that estimates the economic and humanitarian cost of a hypothetical military conflict between any two countries, using real data from World Bank, SIPRI, UNHCR, IMF, and FRED.
+An educational web calculator that estimates the economic and humanitarian cost of a hypothetical military conflict between any two countries, using real data from World Bank, SIPRI, UNHCR, IMF, FRED, UN Comtrade, and ACLED.
 
 **Live at:** [hmwwct.vercel.app](https://hmwwct.vercel.app) *(once deployed)*
 
@@ -30,6 +30,8 @@ All numbers cite real sources. No black boxes.
 | FRED (St. Louis Fed) | Live commodity prices (oil, gas, wheat), CPI |
 | IMF | GDP fallback when World Bank returns null |
 | UNHCR | Displacement ratios by conflict type |
+| UN Comtrade API | Optional live bilateral trade replacement |
+| ACLED API | Optional live political-violence overlay |
 | Watson Institute | War cost anchors (US Afghanistan/Iraq benchmarks) |
 | REST Countries | Country metadata, flags, region |
 
@@ -61,9 +63,12 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ```env
 FRED_API_KEY=your_key_here
+COMTRADE_SUBSCRIPTION_KEY=your_key_here
+ACLED_EMAIL=your_email_here
+ACLED_PASSWORD=your_password_here
 ```
 
-Get a free key at [fred.stlouisfed.org/docs/api/api_key.html](https://fred.stlouisfed.org/docs/api/api_key.html). The app degrades gracefully without it (commodity prices default to 2023 baselines).
+Get a free key at [fred.stlouisfed.org/docs/api/api_key.html](https://fred.stlouisfed.org/docs/api/api_key.html). UN Comtrade and ACLED credentials are optional; without them the app falls back to the shipped static trade data and the pre-existing non-ACLED scenario assumptions.
 
 ---
 

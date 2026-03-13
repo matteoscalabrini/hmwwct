@@ -160,6 +160,8 @@ export interface WarCostResult {
     worldBank: string;
     sipri: string;
     unhcr: string;
+    comtrade?: string;
+    acled?: string;
     fred?: string;   // present when FRED commodity prices were fetched live
     imf?: string;    // present when IMF fallback was used for GDP
   };
@@ -172,6 +174,23 @@ export interface CommodityPrices {
   oilUsdPerBarrel: number | null;
   gasUsdPerMmbtu: number | null;
   wheatUsdPerTon: number | null;
+  fetchedAt: string;
+}
+
+export interface BilateralTradeLiveData {
+  tradeVolumeUsd: number;
+  year: number;
+  reporterM49: string;
+  partnerM49: string;
+  fetchedAt: string;
+}
+
+export interface AcledConflictSignal {
+  country: string;
+  lookbackDays: number;
+  politicalViolenceEvents: number;
+  reportedFatalities: number;
+  fragilityMultiplier: number;
   fetchedAt: string;
 }
 
@@ -191,6 +210,8 @@ export interface CalculationInput {
   /** Live external data injected by the API route; all fields optional for graceful degradation. */
   liveData?: {
     commodityPrices?: CommodityPrices;
+    bilateralTrade?: BilateralTradeLiveData | null;
+    acledSignal?: AcledConflictSignal | null;
     aggressorSanctions?: SanctionsInfo | null;
     /** CPI scalar = currentCPI / 2023_avg_CPI (FRED CPIAUCSL). Inflates Watson anchors forward from 2023 USD. */
     cpiScalar?: number;

@@ -57,14 +57,14 @@ function LiveCostTicker({ totalCost, durationYears }: { totalCost: number; durat
   const accumulated = elapsed * ratePerSecond;
 
   return (
-    <div className="rounded-lg border p-6 space-y-4" style={{ borderColor: 'var(--border-bright)', background: 'var(--bg)' }}>
-      <p className="text-xs font-medium" style={{ color: 'var(--accent-cyan)' }}>
+    <div className="terminal-panel space-y-4 px-5 py-5">
+      <p className="terminal-kicker" style={{ color: 'var(--accent-cyan)' }}>
         Cost accumulating since you opened this view
       </p>
-      <div className="text-4xl sm:text-5xl font-bold tabular-nums font-mono" style={{ color: 'var(--accent-cyan)' }}>
+      <div className="fs-number font-bold tabular-nums font-mono" style={{ color: 'var(--accent-cyan)' }}>
         {formatCurrency(accumulated)}
       </div>
-      <p className="text-xs tabular-nums font-mono" style={{ color: 'var(--text-secondary)' }}>
+      <p className="text-xs tabular-nums font-mono uppercase tracking-[0.14em]" style={{ color: 'var(--text-secondary)' }}>
         {formatCurrency(ratePerSecond)}/sec
         {' \u00B7 '}
         {formatCurrency(ratePerSecond * 60)}/min
@@ -73,7 +73,7 @@ function LiveCostTicker({ totalCost, durationYears }: { totalCost: number; durat
         {' \u00B7 '}
         {formatCurrency(ratePerSecond * 86400)}/day
       </p>
-      <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+      <p className="text-xs leading-6" style={{ color: 'var(--text-muted)' }}>
         Projected total spread evenly across the full conflict duration.
         Actual spending is front-loaded — early months cost significantly more.
       </p>
@@ -137,6 +137,15 @@ function CalculatorContent() {
   const opportunityAbortRef = useRef<AbortController | null>(null);
   const scaleTabFetchedRef = useRef<string | null>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
+  const [resultsVisible, setResultsVisible] = useState(false);
+
+  useEffect(() => {
+    const el = resultsRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([entry]) => setResultsVisible(entry.isIntersecting), { threshold: 0.05 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [result]);
 
   // --- derived (prefer result.inputs which has real GDP from World Bank) ---
   const aggressorGdp = result?.inputs?.aggressorGdp ?? countries.find(c => c.code === aggressorCode)?.gdp ?? 0;
@@ -218,12 +227,7 @@ function CalculatorContent() {
     return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
   }, [result?.total.point]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Scroll to results when they appear
-  useEffect(() => {
-    if (result && resultsRef.current) {
-      resultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }, [result]);
+  // No auto-scroll — user clicks the arrow indicator instead
 
   // --- Map click handler ---
   const handleMapClick = useCallback((code: string) => {
@@ -344,10 +348,10 @@ function CalculatorContent() {
       {/* ================================================================== */}
       {/* TOP SECTION: Map + Side Panel                                      */}
       {/* ================================================================== */}
-      <div className="flex flex-col lg:flex-row" style={{ height: 'calc(100vh - 2.5rem)' }}>
+      <div className="flex min-h-[calc(100vh-5.5rem)] flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:px-8 lg:py-6">
 
         {/* --- MAP AREA --- */}
-        <div className="relative flex-1 min-w-0 overflow-hidden scanlines">
+        <div className="terminal-panel-strong relative min-h-[58vh] flex-1 overflow-hidden scanlines lg:min-h-0">
           <WorldMap
             aggressorCode={aggressorCode}
             targetCode={targetCode}
@@ -356,13 +360,10 @@ function CalculatorContent() {
             totalCost={result?.total.point}
           />
 
-          {/* Map instruction overlay */}
           <div className="absolute top-3 left-3 pointer-events-none" style={{ zIndex: 2 }}>
             <div
-              className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider"
+              className="terminal-panel-muted flex items-center px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em]"
               style={{
-                background: 'rgba(8, 8, 8, 0.9)',
-                border: '1px solid var(--border-bright)',
                 color: selectionMode === 'aggressor' ? 'var(--accent-indigo)' : 'var(--accent-amber)',
               }}
             >
@@ -373,7 +374,6 @@ function CalculatorContent() {
             </div>
           </div>
 
-          {/* Data freshness badge on map */}
           {result && (
             <div className="absolute bottom-3 left-3" style={{ zIndex: 2 }}>
               <DataFreshnessIndicator
@@ -384,19 +384,16 @@ function CalculatorContent() {
           )}
         </div>
 
-        {/* --- SIDE PANEL --- */}
         <div
-          className="lg:w-[360px] xl:w-[400px] shrink-0 overflow-y-auto h-full"
+          className="terminal-panel lg:w-[360px] xl:w-[400px] shrink-0 overflow-y-auto"
           style={{
-            background: 'var(--surface)',
-            borderLeft: '1px solid var(--border)',
+            minHeight: '100%',
           }}
         >
-          <div className="p-4 space-y-5">
+          <div className="space-y-6 p-4 sm:p-5">
 
-            {/* Title */}
-            <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
-              <div className="flex items-center gap-2 mb-1">
+            <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '16px' }}>
+              <div className="flex items-center gap-2 mb-2">
                 <span
                   className="classification-label"
                   style={{ color: 'var(--accent-cyan)', borderColor: 'var(--accent-cyan)' }}
@@ -404,14 +401,13 @@ function CalculatorContent() {
                   CONTROL PANEL
                 </span>
               </div>
-              <p className="text-xs mt-2" style={{ color: 'var(--text-muted)' }}>
+              <p className="text-xs mt-2 leading-6" style={{ color: 'var(--text-muted)' }}>
                 Real data from official sources. Every number cited.
               </p>
             </div>
 
-            {/* Country selectors */}
-            <div className="space-y-3">
-              <label className="block text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+            <div className="space-y-4">
+              <label className="block text-xs font-semibold uppercase tracking-[0.22em]" style={{ color: 'var(--text-muted)' }}>
                 Countries
               </label>
               <CountrySelector
@@ -429,14 +425,7 @@ function CalculatorContent() {
               {aggressorCode && targetCode && (
                 <button
                   onClick={handleSwap}
-                  className="flex items-center gap-2 text-xs px-3 py-1.5 uppercase tracking-wider transition-colors"
-                  style={{
-                    background: 'var(--surface-bright)',
-                    color: 'var(--text-muted)',
-                    border: '1px solid var(--border)',
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--text)')}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-muted)')}
+                  className="terminal-button terminal-button-subtle"
                 >
                   <ArrowRightLeft size={12} />
                   SWAP
@@ -444,43 +433,35 @@ function CalculatorContent() {
               )}
             </div>
 
-            {/* Scenario selector */}
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <label className="block text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+                <label className="block text-xs font-semibold uppercase tracking-[0.22em]" style={{ color: 'var(--text-muted)' }}>
                   Scenario
                 </label>
-                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                <span className="text-xs uppercase tracking-[0.16em]" style={{ color: 'var(--text-muted)' }}>
                   [1] [2] [3] [4]
                 </span>
               </div>
               <ScenarioSelector value={scenario} onChange={setScenario} />
             </div>
 
-            {/* Calculate button */}
             {canCalculate && !loading && !result && (
               <button
                 onClick={handleCalculate}
-                className="w-full py-2.5 text-xs font-bold uppercase tracking-widest transition-all hover:brightness-125"
-                style={{
-                  background: 'var(--accent-red)',
-                  color: '#fff',
-                  border: '1px solid var(--accent-red)',
-                }}
+                className="terminal-button terminal-button-danger w-full"
               >
                 &gt; EXECUTE ANALYSIS
               </button>
             )}
 
-            {/* Loading indicator */}
             {loading && (
-              <div className="flex items-center gap-3 py-3">
+              <div className="terminal-panel-muted flex items-center gap-3 px-4 py-4">
                 <Loader2 size={16} className="animate-spin" style={{ color: 'var(--accent-cyan)' }} />
                 <div className="flex-1">
-                  <div className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>
+                  <div className="mb-2 text-xs font-semibold uppercase tracking-[0.18em]" style={{ color: 'var(--text-muted)' }}>
                     ANALYZING...
                   </div>
-                  <div className="h-1 overflow-hidden" style={{ background: 'var(--border)' }}>
+                  <div className="h-1.5 overflow-hidden rounded-full" style={{ background: 'var(--border)' }}>
                     <div
                       className="h-full transition-all duration-300"
                       style={{
@@ -496,22 +477,16 @@ function CalculatorContent() {
               </div>
             )}
 
-            {/* Error */}
             {error && (
               <div
-                className="p-3 space-y-2"
-                style={{
-                  background: 'rgba(239, 68, 68, 0.06)',
-                  border: '1px solid var(--accent-red)',
-                  borderLeft: '3px solid var(--accent-red)',
-                }}
+                className="terminal-callout is-danger space-y-2 px-4 py-4"
               >
-                <p className="text-xs font-bold uppercase" style={{ color: 'var(--accent-red)' }}>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em]" style={{ color: 'var(--accent-red)' }}>
                   ERROR: {error}
                 </p>
                 <button
                   onClick={handleCalculate}
-                  className="text-xs uppercase tracking-wider"
+                  className="terminal-button terminal-button-subtle terminal-button-ghost"
                   style={{ color: 'var(--accent-red)' }}
                 >
                   [RETRY]
@@ -519,26 +494,25 @@ function CalculatorContent() {
               </div>
             )}
 
-            {/* Quick summary */}
             {result && !loading && (
-              <div className="space-y-2 pt-3" style={{ borderTop: '1px solid var(--border)' }}>
-                <p className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+              <div className="space-y-3 pt-4" style={{ borderTop: '1px solid var(--border)' }}>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: 'var(--text-muted)' }}>
                   RESULT SUMMARY
                 </p>
-                <div className="flex items-baseline justify-between">
-                  <span className="text-xs uppercase" style={{ color: 'var(--text-muted)' }}>TOTAL COST</span>
-                  <span className="text-lg font-bold tabular-nums text-glow-cyan" style={{ color: 'var(--accent-cyan)' }}>
+                <div className="flex items-end justify-between gap-4">
+                  <span className="text-xs uppercase tracking-[0.16em]" style={{ color: 'var(--text-muted)' }}>TOTAL COST</span>
+                  <span className="font-display text-3xl leading-none tracking-[0.08em] tabular-nums text-glow-cyan" style={{ color: 'var(--accent-cyan)' }}>
                     {formatCurrency(displayedPoint)}
                   </span>
                 </div>
                 <div className="flex items-baseline justify-between">
-                  <span className="text-xs uppercase" style={{ color: 'var(--text-muted)' }}>DURATION</span>
+                  <span className="text-xs uppercase tracking-[0.16em]" style={{ color: 'var(--text-muted)' }}>DURATION</span>
                   <span className="text-sm tabular-nums" style={{ color: 'var(--text)' }}>
                     {formatDuration(result.duration.min)} – {formatDuration(result.duration.max)}
                   </span>
                 </div>
                 <div className="flex items-baseline justify-between">
-                  <span className="text-xs uppercase" style={{ color: 'var(--text-muted)' }}>DISPLACED</span>
+                  <span className="text-xs uppercase tracking-[0.16em]" style={{ color: 'var(--text-muted)' }}>DISPLACED</span>
                   <span className="text-sm tabular-nums text-glow-amber" style={{ color: 'var(--accent-amber)' }}>
                     {formatNumber(result.humanToll.displacedPersonsPoint)}
                   </span>
@@ -552,95 +526,97 @@ function CalculatorContent() {
         </div>
       </div>
 
-      {/* ================================================================== */}
-      {/* RESULTS SECTION (appears below map when results are ready)         */}
-      {/* ================================================================== */}
+      {result && !loading && !resultsVisible && (
+        <button
+          onClick={() => resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-1 group"
+          style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+          aria-label="Scroll to cost analysis"
+        >
+          <span
+            className="font-display uppercase tracking-[0.22em]"
+            style={{ color: 'var(--accent-cyan)', fontSize: '2rem' }}
+          >
+            COST ANALYSIS
+          </span>
+          <svg
+            width="48" height="48" viewBox="0 0 24 24" fill="none"
+            style={{
+              color: 'var(--accent-cyan)',
+              animation: 'bounce-arrow 1.2s ease-in-out infinite',
+            }}
+          >
+            <path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square"/>
+          </svg>
+        </button>
+      )}
+
       {result && !loading && (
-        <div ref={resultsRef} className="px-4 sm:px-6 lg:px-8 py-6 space-y-4 grid-bg animate-fade-in">
+        <div ref={resultsRef} className="grid-bg animate-fade-in px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+          <div className="mx-auto max-w-screen-2xl space-y-5">
 
-          {/* Section header */}
-          <div className="flex items-center gap-3 mb-2">
-            <span className="classification-label" style={{ color: 'var(--accent-red)', borderColor: 'var(--accent-red)' }}>
-              ANALYSIS COMPLETE
-            </span>
-            <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
-          </div>
-
-          {/* --- Results strip: 3-column stat cards --- */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-
-            {/* Total cost */}
-            <div className="p-3" style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderTop: '2px solid var(--accent-cyan)' }}>
-              <p className="text-xs uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>TOTAL COST</p>
-              <p className="text-xl lg:text-2xl font-bold tabular-nums text-glow-cyan" style={{ color: 'var(--accent-cyan)' }}>
-                {formatCurrency(displayedPoint)}
-              </p>
-              <p className="text-xs mt-1 tabular-nums" style={{ color: 'var(--text-muted)' }}>
-                {formatCurrencyRange(result.total.min, result.total.max)}
-              </p>
+            <div className="flex items-center gap-3 mb-2">
+              <span className="classification-label" style={{ color: 'var(--accent-red)', borderColor: 'var(--accent-red)' }}>
+                ANALYSIS COMPLETE
+              </span>
+              <div className="terminal-divider flex-1" />
             </div>
 
-            {/* Economic impact */}
-            <div className="p-3" style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderTop: '2px solid var(--accent-amber)' }}>
-              <p className="text-xs uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>ECON IMPACT</p>
-              <p className="text-xl lg:text-2xl font-bold tabular-nums text-glow-amber" style={{ color: 'var(--accent-amber)' }}>
-                {formatCurrency(result.economicImpact.point)}
-              </p>
-              <p className="text-xs mt-1 tabular-nums" style={{ color: 'var(--text-muted)' }}>
-                {formatCurrencyRange(result.economicImpact.min, result.economicImpact.max)}
-              </p>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+
+              <div className="terminal-stat px-4 py-4" style={{ borderTop: '2px solid var(--accent-cyan)' }}>
+                <p className="text-xs uppercase tracking-[0.18em] mb-2" style={{ color: 'var(--text-muted)' }}>TOTAL COST</p>
+                <p className="fs-number font-bold tabular-nums text-glow-cyan" style={{ color: 'var(--accent-cyan)' }}>
+                  {formatCurrency(displayedPoint)}
+                </p>
+                <p className="mt-2 text-xs tabular-nums uppercase tracking-[0.14em]" style={{ color: 'var(--text-muted)' }}>
+                  {formatCurrencyRange(result.total.min, result.total.max)}
+                </p>
+              </div>
+
+              <div className="terminal-stat px-4 py-4" style={{ borderTop: '2px solid var(--accent-amber)' }}>
+                <p className="text-xs uppercase tracking-[0.18em] mb-2" style={{ color: 'var(--text-muted)' }}>ECON IMPACT</p>
+                <p className="fs-number font-bold tabular-nums text-glow-amber" style={{ color: 'var(--accent-amber)' }}>
+                  {formatCurrency(result.economicImpact.point)}
+                </p>
+                <p className="mt-2 text-xs tabular-nums uppercase tracking-[0.14em]" style={{ color: 'var(--text-muted)' }}>
+                  {formatCurrencyRange(result.economicImpact.min, result.economicImpact.max)}
+                </p>
+              </div>
+
+              <div className="terminal-stat px-4 py-4" style={{ borderTop: '2px solid var(--accent-red)' }}>
+                <p className="text-xs uppercase tracking-[0.18em] mb-2" style={{ color: 'var(--text-muted)' }}>DISPLACED</p>
+                <p className="fs-number font-bold tabular-nums text-glow-red" style={{ color: 'var(--accent-red)' }}>
+                  {formatNumber(result.humanToll.displacedPersonsPoint)}
+                </p>
+                <p className="mt-2 text-xs tabular-nums uppercase tracking-[0.14em]" style={{ color: 'var(--text-muted)' }}>
+                  {formatNumber(result.humanToll.displacedPersonsMin)} – {formatNumber(result.humanToll.displacedPersonsMax)}
+                </p>
+              </div>
             </div>
 
-            {/* Displaced persons */}
-            <div className="p-3" style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderTop: '2px solid var(--accent-red)' }}>
-              <p className="text-xs uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>DISPLACED</p>
-              <p className="text-xl lg:text-2xl font-bold tabular-nums text-glow-red" style={{ color: 'var(--accent-red)' }}>
-                {formatNumber(result.humanToll.displacedPersonsPoint)}
-              </p>
-              <p className="text-xs mt-1 tabular-nums" style={{ color: 'var(--text-muted)' }}>
-                {formatNumber(result.humanToll.displacedPersonsMin)} – {formatNumber(result.humanToll.displacedPersonsMax)}
-              </p>
-            </div>
-          </div>
+            <div className="terminal-panel p-4 sm:p-5">
+              <div className="mb-5 flex flex-wrap gap-1 border-b" style={{ borderColor: 'var(--border)' }}>
+                {TABS.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => handleTabChange(tab.id)}
+                    className={`terminal-tab ${activeTab === tab.id ? 'is-active' : ''}`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
 
-          {/* --- Result detail tabs --- */}
-          <div>
-            {/* Tab bar */}
-            <div className="flex flex-wrap gap-0 mb-4" style={{ borderBottom: '1px solid var(--border)' }}>
-              {TABS.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => handleTabChange(tab.id)}
-                  className="px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors"
-                  style={{
-                    background: activeTab === tab.id ? 'var(--surface)' : 'transparent',
-                    color: activeTab === tab.id ? 'var(--accent-cyan)' : 'var(--text-muted)',
-                    borderBottom: activeTab === tab.id ? '2px solid var(--accent-cyan)' : '2px solid transparent',
-                  }}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Tab content */}
-            <div
-              className="p-4 sm:p-5"
-              style={{
-                background: 'var(--surface)',
-                border: '1px solid var(--border)',
-              }}
-            >
-
-              {/* BREAKDOWN TAB */}
+              <div>
               {activeTab === 'breakdown' && (
                 <div className="space-y-6">
                   <HumanTollBanner toll={result.humanToll} />
                   <div>
-                    <h3 className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: 'var(--text)' }}>
+                    <h3 className="text-xs font-semibold uppercase tracking-[0.2em] mb-2" style={{ color: 'var(--text)' }}>
                       COST BREAKDOWN BY CATEGORY
                     </h3>
-                    <p className="text-xs mb-4" style={{ color: 'var(--text-muted)' }}>
+                    <p className="text-xs mb-4 leading-6" style={{ color: 'var(--text-muted)' }}>
                       Economic impact shown separately in the summary strip above.
                     </p>
                     <CostBreakdown categories={result.breakdown} />
@@ -649,13 +625,12 @@ function CalculatorContent() {
                 </div>
               )}
 
-              {/* BUDGET IMPACT TAB */}
               {activeTab === 'budget' && (
                 <div className="space-y-6">
-                  <h3 className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text)' }}>
+                  <h3 className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: 'var(--text)' }}>
                     BUDGET REALLOCATION IMPACT
                   </h3>
-                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                  <p className="text-xs leading-6" style={{ color: 'var(--text-muted)' }}>
                     How the conflict cost compares to domestic spending priorities.
                   </p>
                   <BudgetReallocation
@@ -667,13 +642,12 @@ function CalculatorContent() {
                 </div>
               )}
 
-              {/* PERSONAL COST TAB */}
               {activeTab === 'personal' && (
                 <div className="space-y-6">
-                  <h3 className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text)' }}>
+                  <h3 className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: 'var(--text)' }}>
                     COST PER TAXPAYER
                   </h3>
-                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                  <p className="text-xs leading-6" style={{ color: 'var(--text-muted)' }}>
                     What this conflict would cost each citizen of the aggressor country.
                   </p>
                   <CostPerTaxpayer
@@ -686,10 +660,9 @@ function CalculatorContent() {
                 </div>
               )}
 
-              {/* SCALE TAB */}
               {activeTab === 'scale' && (
                 <div className="space-y-6">
-                  <h3 className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text)' }}>
+                  <h3 className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: 'var(--text)' }}>
                     ALTERNATIVE EXPENDITURE ANALYSIS
                   </h3>
                   <LiveCostTicker
@@ -697,35 +670,30 @@ function CalculatorContent() {
                     durationYears={result.duration.point}
                   />
 
-                  {/* Top opportunity item highlight */}
                   {topOpportunityItem && (() => {
                     const Icon = OPPORTUNITY_ICONS[topOpportunityItem.iconName]
                       ?? OPPORTUNITY_ID_ICON_FALLBACKS[topOpportunityItem.id]
                       ?? Heart;
                     return (
                       <div
-                        className="rounded-lg p-5 flex items-center gap-5"
-                        style={{
-                          background: 'rgba(16, 185, 129, 0.06)',
-                          border: '1px solid rgba(16, 185, 129, 0.25)',
-                        }}
+                        className="terminal-callout is-success flex items-center gap-5 px-5 py-5"
                       >
                         <div
-                          className="h-12 w-12 shrink-0 flex items-center justify-center rounded-lg"
-                          style={{ background: 'rgba(16, 185, 129, 0.15)' }}
+                          className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full"
+                          style={{ background: 'rgba(105, 209, 127, 0.16)' }}
                         >
                           <Icon size={24} style={{ color: 'var(--accent-emerald)' }} />
                         </div>
                         <div>
                           <div className="flex items-baseline gap-2">
-                            <span className="text-2xl font-bold font-mono tabular-nums" style={{ color: 'var(--accent-emerald)' }}>
+                            <span className="font-display text-4xl leading-none tracking-[0.08em]" style={{ color: 'var(--accent-emerald)' }}>
                               {formatNumber(topOpportunityItem.quantity)}
                             </span>
-                            <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                            <span className="text-sm uppercase tracking-[0.12em]" style={{ color: 'var(--text-secondary)' }}>
                               {topOpportunityItem.unit}
                             </span>
                           </div>
-                          <p className="text-sm mt-0.5" style={{ color: 'var(--text-secondary)' }}>
+                          <p className="mt-1 text-sm leading-7" style={{ color: 'var(--text-secondary)' }}>
                             {topOpportunityItem.label}
                           </p>
                         </div>
@@ -733,9 +701,8 @@ function CalculatorContent() {
                     );
                   })()}
 
-                  {/* Opportunity context items */}
                   {opportunityContextLoading && (
-                    <div className="flex items-center gap-2 py-4">
+                    <div className="terminal-panel-muted flex items-center gap-2 px-4 py-4">
                       <Loader2 size={16} className="animate-spin" style={{ color: 'var(--accent-blue)' }} />
                       <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Loading comparison data...</span>
                     </div>
@@ -746,7 +713,7 @@ function CalculatorContent() {
                   )}
 
                   {opportunityContext && !opportunityContextLoading && (
-                    <div className="space-y-3">
+                    <div className="grid gap-3 md:grid-cols-2">
                       {result.opportunityCosts
                         .filter(item => item.quantity >= 1)
                         .map((item) => {
@@ -757,8 +724,7 @@ function CalculatorContent() {
                           return (
                             <div
                               key={item.id}
-                              className="rounded-lg p-4 flex items-center gap-4"
-                              style={{ background: 'var(--surface-bright)', border: '1px solid var(--border)' }}
+                              className="terminal-panel-muted flex items-center gap-4 px-4 py-4"
                             >
                               <Icon size={18} style={{ color: 'var(--accent-emerald)' }} />
                               <div className="flex-1 min-w-0">
@@ -766,13 +732,13 @@ function CalculatorContent() {
                                   <span className="text-sm font-bold font-mono tabular-nums" style={{ color: 'var(--text)' }}>
                                     {formatNumber(item.quantity)}
                                   </span>
-                                  <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                                  <span className="text-xs uppercase tracking-[0.16em]" style={{ color: 'var(--text-secondary)' }}>
                                     {item.unit}
                                   </span>
                                 </div>
-                                <p className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>{item.label}</p>
+                                <p className="text-xs truncate uppercase tracking-[0.12em]" style={{ color: 'var(--text-muted)' }}>{item.label}</p>
                                 {contextMetric && (
-                                  <p className="text-xs mt-0.5" style={{ color: 'var(--accent-cyan)' }}>
+                                  <p className="mt-1 text-xs leading-6" style={{ color: 'var(--accent-cyan)' }}>
                                     {contextMetric.currentLabel}: {formatNumber(contextMetric.currentValue)} {contextMetric.currentUnit}
                                   </p>
                                 )}
@@ -783,7 +749,6 @@ function CalculatorContent() {
                     </div>
                   )}
 
-                  {/* GDP comparison */}
                   <GdpComparisonPanel
                     totalCost={result.total.point}
                     targetName={targetName}
@@ -791,27 +756,26 @@ function CalculatorContent() {
                 </div>
               )}
 
-              {/* REVENUE TAB */}
               {activeTab === 'revenue' && (
                 <div className="space-y-4">
-                  <h3 className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text)' }}>
+                  <h3 className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: 'var(--text)' }}>
                     ESTIMATED REVENUE (BEST CASE)
                   </h3>
-                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                  <p className="text-xs leading-6" style={{ color: 'var(--text-muted)' }}>
                     Assumes aggressor wins and maintains full territorial control. Read assumptions before interpreting.
                   </p>
                   <RevenuePanel revenue={result.revenue} projectedCostUsd={result.total.point} />
                 </div>
               )}
+              </div>
             </div>
-          </div>
 
-          {/* Data freshness at the bottom of results */}
-          <div className="pb-4">
-            <DataFreshnessIndicator
-              dataFreshness={result.dataFreshness}
-              hasStaticFallback={result.dataFreshness.worldBank.toLowerCase().includes('static fallback')}
-            />
+            <div className="pb-4">
+              <DataFreshnessIndicator
+                dataFreshness={result.dataFreshness}
+                hasStaticFallback={result.dataFreshness.worldBank.toLowerCase().includes('static fallback')}
+              />
+            </div>
           </div>
         </div>
       )}

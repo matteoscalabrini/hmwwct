@@ -269,11 +269,11 @@ const WorldMap: React.FC<WorldMapProps> = ({
   /* ---------- fill for a country ---------- */
   const fillForCode = useCallback(
     (code: string | null): string => {
-      if (!code) return '#222222';
-      if (code === aggressorCode) return '#6366f1';
-      if (code === targetCode) return '#ef4444';
-      if (code === hoveredCode) return '#333333';
-      return '#222222';
+      if (!code) return '#12211b';
+      if (code === aggressorCode) return '#8ea7ff';
+      if (code === targetCode) return '#ff765b';
+      if (code === hoveredCode) return '#1f3b30';
+      return '#12211b';
     },
     [aggressorCode, targetCode, hoveredCode]
   );
@@ -351,16 +351,14 @@ const WorldMap: React.FC<WorldMapProps> = ({
 
           {/* Gradient for the connection arc */}
           <linearGradient id="arcGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#6366f1" stopOpacity={0.8} />
-            <stop offset="50%" stopColor="#06b6d4" stopOpacity={1} />
-            <stop offset="100%" stopColor="#ef4444" stopOpacity={0.8} />
+            <stop offset="0%" stopColor="#8ea7ff" stopOpacity={0.9} />
+            <stop offset="50%" stopColor="#54f5d6" stopOpacity={1} />
+            <stop offset="100%" stopColor="#ff765b" stopOpacity={0.9} />
           </linearGradient>
         </defs>
 
-        {/* Ocean background */}
-        <rect width="960" height="500" fill="var(--bg, #080808)" />
+        <rect width="960" height="500" fill="#07100d" />
 
-        {/* Country paths */}
         <g>
           {features.map((feat, i) => {
             const code = codeForFeature(feat);
@@ -370,7 +368,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
                 key={code ?? `unk-${i}`}
                 d={d}
                 fill={fillForCode(code)}
-                stroke="#3a3a3a"
+                stroke="#27473b"
                 strokeWidth={0.6}
                 opacity={opacityForCode(code)}
                 filter={filterForCode(code)}
@@ -379,26 +377,23 @@ const WorldMap: React.FC<WorldMapProps> = ({
                 onMouseLeave={handleMouseLeave}
                 onClick={code ? () => handleClick(code) : undefined}
                 style={{
-                  transition: 'fill 0.2s ease, opacity 0.3s ease',
+                  transition: 'fill 0.2s ease, opacity 0.3s ease, stroke 0.2s ease',
                 }}
               />
             );
           })}
         </g>
 
-        {/* Connection arc */}
         {arcPath && (
           <g>
-            {/* Glow layer */}
             <path
               d={arcPath}
               fill="none"
-              stroke="#06b6d4"
+              stroke="#54f5d6"
               strokeWidth={4}
-              strokeOpacity={0.15}
+              strokeOpacity={0.18}
               strokeLinecap="round"
             />
-            {/* Main arc */}
             <path
               d={arcPath}
               fill="none"
@@ -418,7 +413,6 @@ const WorldMap: React.FC<WorldMapProps> = ({
           </g>
         )}
 
-        {/* Cost label at arc midpoint in result mode */}
         {resultMode && totalCost != null && arcMidpoint && (
           <g>
             <rect
@@ -427,25 +421,24 @@ const WorldMap: React.FC<WorldMapProps> = ({
               width={120}
               height={28}
               rx={6}
-              fill="rgba(0,0,0,0.75)"
-              stroke="#06b6d4"
-              strokeWidth={0.5}
+              fill="rgba(7, 16, 13, 0.88)"
+              stroke="#54f5d6"
+              strokeWidth={0.8}
             />
             <text
               x={arcMidpoint[0]}
               y={arcMidpoint[1] - 10}
               textAnchor="middle"
-              fill="#06b6d4"
+              fill="#54f5d6"
               fontSize={14}
-              fontWeight={700}
-              fontFamily="system-ui, -apple-system, sans-serif"
+              fontWeight={600}
+              fontFamily="'JetBrains Mono', monospace"
             >
               {formatCost(totalCost)}
             </text>
           </g>
         )}
 
-        {/* Selected country labels */}
         {aggressorCode && (() => {
           const c = centroidOf(aggressorCode);
           if (!c) return null;
@@ -456,10 +449,10 @@ const WorldMap: React.FC<WorldMapProps> = ({
               x={p[0]}
               y={p[1] - 12}
               textAnchor="middle"
-              fill="#c7d2fe"
+              fill="#cfd7ff"
               fontSize={9}
               fontWeight={600}
-              fontFamily="system-ui, -apple-system, sans-serif"
+              fontFamily="'JetBrains Mono', monospace"
               style={{ pointerEvents: 'none', textShadow: '0 1px 3px rgba(0,0,0,0.8)' }}
             >
               AGGRESSOR
@@ -476,10 +469,10 @@ const WorldMap: React.FC<WorldMapProps> = ({
               x={p[0]}
               y={p[1] - 12}
               textAnchor="middle"
-              fill="#fca5a5"
+              fill="#ffc1b3"
               fontSize={9}
               fontWeight={600}
-              fontFamily="system-ui, -apple-system, sans-serif"
+              fontFamily="'JetBrains Mono', monospace"
               style={{ pointerEvents: 'none', textShadow: '0 1px 3px rgba(0,0,0,0.8)' }}
             >
               TARGET
@@ -488,7 +481,6 @@ const WorldMap: React.FC<WorldMapProps> = ({
         })()}
       </svg>
 
-      {/* Tooltip */}
       {tooltip && (
         <div
           className="pointer-events-none absolute z-50"
@@ -500,31 +492,32 @@ const WorldMap: React.FC<WorldMapProps> = ({
         >
           <div
             style={{
-              background: 'rgba(15, 23, 42, 0.92)',
+              background: 'rgba(12, 21, 18, 0.94)',
               backdropFilter: 'blur(8px)',
-              border: '1px solid rgba(148, 163, 184, 0.15)',
+              border: '1px solid rgba(45, 93, 73, 0.75)',
               borderRadius: 6,
-              padding: '5px 10px',
+              padding: '6px 10px',
               whiteSpace: 'nowrap',
               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
             }}
           >
             <span
               style={{
-                color: '#e2e8f0',
-                fontSize: 13,
+                color: '#effaf4',
+                fontSize: 12,
                 fontWeight: 500,
-                fontFamily: 'system-ui, -apple-system, sans-serif',
+                fontFamily: "'JetBrains Mono', monospace",
+                letterSpacing: '0.04em',
               }}
             >
               {tooltip.name}
             </span>
             <span
               style={{
-                color: '#64748b',
-                fontSize: 11,
+                color: '#73917f',
+                fontSize: 10,
                 marginLeft: 6,
-                fontFamily: 'monospace',
+                fontFamily: "'JetBrains Mono', monospace",
               }}
             >
               {tooltip.code}
@@ -532,7 +525,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
             {tooltip.code === aggressorCode && (
               <span
                 style={{
-                  color: '#818cf8',
+                  color: '#8ea7ff',
                   fontSize: 10,
                   marginLeft: 8,
                   fontWeight: 600,
@@ -546,7 +539,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
             {tooltip.code === targetCode && (
               <span
                 style={{
-                  color: '#f87171',
+                  color: '#ff765b',
                   fontSize: 10,
                   marginLeft: 8,
                   fontWeight: 600,

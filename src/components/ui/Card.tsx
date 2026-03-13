@@ -5,10 +5,10 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export function Card({ className = '', variant = 'default', children, ...props }: CardProps) {
-  const base = 'rounded-lg bg-white';
+  const base = 'terminal-panel';
   const variants = {
-    default: 'shadow-sm',
-    bordered: 'border border-stone-200',
+    default: '',
+    bordered: 'terminal-panel-strong',
   };
   return (
     <div className={`${base} ${variants[variant]} ${className}`} {...props}>

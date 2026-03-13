@@ -13,8 +13,8 @@ const INTERNAL_ROUTES = [
   },
   {
     route: '/api/calculate',
-    purpose: 'Main orchestration endpoint. Fetches live indicators, merges fallbacks, resolves sanctions and commodity data, then runs every model module.',
-    output: 'Cost ranges, line-item assumptions, data freshness labels, human displacement estimate, and best-case revenue counterfactual.',
+    purpose: 'Main orchestration endpoint. Fetches live indicators, merges fallbacks, resolves sanctions, commodity, Comtrade, and ACLED data, then runs every model module.',
+    output: 'Cost ranges, line-item assumptions, data freshness labels, ACLED fragility overlays, human displacement estimate, and best-case revenue counterfactual.',
   },
   {
     route: '/api/world-bank/[indicator]',
@@ -25,6 +25,80 @@ const INTERNAL_ROUTES = [
     route: '/api/opportunity-context',
     purpose: 'Fetches the target-country baseline metrics used in the gravity comparison panel for opportunity-cost context.',
     output: 'Current national baselines for beds, nurses, water, sanitation, undernourishment, child population, and forest area.',
+  },
+];
+
+const API_ENDPOINTS = [
+  {
+    name: 'World Bank WDI',
+    endpoint: 'GET https://api.worldbank.org/v2/country/{iso3;...}/indicator/{indicator}?format=json&mrv=10&per_page=50',
+    use: 'Latest non-null GDP, population, trade, reserve, military-expenditure, and social-baseline indicators.',
+  },
+  {
+    name: 'IMF DataMapper',
+    endpoint: 'GET https://www.imf.org/external/datamapper/api/v1/NGDPD/{iso3,...}',
+    use: 'Fallback nominal GDP in current USD when World Bank GDP is absent.',
+  },
+  {
+    name: 'REST Countries',
+    endpoint: 'GET https://restcountries.com/v3.1/all?fields=cca2,cca3,name,flags,region,subregion,latlng,area,unMember,population',
+    use: 'Country identity, map coordinates, area, population, and region metadata.',
+  },
+  {
+    name: 'FRED',
+    endpoint: 'GET https://api.stlouisfed.org/fred/series/observations?series_id={seriesId}&api_key={key}&limit=10&sort_order=desc&file_type=json',
+    use: 'Live oil, gas, wheat, and CPI series used to scale commodity shocks and military anchors.',
+  },
+  {
+    name: 'UN Comtrade',
+    endpoint: 'GET https://comtradeapi.un.org/tools/v1/getBilateralData/C/A/HS?reporterCode={m49}&period={year}&partnerCode={m49}&flowCode=M,X&includeDesc=false',
+    use: 'Live annual bilateral goods trade used to override the static trade-pair table before gravity fallback.',
+  },
+  {
+    name: 'ACLED OAuth',
+    endpoint: 'POST https://acleddata.com/oauth/token',
+    use: 'Bearer-token exchange for ACLED event queries.',
+  },
+  {
+    name: 'ACLED Events',
+    endpoint: 'GET https://acleddata.com/api/acled/read?_format=json&country={name}&year={year}&event_type=Battles|Violence against civilians|Explosions/Remote violence&fields=event_date|event_type|fatalities|country&limit=5000',
+    use: 'Recent political-violence and fatality counts used to build the target fragility overlay.',
+  },
+];
+
+const ADDED_CALCULATIONS = [
+  {
+    title: 'Live Bilateral Trade Override',
+    lines: ['tradeVolume = comtradeLive ?? staticPair ?? gravityEstimate'],
+    note: 'When a Comtrade key is configured, live bilateral imports plus exports replace the static pair table. The gravity model remains the last-resort fallback.',
+  },
+  {
+    title: 'Inflation-Adjusted Military Anchors',
+    lines: ['watsonDaily = scenarioAnchor x cpiScalar'],
+    note: 'Watson daily military anchors are expressed in 2023 USD and are inflated forward using live FRED CPI when available.',
+  },
+  {
+    title: 'Live Commodity Scaling',
+    lines: ['commodityShock_i = baselineShock_i x (livePrice_i / 2023BaselinePrice_i)'],
+    note: 'Oil, gas, and wheat disruption shocks scale with current FRED prices; semiconductors and lithium remain structural, non-price-scaled shocks.',
+  },
+  {
+    title: 'ACLED Fragility Signal',
+    lines: [
+      'eventSignal = min(events365 / 250, 1)',
+      'fatalitySignal = min(fatalities365 / 2000, 1)',
+      'fragility = 1 + (0.08 x eventSignal) + (0.17 x fatalitySignal)',
+    ],
+    note: 'The overlay only activates when recent violence is non-trivial. It is intentionally modest so ACLED refines baseline assumptions rather than replacing them.',
+  },
+  {
+    title: 'GDP, Capital-Flight, and Displacement Overlays',
+    lines: [
+      'targetGDPLoss = baseTargetGDPLoss x fragility',
+      'capitalFlight = baseCapitalFlight x (1 + ((fragility - 1) x 0.6))',
+      'displaced = baseDisplaced x fragility',
+    ],
+    note: 'Recent ACLED intensity raises target-country vulnerability and displacement pressure, but does not alter the aggressor-side military anchor directly.',
   },
 ];
 
@@ -61,6 +135,22 @@ const LIVE_APIS = [
     role: 'Optional live price scaling for oil, gas, wheat, and CPI inflation adjustment for military anchors.',
     cache: '1 hour',
     fallback: 'If FRED is unavailable or no API key is configured, commodity shocks stay on 2023 baselines and CPI scalar defaults to 1.0.',
+  },
+  {
+    name: 'UN Comtrade API',
+    url: 'https://comtradeapi.un.org/',
+    variables: 'Bilateral annual goods trade (imports + exports) by reporter/partner pair',
+    role: 'Optional live bilateral-trade replacement for the static canonical pair table used in the economic-impact module.',
+    cache: '24 hours',
+    fallback: 'Requires a subscription key. When absent or unavailable, the calculator falls back to the local bilateral trade dataset and then to the gravity model.',
+  },
+  {
+    name: 'ACLED API',
+    url: 'https://acleddata.com/api-documentation/acled-endpoint/',
+    variables: 'Recent political-violence events, fatalities, and event dates by country',
+    role: 'Optional live fragility overlay for target-country GDP contraction, capital flight, and displacement estimates.',
+    cache: '6 hours',
+    fallback: 'Requires ACLED credentials. When absent, the calculator uses the existing static scenario and displacement assumptions without the live fragility overlay.',
   },
 ];
 
@@ -137,15 +227,16 @@ const MODEL_SECTIONS = [
     body:
       'The economic module combines bilateral trade disruption, target-country GDP contraction, capital flight, sanctions drag on the aggressor when justified by literature, and a commodity shock layer for globally important producers.',
     equations: [
-      'tradeVolume = lookupPair(a, b) ?? 0.004 x sqrt(GDP_a x GDP_b) / max(distanceKm, 500)',
+      'tradeVolume = comtradeLive ?? lookupPair(a, b) ?? 0.004 x sqrt(GDP_a x GDP_b) / max(distanceKm, 500)',
       'tradeLoss = tradeVolume x 0.70 x durationYears x 0.50',
-      'targetGDPLoss = targetGDP x (1 - (1 - targetGDPImpactPct)^durationYears)',
-      'capitalFlight = targetGDP x capitalFlightPct x min(durationYears, 2)',
+      'baseTargetGDPLoss = targetGDP x (1 - (1 - targetGDPImpactPct)^durationYears)',
+      'targetGDPLoss = baseTargetGDPLoss x fragilityMultiplier',
+      'capitalFlight = baseCapitalFlight x (1 + ((fragilityMultiplier - 1) x 0.6))',
       'sanctions = aggressorGDP x additionalWarSanctionsPct x durationYears',
       'commodityShock = sum_i(shock_i x livePriceScalar_i x sqrt(max(durationYears, 1)))',
     ],
     notes:
-      'Oil, gas, and wheat shocks can scale with live FRED prices; semiconductors and lithium are treated as structural supply-chain shocks and are not price-scaled.',
+      'Live Comtrade trade volume overrides the static pair table when available. Oil, gas, and wheat shocks can scale with live FRED prices. ACLED can add a modest target fragility overlay to GDP loss and capital flight.',
   },
   {
     id: '03',
@@ -155,12 +246,13 @@ const MODEL_SECTIONS = [
     equations: [
       'displacementRatio = idpRatio + refugeeRatio',
       'populationAtRisk = skirmish && area > 100000 ? population x sqrt(100000 / area) : population',
-      'displaced = round(populationAtRisk x displacementRatio x scenarioDisplacementMultiplier)',
+      'baseDisplaced = populationAtRisk x displacementRatio x scenarioDisplacementMultiplier',
+      'displaced = round(baseDisplaced x fragilityMultiplier)',
       'displacementDuration = durationYears + min(durationYears x 1.5, 2)',
       'humanitarianTotal = displaced x (1200 + 300) x displacementDuration',
     ],
     notes:
-      'The module then splits displaced people into IDPs and cross-border refugees according to the observed UNHCR ratio mix. Human toll is displayed separately and is not monetized through a value-of-life assumption.',
+      'The module then splits displaced people into IDPs and cross-border refugees according to the observed UNHCR ratio mix. ACLED can modestly scale displacement when recent target-country violence is already elevated. Human toll is displayed separately and is not monetized through a value-of-life assumption.',
   },
   {
     id: '04',
@@ -242,12 +334,11 @@ function SectionHeader({
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-1 h-8 rounded-full" style={{ background: accentColor }} />
-        <h2 className="text-2xl font-bold" style={{ color: 'var(--text)' }}>
+        <div className="classification-label" style={{ color: accentColor }}>
           {title}
-        </h2>
+        </div>
       </div>
-      <p className="text-sm leading-relaxed max-w-3xl" style={{ color: 'var(--text-secondary)' }}>
+      <p className="max-w-3xl text-sm leading-7" style={{ color: 'var(--text-secondary)' }}>
         {summary}
       </p>
     </div>
@@ -256,12 +347,9 @@ function SectionHeader({
 
 function EquationPanel({ lines }: { lines: string[] }) {
   return (
-    <div
-      className="rounded-lg p-4 font-mono text-sm space-y-1.5"
-      style={{ background: 'var(--bg)', border: '1px solid var(--border)', color: 'var(--accent-cyan)' }}
-    >
+    <div className="terminal-panel-muted space-y-1.5 p-4 font-mono text-sm" style={{ color: 'var(--accent-cyan)' }}>
       {lines.map((line) => (
-        <p key={line} className="leading-relaxed">
+        <p key={line} className="leading-7">
           {line}
         </p>
       ))}
@@ -271,14 +359,11 @@ function EquationPanel({ lines }: { lines: string[] }) {
 
 function StatBadge({ value, label }: { value: string; label: string }) {
   return (
-    <div
-      className="rounded-lg px-5 py-3 text-center"
-      style={{ background: 'var(--surface-bright)', border: '1px solid var(--border-bright)' }}
-    >
-      <p className="text-2xl font-bold" style={{ color: 'var(--accent-blue)' }}>
+    <div className="terminal-stat px-5 py-4 text-center">
+      <p className="font-display text-4xl leading-none tracking-[0.08em]" style={{ color: 'var(--accent-blue)' }}>
         {value}
       </p>
-      <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
+      <p className="mt-2 text-xs uppercase tracking-[0.18em]" style={{ color: 'var(--text-muted)' }}>
         {label}
       </p>
     </div>
@@ -291,40 +376,38 @@ function StatBadge({ value, label }: { value: string; label: string }) {
 
 export default function MethodologyPage() {
   return (
-    <div className="max-w-screen-xl mx-auto px-6 py-12 space-y-16">
-      {/* ── Header ── */}
+    <div className="grid-bg">
+      <div className="max-w-screen-xl mx-auto px-4 py-10 space-y-14 sm:px-6 lg:px-8 lg:py-14">
       <header className="space-y-8">
         <div className="space-y-3">
-          <p className="text-sm font-medium" style={{ color: 'var(--accent-blue)' }}>
+          <p className="terminal-kicker" style={{ color: 'var(--accent-blue)' }}>
             Technical Documentation
           </p>
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight" style={{ color: 'var(--text)' }}>
+          <h1 className="font-display text-6xl leading-none tracking-[0.08em]" style={{ color: 'var(--text)' }}>
             Methodology
           </h1>
-          <p className="max-w-3xl text-base leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+          <p className="max-w-3xl text-base leading-8" style={{ color: 'var(--text-secondary)' }}>
             This page documents the implemented calculator, not an aspirational model. It describes the public APIs,
             static datasets, mathematical transformations, fallback rules, uncertainty treatment, and audit notes that
             currently drive the application.
           </p>
         </div>
         <div className="grid gap-4 sm:grid-cols-3 max-w-lg">
-          <StatBadge value="4" label="Live APIs" />
+          <StatBadge value="6" label="Live APIs" />
           <StatBadge value="8" label="Static Datasets" />
           <StatBadge value="4" label="Cost Modules" />
         </div>
       </header>
 
-      {/* ── Abstract ── */}
       <section className="space-y-6">
         <SectionHeader
           title="Abstract"
           summary="The application estimates the cost of interstate conflict by merging live macroeconomic indicators with curated static conflict datasets, then evaluating a fixed scenario archetype through three headline cost modules plus a separate economic-impact module."
         />
         <div
-          className="rounded-lg grid gap-0 lg:grid-cols-[1.3fr_0.7fr] overflow-hidden"
-          style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
+          className="terminal-panel grid gap-0 overflow-hidden lg:grid-cols-[1.3fr_0.7fr]"
         >
-          <div className="p-6 sm:p-8 space-y-4 text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+          <div className="space-y-4 p-6 text-sm leading-7 sm:p-8" style={{ color: 'var(--text-secondary)' }}>
             <p>
               The system treats war-cost estimation as a transparent accounting exercise. Every user-facing number must
               either come from a named public source or from a deterministic transformation applied to those sources.
@@ -340,10 +423,10 @@ export default function MethodologyPage() {
             </p>
           </div>
           <div
-            className="p-6 sm:p-8 space-y-4 flex flex-col justify-center"
-            style={{ borderLeft: '1px solid var(--border)', background: 'var(--surface-bright)' }}
+            className="flex flex-col justify-center space-y-4 border-l p-6 sm:p-8"
+            style={{ borderColor: 'var(--border)', background: 'rgba(18, 33, 27, 0.58)' }}
           >
-            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+            <p className="terminal-kicker">
               Core Principle
             </p>
             <EquationPanel
@@ -357,7 +440,6 @@ export default function MethodologyPage() {
         </div>
       </section>
 
-      {/* ── System Design ── */}
       <section className="space-y-6">
         <SectionHeader
           title="System Design"
@@ -365,13 +447,11 @@ export default function MethodologyPage() {
           accentColor="var(--accent-indigo)"
         />
         <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-          {/* Internal Routes */}
           <div
-            className="rounded-lg overflow-hidden"
-            style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
+            className="terminal-panel overflow-hidden"
           >
             <div className="px-6 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
-              <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
+              <p className="terminal-kicker" style={{ color: 'var(--accent-indigo)' }}>
                 Internal Routes
               </p>
             </div>
@@ -384,24 +464,22 @@ export default function MethodologyPage() {
                 <p className="text-sm font-mono font-semibold" style={{ color: 'var(--accent-cyan)' }}>
                   {item.route}
                 </p>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                <p className="text-sm leading-7" style={{ color: 'var(--text-secondary)' }}>
                   {item.purpose}
                 </p>
-                <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+                <p className="text-xs leading-6" style={{ color: 'var(--text-muted)' }}>
                   Output: {item.output}
                 </p>
               </div>
             ))}
           </div>
-          {/* Country Assembly Pipeline */}
           <div
-            className="rounded-lg p-6 sm:p-8 space-y-5"
-            style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
+            className="terminal-panel space-y-5 p-6 sm:p-8"
           >
-            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+            <p className="terminal-kicker" style={{ color: 'var(--accent-indigo)' }}>
               Country Assembly Pipeline
             </p>
-            <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+            <p className="text-sm leading-7" style={{ color: 'var(--text-secondary)' }}>
               The calculation route starts by building two enriched country objects. Geographic metadata comes from REST
               Countries, live indicators come from World Bank, GDP can fall back to IMF DataMapper, military and
               sanctions context can fall back to local datasets, and missing data-sparse states are explicitly labeled
@@ -412,7 +490,6 @@ export default function MethodologyPage() {
         </div>
       </section>
 
-      {/* ── Data Sources ── */}
       <section className="space-y-6">
         <SectionHeader
           title="Data Sources"
@@ -420,13 +497,11 @@ export default function MethodologyPage() {
           accentColor="var(--accent-emerald)"
         />
 
-        {/* Live APIs Table */}
         <div
-          className="rounded-lg overflow-hidden"
-          style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
+          className="terminal-panel overflow-hidden"
         >
           <div className="px-6 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
-            <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
+            <p className="terminal-kicker" style={{ color: 'var(--accent-emerald)' }}>
               Live APIs
             </p>
           </div>
@@ -450,7 +525,7 @@ export default function MethodologyPage() {
                   {api.variables}
                 </p>
               </div>
-              <div className="space-y-2 text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+              <div className="space-y-2 text-sm leading-7" style={{ color: 'var(--text-secondary)' }}>
                 <p>{api.role}</p>
                 <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
                   {api.fallback}
@@ -458,8 +533,8 @@ export default function MethodologyPage() {
               </div>
               <div className="flex items-start">
                 <span
-                  className="rounded-full px-3 py-1 text-xs font-medium whitespace-nowrap"
-                  style={{ background: 'var(--surface-bright)', color: 'var(--text-muted)', border: '1px solid var(--border-bright)' }}
+                  className="rounded-full border px-3 py-1 text-xs font-medium whitespace-nowrap"
+                  style={{ background: 'rgba(18, 33, 27, 0.6)', color: 'var(--text-muted)', borderColor: 'var(--border-bright)' }}
                 >
                   Cache: {api.cache}
                 </span>
@@ -468,13 +543,11 @@ export default function MethodologyPage() {
           ))}
         </div>
 
-        {/* Static Datasets Grid */}
         <div
-          className="rounded-lg overflow-hidden"
-          style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
+          className="terminal-panel overflow-hidden"
         >
           <div className="px-6 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
-            <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
+            <p className="terminal-kicker" style={{ color: 'var(--accent-emerald)' }}>
               Static Datasets and Fallback Layers
             </p>
           </div>
@@ -494,7 +567,7 @@ export default function MethodologyPage() {
                 <p className="text-xs font-medium" style={{ color: 'var(--accent-emerald)' }}>
                   {dataset.count}
                 </p>
-                <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+                <p className="text-xs leading-6" style={{ color: 'var(--text-muted)' }}>
                   {dataset.note}
                 </p>
               </div>
@@ -503,7 +576,61 @@ export default function MethodologyPage() {
         </div>
       </section>
 
-      {/* ── Model Specification ── */}
+      <section className="space-y-6">
+        <SectionHeader
+          title="API Endpoints"
+          summary="These are the actual upstream endpoint patterns the code calls today. The app wraps them with cache control, graceful fallback, and input normalization before they influence any result."
+          accentColor="var(--accent-blue)"
+        />
+        <div className="terminal-panel overflow-hidden">
+          <div className="px-6 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
+            <p className="terminal-kicker" style={{ color: 'var(--accent-blue)' }}>
+              External Endpoint Map
+            </p>
+          </div>
+          {API_ENDPOINTS.map((item, index) => (
+            <div
+              key={item.name}
+              className="grid gap-3 px-6 py-5 lg:grid-cols-[0.75fr_1.4fr_1fr]"
+              style={{ borderBottom: index < API_ENDPOINTS.length - 1 ? '1px solid var(--border)' : 'none' }}
+            >
+              <p className="text-sm font-semibold uppercase tracking-[0.12em]" style={{ color: 'var(--text)' }}>
+                {item.name}
+              </p>
+              <p className="font-mono text-xs leading-6" style={{ color: 'var(--accent-cyan)' }}>
+                {item.endpoint}
+              </p>
+              <p className="text-xs leading-6" style={{ color: 'var(--text-secondary)' }}>
+                {item.use}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="space-y-6">
+        <SectionHeader
+          title="Added Calculations"
+          summary="Recent live-data refinements do not replace the base model. They sit on top of the prior architecture to improve trade realism, inflation handling, commodity scaling, and target-country fragility sensitivity."
+          accentColor="var(--accent-cyan)"
+        />
+        <div className="grid gap-4 lg:grid-cols-2">
+          {ADDED_CALCULATIONS.map((item) => (
+            <div key={item.title} className="terminal-panel space-y-4 p-6">
+              <div className="space-y-2">
+                <p className="terminal-kicker" style={{ color: 'var(--accent-cyan)' }}>
+                  {item.title}
+                </p>
+                <p className="text-xs leading-6" style={{ color: 'var(--text-muted)' }}>
+                  {item.note}
+                </p>
+              </div>
+              <EquationPanel lines={item.lines} />
+            </div>
+          ))}
+        </div>
+      </section>
+
       <section className="space-y-6">
         <SectionHeader
           title="Model Specification"
@@ -514,17 +641,16 @@ export default function MethodologyPage() {
           {MODEL_SECTIONS.map((section) => (
             <div
               key={section.id}
-              className="rounded-lg overflow-hidden grid gap-0 lg:grid-cols-[1fr_1.2fr]"
-              style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
+              className="terminal-panel grid gap-0 overflow-hidden lg:grid-cols-[1fr_1.2fr]"
             >
               <div className="p-6 sm:p-8 space-y-4" style={{ borderRight: '1px solid var(--border)' }}>
-                <h3 className="text-lg font-bold" style={{ color: 'var(--text)' }}>
+                <h3 className="text-lg font-semibold uppercase tracking-[0.14em]" style={{ color: 'var(--text)' }}>
                   {section.title}
                 </h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                <p className="text-sm leading-7" style={{ color: 'var(--text-secondary)' }}>
                   {section.body}
                 </p>
-                <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+                <p className="text-xs leading-6" style={{ color: 'var(--text-muted)' }}>
                   {section.notes}
                 </p>
               </div>
@@ -536,7 +662,6 @@ export default function MethodologyPage() {
         </div>
       </section>
 
-      {/* ── Calibration and Audit Notes ── */}
       <section className="space-y-6">
         <SectionHeader
           title="Calibration and Audit Notes"
@@ -544,18 +669,17 @@ export default function MethodologyPage() {
           accentColor="var(--accent-cyan)"
         />
         <div
-          className="rounded-lg p-6 sm:p-8 space-y-5"
-          style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
+          className="terminal-panel space-y-5 p-6 sm:p-8"
         >
           {AUDIT_NOTES.map((note, index) => (
             <div key={note} className="flex gap-4 items-start">
               <span
-                className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
-                style={{ background: 'var(--surface-bright)', color: 'var(--accent-cyan)', border: '1px solid var(--border-bright)' }}
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-bold"
+                style={{ background: 'rgba(18, 33, 27, 0.68)', color: 'var(--accent-cyan)', borderColor: 'var(--border-bright)' }}
               >
                 {index + 1}
               </span>
-              <p className="text-sm leading-relaxed pt-1" style={{ color: 'var(--text-secondary)' }}>
+              <p className="pt-1 text-sm leading-7" style={{ color: 'var(--text-secondary)' }}>
                 {note}
               </p>
             </div>
@@ -563,7 +687,6 @@ export default function MethodologyPage() {
         </div>
       </section>
 
-      {/* ── Scope Limits ── */}
       <section className="space-y-6">
         <SectionHeader
           title="Scope Limits"
@@ -571,8 +694,7 @@ export default function MethodologyPage() {
           accentColor="var(--accent-red)"
         />
         <div
-          className="rounded-lg p-6 sm:p-8 grid gap-4 md:grid-cols-2"
-          style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
+          className="terminal-panel grid gap-4 p-6 sm:p-8 md:grid-cols-2"
         >
           {LIMITATIONS.map((item) => (
             <div key={item} className="flex gap-3 items-start">
@@ -582,7 +704,7 @@ export default function MethodologyPage() {
               >
                 ✕
               </span>
-              <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+              <p className="text-sm leading-7" style={{ color: 'var(--text-secondary)' }}>
                 {item}
               </p>
             </div>
@@ -590,28 +712,26 @@ export default function MethodologyPage() {
         </div>
       </section>
 
-      {/* ── Back to Calculator CTA ── */}
       <section
-        className="rounded-lg p-6 sm:p-8 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between"
-        style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
+        className="terminal-panel flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8"
       >
         <div className="space-y-2">
-          <p className="text-lg font-bold" style={{ color: 'var(--text)' }}>
+          <p className="font-display text-4xl leading-none tracking-[0.08em]" style={{ color: 'var(--text)' }}>
             Ready to run the numbers?
           </p>
-          <p className="text-sm leading-relaxed max-w-xl" style={{ color: 'var(--text-secondary)' }}>
+          <p className="max-w-xl text-sm leading-7" style={{ color: 'var(--text-secondary)' }}>
             Start with the calculator for the result, then inspect each category line item, then return here for the
             underlying model assumptions and data pipeline.
           </p>
         </div>
         <Link
           href="/calculator"
-          className="inline-flex items-center justify-center px-8 py-3.5 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 whitespace-nowrap"
-          style={{ background: 'var(--accent-blue)', color: '#ffffff' }}
+          className="terminal-button terminal-button-primary whitespace-nowrap"
         >
           Open Calculator
         </Link>
       </section>
+      </div>
     </div>
   );
 }

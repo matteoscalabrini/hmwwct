@@ -1,194 +1,135 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
-const STATS = [
-  { value: '$2,443B', label: 'GLOBAL DEFENSE SPENDING', source: 'SIPRI 2024' },
-  { value: '56', label: 'ACTIVE ARMED CONFLICTS', source: 'ACLED 2024' },
-  { value: '$8T+', label: 'US POST-9/11 WAR COSTS', source: 'WATSON INSTITUTE' },
-  { value: '117M', label: 'DISPLACED PERSONS', source: 'UNHCR 2024' },
+const BOOT_STEPS = [
+  'Loading live macroeconomic feeds',
+  'Indexing fallback conflict datasets',
+  'Preparing fiscal and humanitarian models',
+  'Syncing scenario presets',
+  'System ready for analysis',
 ];
 
-const FEATURES = [
-  {
-    color: 'var(--accent-cyan)',
-    tag: 'DATA',
-    title: 'LIVE FEEDS',
-    description:
-      'World Bank, SIPRI, IMF, and FRED APIs. Real-time economic and military data. No static estimates.',
-  },
-  {
-    color: 'var(--accent-amber)',
-    tag: 'AUDIT',
-    title: 'FULL TRANSPARENCY',
-    description:
-      'Every number cited with source, methodology, and assumptions. Every formula exposed. No black boxes.',
-  },
-  {
-    color: 'var(--accent-emerald)',
-    tag: 'SCALE',
-    title: 'CONTEXT ENGINE',
-    description:
-      'Compare costs to national budgets, GDP, per-capita burden, and humanitarian benchmarks.',
-  },
-];
+const BOOT_THRESHOLDS = [16, 34, 56, 78, 100];
 
 export default function Home() {
+  const [progress, setProgress] = useState(8);
+
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setProgress((value) => {
+        const next = Math.min(value + 4, 100);
+        if (next >= 100) {
+          window.clearInterval(id);
+        }
+        return next;
+      });
+    }, 85);
+
+    return () => window.clearInterval(id);
+  }, []);
+
+  const completedSteps = BOOT_THRESHOLDS.filter((threshold) => progress >= threshold).length;
+  const activeStep = completedSteps < BOOT_STEPS.length ? completedSteps : -1;
+
   return (
-    <div className="grid-bg relative">
-      {/* HERO */}
-      <section
-        className="flex flex-col justify-center relative"
-        style={{ minHeight: 'calc(100vh - 2.5rem)' }}
-      >
-        <div className="max-w-screen-xl mx-auto px-6 py-20 flex-1 flex flex-col justify-center">
-          {/* System status */}
-          <div className="flex items-center gap-3 mb-8">
-            <span
-              className="classification-label"
-              style={{ color: 'var(--accent-amber)', borderColor: 'var(--accent-amber)' }}
+    <div className="grid-bg relative overflow-hidden">
+      <section className="mx-auto flex min-h-[calc(100vh-5.5rem)] max-w-screen-xl items-center px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+        <div className="w-full space-y-8">
+          <div className="max-w-5xl space-y-6">
+            <p className="terminal-kicker" style={{ color: 'var(--accent-blue)' }}>
+              Strategic Cost Analysis System
+            </p>
+
+            <h1
+              className="font-display leading-[0.88] tracking-[0.08em]"
+              style={{ fontSize: 'clamp(1.55rem, 7.1vw, 6rem)' }}
             >
-              UNCLASSIFIED // FOUO
-            </span>
-            <span className="text-xs uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
-              SYSTEM ONLINE
-            </span>
-            <span className="w-1.5 h-1.5 rounded-full animate-pulse-dot" style={{ background: 'var(--accent-emerald)' }} />
-          </div>
+              HOW MUCH WOULD
+              <br />
+              A WAR COST THERE?
+            </h1>
 
-          {/* Heading */}
-          <h1
-            className="text-4xl md:text-6xl lg:text-7xl font-bold leading-none mb-4 font-workbench"
-            style={{ color: '#ffffff' }}
-          >
-            HOW MUCH WOULD
-            <br />
-            A WAR COST THERE<span className="animate-blink" style={{ color: 'var(--accent-cyan)' }}>_</span>
-          </h1>
+            <p className="max-w-3xl text-base leading-8 sm:text-lg" style={{ color: 'var(--text-secondary)' }}>
+              A stripped-back terminal for estimating the economic and humanitarian cost of interstate conflict using public data and transparent assumptions.
+            </p>
 
-          {/* Subheading */}
-          <p
-            className="text-sm md:text-base max-w-xl mb-10 leading-relaxed"
-            style={{ color: 'var(--text-muted)' }}
-          >
-            Real data. Transparent methodology.<br />
-            Calculate what defense ministers know but rarely share.
-          </p>
+            <p className="max-w-2xl text-sm leading-7" style={{ color: 'var(--text-muted)' }}>
+              Live inputs where possible. Explicit fallbacks when necessary. Every major output is inspectable.
+            </p>
 
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Link
-              href="/calculator"
-              className="inline-flex items-center justify-center px-6 py-2.5 text-xs uppercase tracking-widest font-bold transition-all duration-150 hover:brightness-125"
-              style={{
-                background: 'var(--accent-red)',
-                color: '#ffffff',
-                border: '1px solid var(--accent-red)',
-              }}
+            <p
+              className="font-display whitespace-nowrap leading-none tracking-[0.1em] text-glow-red"
+              style={{ color: 'var(--accent-red)', fontSize: 'clamp(1.15rem, 5vw, 3.4rem)' }}
             >
-              &gt; OPEN CALCULATOR
-            </Link>
-            <Link
-              href="/methodology"
-              className="inline-flex items-center justify-center px-6 py-2.5 text-xs uppercase tracking-widest font-bold transition-all duration-150"
-              style={{
-                border: '1px solid var(--border-bright)',
-                color: 'var(--text-muted)',
-                background: 'transparent',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'var(--text-muted)';
-                e.currentTarget.style.color = 'var(--text)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'var(--border-bright)';
-                e.currentTarget.style.color = 'var(--text-muted)';
-              }}
-            >
-              &gt; READ METHODOLOGY
-            </Link>
-          </div>
-        </div>
+              THE ONLY WINNING MOVE IS NOT TO PLAY.
+            </p>
 
-        {/* Stats bar */}
-        <div style={{ borderTop: '1px solid var(--border)' }}>
-          <div className="max-w-screen-xl mx-auto px-6 py-6 grid grid-cols-2 md:grid-cols-4 gap-6">
-            {STATS.map((stat) => (
-              <div key={stat.label} style={{ borderLeft: '2px solid var(--border-bright)', paddingLeft: '12px' }}>
-                <p className="text-xl font-bold tabular-nums" style={{ color: 'var(--accent-cyan)' }}>
-                  {stat.value}
-                </p>
-                <p className="text-xs mt-1 uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
-                  {stat.label}
-                </p>
-                <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)', opacity: 0.6 }}>
-                  {stat.source}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+            <div className="flex flex-col gap-3 pt-1 sm:flex-row">
+              <Link href="/calculator" className="terminal-button terminal-button-primary">
+                &gt; Open Simulator
+              </Link>
+              <Link href="/methodology" className="terminal-button terminal-button-ghost">
+                Read Methodology
+              </Link>
+            </div>
 
-      {/* FEATURES */}
-      <section
-        className="max-w-screen-xl mx-auto py-16 px-6"
-        style={{ borderTop: '1px solid var(--border)' }}
-      >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {FEATURES.map((feature) => (
-            <div
-              key={feature.title}
-              className="p-5 transition-colors duration-150"
-              style={{
-                background: 'var(--surface)',
-                border: '1px solid var(--border)',
-                borderTop: `2px solid ${feature.color}`,
-              }}
-            >
-              <div className="flex items-center gap-2 mb-3">
-                <span
-                  className="classification-label"
-                  style={{ color: feature.color, borderColor: feature.color }}
-                >
-                  {feature.tag}
+            <div className="terminal-panel-muted max-w-2xl px-5 py-5 sm:px-6">
+              <div className="flex items-center justify-between gap-3">
+                <span className="terminal-kicker" style={{ color: 'var(--accent-cyan)' }}>
+                  Boot Sequence
+                </span>
+                <span className="text-xs tabular-nums uppercase tracking-[0.18em]" style={{ color: 'var(--text-muted)' }}>
+                  {String(progress).padStart(3, '0')}%
                 </span>
               </div>
-              <h3
-                className="text-sm font-bold uppercase tracking-wider mb-2"
-                style={{ color: 'var(--text)' }}
-              >
-                {feature.title}
-              </h3>
-              <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-                {feature.description}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
 
-      {/* FOOTER */}
-      <footer style={{ borderTop: '1px solid var(--border)', background: 'var(--surface)' }}>
-        <div className="max-w-screen-xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
-            FOR EDUCATIONAL AND POLICY ANALYSIS PURPOSES ONLY
-          </p>
-          <div className="flex items-center gap-3 text-xs" style={{ color: 'var(--text-muted)' }}>
-            <span>WORLD BANK / SIPRI / UNHCR / IMF / WATSON / FRED</span>
-            <span style={{ color: 'var(--border-bright)' }}>|</span>
-            <Link
-              href="/methodology"
-              className="uppercase tracking-wider transition-colors"
-              style={{ color: 'var(--text-muted)' }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--accent-cyan)')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-muted)')}
-            >
-              [METHOD]
-            </Link>
+              <p className="mt-4 text-xs uppercase tracking-[0.16em]" style={{ color: 'var(--text-secondary)' }}>
+                &gt; boot hmwwct --profile strategic-cost-analysis
+                <span className="animate-blink ml-1">_</span>
+              </p>
+
+              <div className="mt-4 h-1.5 overflow-hidden rounded-full" style={{ background: 'var(--border)' }}>
+                <div
+                  className="h-full rounded-full transition-all duration-150"
+                  style={{
+                    width: `${progress}%`,
+                    background: 'linear-gradient(90deg, var(--accent-cyan), var(--accent-blue))',
+                  }}
+                />
+              </div>
+
+              <div className="mt-5 space-y-2">
+                {BOOT_STEPS.map((step, index) => {
+                  const completed = progress >= BOOT_THRESHOLDS[index];
+                  const active = index === activeStep;
+
+                  return (
+                    <div key={step} className="flex items-center gap-3 text-xs uppercase tracking-[0.14em]">
+                      <span
+                        className={active ? 'animate-pulse-dot' : ''}
+                        style={{
+                          color: completed ? 'var(--accent-emerald)' : active ? 'var(--accent-cyan)' : 'var(--text-muted)',
+                        }}
+                      >
+                        {completed ? '[OK]' : active ? '[..]' : '[--]'}
+                      </span>
+                      <span
+                        style={{
+                          color: completed ? 'var(--text-secondary)' : active ? 'var(--text)' : 'var(--text-muted)',
+                        }}
+                      >
+                        {step}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
-      </footer>
+      </section>
     </div>
   );
 }

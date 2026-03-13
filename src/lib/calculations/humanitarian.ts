@@ -22,6 +22,12 @@ const SOURCES: Record<string, Source> = {
     year: 2023,
     isStatic: false,
   },
+  acled: {
+    name: 'ACLED API — Political Violence Events',
+    url: 'https://acleddata.com/api-documentation/acled-endpoint/',
+    year: new Date().getFullYear(),
+    isStatic: false,
+  },
 };
 
 interface DisplacementRatio { idpRatio: number; refugeeRatio: number; }
@@ -46,6 +52,9 @@ export function calculateHumanitarianCost(input: CalculationInput): {
   const { target, scenario } = input;
   const def = SCENARIOS[scenario];
   const durationYears = def.durationYears.point;
+  const acledSignal = input.liveData?.acledSignal;
+  const acledFragilityMultiplier = acledSignal?.fragilityMultiplier ?? 1;
+  const acledOverlayActive = acledFragilityMultiplier > 1;
 
   const population = target.population ?? 10_000_000;
   const ratios = getDisplacementRatio(target.code, target.region);
@@ -64,7 +73,8 @@ export function calculateHumanitarianCost(input: CalculationInput): {
     populationAtRisk = population * Math.sqrt(areaFraction);
   }
 
-  const displacedPoint = Math.round(populationAtRisk * totalDisplacementRatio * def.displacementMultiplier);
+  const baseDisplacedPoint = populationAtRisk * totalDisplacementRatio * def.displacementMultiplier;
+  const displacedPoint = Math.round(baseDisplacedPoint * acledFragilityMultiplier);
   const displacedMin = Math.round(displacedPoint * 0.5);
   const displacedMax = Math.round(displacedPoint * 1.8);
 
@@ -99,14 +109,14 @@ export function calculateHumanitarianCost(input: CalculationInput): {
       assumptions: [
         {
           id: 'idp-support',
-          description: `${formatNum(idpCount)} IDPs (${(idpFraction * 100).toFixed(0)}% of displaced, UNHCR ${ratioSource} ratio${populationAtRisk < population ? `; displacement scaled to ${formatNum(populationAtRisk)} population-at-risk in conflict zone` : ''}). Shelter, food, WASH, protection: $${UNHCR_COST_PER_DISPLACED_PER_YEAR_USD.toLocaleString()}/person/yr over ${displacementDuration.toFixed(1)}yr`,
+          description: `${formatNum(idpCount)} IDPs (${(idpFraction * 100).toFixed(0)}% of displaced, UNHCR ${ratioSource} ratio${populationAtRisk < population ? `; displacement scaled to ${formatNum(populationAtRisk)} population-at-risk in conflict zone` : ''}${acledOverlayActive ? `; ACLED overlay +${(acledFragilityMultiplier * 100 - 100).toFixed(1)}% from ${acledSignal?.politicalViolenceEvents ?? 0} recent political-violence events and ${Math.round(acledSignal?.reportedFatalities ?? 0).toLocaleString()} reported fatalities` : ''}). Shelter, food, WASH, protection: $${UNHCR_COST_PER_DISPLACED_PER_YEAR_USD.toLocaleString()}/person/yr over ${displacementDuration.toFixed(1)}yr`,
           formula: `${formatNum(idpCount)} × $${UNHCR_COST_PER_DISPLACED_PER_YEAR_USD.toLocaleString()} × ${displacementDuration.toFixed(1)}yr = ${formatUsdH(idpCost)}`,
           value: idpCost,
           unit: 'USD',
-          sources: [SOURCES.unhcr, SOURCES.worldbank_pop],
+          sources: acledOverlayActive ? [SOURCES.unhcr, SOURCES.worldbank_pop, SOURCES.acled] : [SOURCES.unhcr, SOURCES.worldbank_pop],
         },
       ],
-      sources: [SOURCES.unhcr, SOURCES.worldbank_pop],
+      sources: acledOverlayActive ? [SOURCES.unhcr, SOURCES.worldbank_pop, SOURCES.acled] : [SOURCES.unhcr, SOURCES.worldbank_pop],
     },
     {
       label: 'Cross-border refugee resettlement',
@@ -116,14 +126,14 @@ export function calculateHumanitarianCost(input: CalculationInput): {
       assumptions: [
         {
           id: 'refugee-resettlement',
-          description: `${formatNum(refugeeCount)} cross-border refugees (${(refugeeFraction * 100).toFixed(0)}% of displaced, UNHCR ${ratioSource} ratio${populationAtRisk < population ? `; displacement scaled to ${formatNum(populationAtRisk)} population-at-risk in conflict zone` : ''}). Host-country resettlement, legal status, integration: $${UNHCR_COST_PER_DISPLACED_PER_YEAR_USD.toLocaleString()}/person/yr over ${displacementDuration.toFixed(1)}yr`,
+          description: `${formatNum(refugeeCount)} cross-border refugees (${(refugeeFraction * 100).toFixed(0)}% of displaced, UNHCR ${ratioSource} ratio${populationAtRisk < population ? `; displacement scaled to ${formatNum(populationAtRisk)} population-at-risk in conflict zone` : ''}${acledOverlayActive ? `; ACLED overlay +${(acledFragilityMultiplier * 100 - 100).toFixed(1)}%` : ''}). Host-country resettlement, legal status, integration: $${UNHCR_COST_PER_DISPLACED_PER_YEAR_USD.toLocaleString()}/person/yr over ${displacementDuration.toFixed(1)}yr`,
           formula: `${formatNum(refugeeCount)} × $${UNHCR_COST_PER_DISPLACED_PER_YEAR_USD.toLocaleString()} × ${displacementDuration.toFixed(1)}yr = ${formatUsdH(refugeeCost)}`,
           value: refugeeCost,
           unit: 'USD',
-          sources: [SOURCES.unhcr],
+          sources: acledOverlayActive ? [SOURCES.unhcr, SOURCES.acled] : [SOURCES.unhcr],
         },
       ],
-      sources: [SOURCES.unhcr],
+      sources: acledOverlayActive ? [SOURCES.unhcr, SOURCES.acled] : [SOURCES.unhcr],
     },
     {
       label: 'Emergency healthcare & trauma response',
@@ -133,14 +143,14 @@ export function calculateHumanitarianCost(input: CalculationInput): {
       assumptions: [
         {
           id: 'emergency-healthcare',
-          description: `Emergency health costs for all ${formatNum(displacedPoint)} displaced persons${populationAtRisk < population ? ` (from ${formatNum(populationAtRisk)} population-at-risk in conflict zone)` : ''}: $${WHO_MEDICAL_COST_PER_DISPLACED_PER_YEAR_USD.toLocaleString()}/person/yr (WHO Emergency Health Financing). Covers trauma surgery, disease surveillance, mental health, and primary care over ${displacementDuration.toFixed(1)}yr`,
+          description: `Emergency health costs for all ${formatNum(displacedPoint)} displaced persons${populationAtRisk < population ? ` (from ${formatNum(populationAtRisk)} population-at-risk in conflict zone)` : ''}${acledOverlayActive ? ` with ACLED fragility overlay of ${(acledFragilityMultiplier * 100 - 100).toFixed(1)}%` : ''}: $${WHO_MEDICAL_COST_PER_DISPLACED_PER_YEAR_USD.toLocaleString()}/person/yr (WHO Emergency Health Financing). Covers trauma surgery, disease surveillance, mental health, and primary care over ${displacementDuration.toFixed(1)}yr`,
           formula: `${formatNum(displacedPoint)} × $${WHO_MEDICAL_COST_PER_DISPLACED_PER_YEAR_USD.toLocaleString()} × ${displacementDuration.toFixed(1)}yr = ${formatUsdH(healthcareCost)}`,
           value: healthcareCost,
           unit: 'USD',
-          sources: [SOURCES.who],
+          sources: acledOverlayActive ? [SOURCES.who, SOURCES.acled] : [SOURCES.who],
         },
       ],
-      sources: [SOURCES.who],
+      sources: acledOverlayActive ? [SOURCES.who, SOURCES.acled] : [SOURCES.who],
     },
   ];
 
@@ -149,7 +159,7 @@ export function calculateHumanitarianCost(input: CalculationInput): {
     displacedPersonsMin: displacedMin,
     displacedPersonsMax: displacedMax,
     source: SOURCES.unhcr,
-    note: 'Displacement estimates based on UNHCR historical ratios for similar conflicts. Casualties are not monetized — this number represents the human toll, not a dollar figure.',
+    note: `Displacement estimates based on UNHCR historical ratios for similar conflicts${acledOverlayActive ? `, modestly scaled by recent ACLED-recorded violence in ${target.name}` : ''}. Casualties are not monetized — this number represents the human toll, not a dollar figure.`,
   };
 
   return {
@@ -162,11 +172,14 @@ export function calculateHumanitarianCost(input: CalculationInput): {
       items,
       methodology: `Humanitarian costs include IDP support, cross-border refugee resettlement, and emergency healthcare for ${formatNum(displacedPoint)} displaced persons ` +
         `(${(totalDisplacementRatio * def.displacementMultiplier * 100).toFixed(1)}% of ${populationAtRisk < population ? `${formatNum(populationAtRisk)} population-at-risk` : `${target.name}'s population`}, UNHCR ${ratioSource} ratio × ${def.displacementMultiplier}× scenario multiplier` +
+        `${acledOverlayActive ? ` × ${acledFragilityMultiplier.toFixed(3)} ACLED fragility overlay` : ''}` +
         `${populationAtRisk < population ? `; area-dampened from ${formatNum(population)} total pop — skirmish affects ~${(SKIRMISH_AFFECTED_AREA_KM2 / 1000).toFixed(0)}K km² of ${formatNum(target.area)} km² total` : ''}). ` +
         `Split: ${formatNum(idpCount)} IDPs and ${formatNum(refugeeCount)} cross-border refugees ($${UNHCR_COST_PER_DISPLACED_PER_YEAR_USD.toLocaleString()}/person/yr each) plus WHO emergency healthcare ($${WHO_MEDICAL_COST_PER_DISPLACED_PER_YEAR_USD.toLocaleString()}/person/yr for all displaced). ` +
         `Duration: ${durationYears}yr conflict + ${(displacementDuration - durationYears).toFixed(1)}yr post-conflict tail (UNHCR average return timeline). ` +
         `NOTE: Casualty estimates are shown separately and are NOT monetized.`,
-      sources: [SOURCES.unhcr, SOURCES.who, SOURCES.worldbank_pop],
+      sources: acledOverlayActive
+        ? [SOURCES.unhcr, SOURCES.who, SOURCES.worldbank_pop, SOURCES.acled]
+        : [SOURCES.unhcr, SOURCES.who, SOURCES.worldbank_pop],
     },
     humanToll,
   };

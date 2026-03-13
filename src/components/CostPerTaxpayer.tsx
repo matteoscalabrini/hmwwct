@@ -73,27 +73,16 @@ export function CostPerTaxpayer({
   ];
 
   return (
-    <div
-      className="rounded-xl p-5 space-y-5"
-      style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
-    >
-      {/* Header */}
-      <h3
-        className="text-xs font-bold tracking-widest uppercase"
-        style={{ color: 'var(--text-secondary)' }}
-      >
+    <div className="terminal-panel space-y-5 px-5 py-5">
+      <h3 className="terminal-kicker" style={{ color: 'var(--accent-cyan)' }}>
         Cost per taxpayer
       </h3>
 
-      {/* Big number */}
       <div className="text-center space-y-2">
-        <p
-          className="text-4xl sm:text-5xl font-mono font-bold tracking-tight"
-          style={{ color: 'var(--accent-cyan)' }}
-        >
+        <p className="fs-number text-glow-cyan" style={{ color: 'var(--accent-cyan)' }}>
           {formatCurrency(stats.costPerTaxpayer)}
         </p>
-        <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+        <p className="text-sm leading-7" style={{ color: 'var(--text-secondary)' }}>
           Every taxpayer in{' '}
           <span className="font-semibold" style={{ color: 'var(--text)' }}>
             {aggressorName}
@@ -106,37 +95,33 @@ export function CostPerTaxpayer({
         </p>
       </div>
 
-      {/* Equivalents grid */}
       <div className="grid grid-cols-3 gap-3">
         {equivalents.map((eq) => (
           <div
             key={eq.label}
-            className="rounded-lg p-3 text-center space-y-1.5"
+            className="terminal-panel-muted px-3 py-4 text-center space-y-2"
             style={{
-              background: 'var(--surface-bright)',
-              border: '1px solid var(--border)',
+              background: 'linear-gradient(180deg, rgba(18, 33, 27, 0.9), rgba(11, 20, 16, 0.98))',
             }}
           >
             <eq.icon size={18} className="mx-auto" style={{ color: 'var(--accent-cyan)' }} />
             <p
-              className="text-base font-mono font-semibold"
+              className="text-base font-mono font-semibold leading-tight"
               style={{ color: 'var(--text)' }}
             >
               {eq.value}
             </p>
-            <p className="text-xs leading-tight" style={{ color: 'var(--text-muted)' }}>
+            <p className="text-xs leading-5" style={{ color: 'var(--text-muted)' }}>
               {eq.label}
             </p>
           </div>
         ))}
       </div>
 
-      {/* Annual burden */}
       <div
-        className="flex items-center justify-between rounded-lg px-4 py-3"
+        className="terminal-callout px-4 py-3 flex items-center justify-between"
         style={{
-          background: 'rgba(6, 182, 212, 0.06)',
-          border: '1px solid rgba(6, 182, 212, 0.15)',
+          borderColor: 'rgba(84, 245, 214, 0.35)',
         }}
       >
         <div className="flex items-center gap-2">
@@ -153,7 +138,7 @@ export function CostPerTaxpayer({
         </span>
       </div>
 
-      <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+      <p className="text-xs leading-6" style={{ color: 'var(--text-muted)' }}>
         Estimated median salary: {formatCurrency(stats.medianSalary)}/yr (GDP per capita x 0.6).
         Tuition benchmark: $10K/yr global avg. All figures are approximations.
       </p>

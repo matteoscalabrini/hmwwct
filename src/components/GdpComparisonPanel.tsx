@@ -58,17 +58,11 @@ export function GdpComparisonPanel({ totalCost, targetName }: GdpComparisonPanel
 
   if (exceeded.length === 0) {
     return (
-      <div
-        className="rounded-xl p-5"
-        style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
-      >
-        <h3
-          className="text-xs font-bold tracking-widest uppercase mb-3"
-          style={{ color: 'var(--text-secondary)' }}
-        >
+      <div className="terminal-panel px-5 py-5">
+        <h3 className="terminal-kicker mb-3" style={{ color: 'var(--accent-cyan)' }}>
           GDP Comparison
         </h3>
-        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+        <p className="text-sm leading-7" style={{ color: 'var(--text-muted)' }}>
           This conflict&apos;s cost is below the GDP of the smallest reference economy (
           {REFERENCE_COUNTRIES[0].name}: {formatCurrency(REFERENCE_COUNTRIES[0].gdp)}).
         </p>
@@ -77,32 +71,24 @@ export function GdpComparisonPanel({ totalCost, targetName }: GdpComparisonPanel
   }
 
   return (
-    <div
-      className="rounded-xl p-5 space-y-4"
-      style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
-    >
-      {/* Header */}
+    <div className="terminal-panel space-y-4 px-5 py-5">
       <div className="space-y-1">
-        <h3
-          className="text-xs font-bold tracking-widest uppercase"
-          style={{ color: 'var(--text-secondary)' }}
-        >
+        <h3 className="terminal-kicker" style={{ color: 'var(--accent-cyan)' }}>
           GDP Comparison
         </h3>
-        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+        <p className="text-sm leading-7" style={{ color: 'var(--text-muted)' }}>
           This conflict over {targetName} would cost more than the entire annual GDP of:
         </p>
       </div>
 
-      {/* Country tags grid */}
       <div className="flex flex-wrap gap-2">
         {exceeded.map((c) => (
           <div
             key={c.name}
-            className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs"
+            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs"
             style={{
-              background: 'rgba(239, 68, 68, 0.08)',
-              border: '1px solid rgba(239, 68, 68, 0.2)',
+              background: 'rgba(255, 118, 91, 0.08)',
+              border: '1px solid rgba(255, 118, 91, 0.22)',
               color: 'var(--accent-red)',
             }}
           >
@@ -118,10 +104,10 @@ export function GdpComparisonPanel({ totalCost, targetName }: GdpComparisonPanel
         ))}
         {firstNotExceeded && (
           <div
-            className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs"
+            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs"
             style={{
-              background: 'rgba(16, 185, 129, 0.06)',
-              border: '1px solid rgba(16, 185, 129, 0.15)',
+              background: 'rgba(105, 209, 127, 0.08)',
+              border: '1px solid rgba(105, 209, 127, 0.2)',
               color: 'var(--accent-emerald)',
             }}
           >
@@ -138,12 +124,10 @@ export function GdpComparisonPanel({ totalCost, targetName }: GdpComparisonPanel
         )}
       </div>
 
-      {/* Summary footer */}
       <div
-        className="rounded-lg px-4 py-3 space-y-1"
+        className="terminal-panel-muted px-4 py-4 space-y-2"
         style={{
-          background: 'var(--surface-bright)',
-          border: '1px solid var(--border)',
+          background: 'linear-gradient(180deg, rgba(18, 33, 27, 0.9), rgba(11, 20, 16, 0.98))',
         }}
       >
         <div className="flex items-center justify-between text-xs">
@@ -173,7 +157,7 @@ export function GdpComparisonPanel({ totalCost, targetName }: GdpComparisonPanel
         )}
       </div>
 
-      <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+      <p className="text-xs leading-6" style={{ color: 'var(--text-muted)' }}>
         GDP figures are approximate annual values (World Bank / IMF estimates).
       </p>
     </div>

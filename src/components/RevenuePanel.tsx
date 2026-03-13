@@ -13,15 +13,13 @@ export function RevenuePanel({ revenue, projectedCostUsd }: RevenuePanelProps) {
 
   return (
     <div className="space-y-4">
-
-      {/* Assumption warning */}
-      <div className="rounded-lg p-4 space-y-2" style={{ border: '1px solid var(--accent-amber)', background: 'rgba(245,158,11,0.06)' }}>
-        <p className="text-xs font-semibold" style={{ color: 'var(--accent-amber)' }}>
+      <div className="terminal-callout is-warn space-y-3 px-5 py-4">
+        <p className="terminal-kicker" style={{ color: 'var(--accent-amber)' }}>
           Speculative Module — Read Assumptions
         </p>
-        <ul className="space-y-1">
+        <ul className="space-y-2">
           {revenue.assumptions.map((a, i) => (
-            <li key={i} className="text-xs leading-relaxed flex gap-2" style={{ color: 'var(--text-secondary)' }}>
+            <li key={i} className="flex gap-2 text-xs leading-6" style={{ color: 'var(--text-secondary)' }}>
               <span className="shrink-0" style={{ color: 'var(--accent-amber)' }}>&bull;</span>
               <span>{a}</span>
             </li>
@@ -29,35 +27,34 @@ export function RevenuePanel({ revenue, projectedCostUsd }: RevenuePanelProps) {
         </ul>
       </div>
 
-      {/* Revenue line items */}
       {revenue.items.length === 0 ? (
-        <div className="rounded-lg p-4" style={{ border: '1px solid var(--border)', background: 'var(--surface)' }}>
-          <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+        <div className="terminal-panel px-5 py-4">
+          <p className="text-xs leading-6" style={{ color: 'var(--text-secondary)' }}>
             No extractable resource revenue identified for this target.
           </p>
-          <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
+          <p className="mt-2 text-xs leading-6" style={{ color: 'var(--text-muted)' }}>
             The target is not a major producer and has no significant monetary gold reserves.
           </p>
         </div>
       ) : (
-        <div className="rounded-lg overflow-hidden" style={{ border: '1px solid var(--border)', background: 'var(--surface)' }}>
+        <div className="terminal-panel overflow-hidden">
           {revenue.items.map((item, i) => (
             <div
               key={item.label}
-              className="p-4 flex items-start justify-between gap-4"
+              className="flex items-start justify-between gap-4 px-5 py-4"
               style={{ borderBottom: i < revenue.items.length - 1 ? '1px solid var(--border)' : 'none' }}
             >
               <div className="space-y-1 flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-xs font-semibold" style={{ color: 'var(--text)' }}>
+                  <span className="text-xs font-semibold uppercase tracking-[0.16em]" style={{ color: 'var(--text)' }}>
                     {item.label}
                   </span>
                   <Badge variant={item.confidence}>{item.confidence}</Badge>
                 </div>
-                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{item.note}</p>
+                <p className="text-xs leading-6" style={{ color: 'var(--text-muted)' }}>{item.note}</p>
               </div>
               <div className="text-right shrink-0 space-y-0.5">
-                <p className="text-sm font-bold tabular-nums font-mono" style={{ color: 'var(--accent-emerald)' }}>
+                <p className="text-lg font-bold tabular-nums font-mono" style={{ color: 'var(--accent-emerald)' }}>
                   {formatCurrency(item.totalUsd)}
                 </p>
                 <p className="text-xs font-mono" style={{ color: 'var(--text-muted)' }}>
@@ -69,44 +66,46 @@ export function RevenuePanel({ revenue, projectedCostUsd }: RevenuePanelProps) {
         </div>
       )}
 
-      {/* Net position */}
-      <div className="rounded-lg p-5 space-y-3" style={{ border: `1px solid ${netColor}`, background: isLoss ? 'rgba(239,68,68,0.05)' : 'rgba(16,185,129,0.05)' }}>
+      <div
+        className={`terminal-callout space-y-4 px-5 py-5 ${isLoss ? 'is-danger' : 'is-success'}`}
+        style={{ borderColor: netColor }}
+      >
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>
+            <p className="text-xs uppercase tracking-[0.16em]" style={{ color: 'var(--text-muted)' }}>
               Total Revenue (Best Case)
             </p>
-            <p className="text-xl font-bold tabular-nums font-mono" style={{ color: 'var(--accent-emerald)' }}>
+            <p className="mt-2 fs-number font-bold tabular-nums font-mono" style={{ color: 'var(--accent-emerald)' }}>
               {formatCurrency(revenue.totalUsd)}
             </p>
           </div>
           <div>
-            <p className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>
+            <p className="text-xs uppercase tracking-[0.16em]" style={{ color: 'var(--text-muted)' }}>
               Projected Cost
             </p>
-            <p className="text-xl font-bold tabular-nums font-mono" style={{ color: 'var(--accent-red)' }}>
+            <p className="mt-2 fs-number font-bold tabular-nums font-mono" style={{ color: 'var(--accent-red)' }}>
               {formatCurrency(projectedCostUsd)}
             </p>
-            <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
+            <p className="mt-1 text-xs leading-6" style={{ color: 'var(--text-muted)' }}>
               Excludes separate economic impact
             </p>
           </div>
         </div>
 
         <div style={{ borderTop: `1px solid ${netColor}`, paddingTop: '0.75rem' }}>
-          <p className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-xs uppercase tracking-[0.16em]" style={{ color: 'var(--text-muted)' }}>
             Net Position
           </p>
-          <p className="text-3xl font-bold tabular-nums font-mono" style={{ color: netColor }}>
+          <p className="mt-2 fs-number font-bold tabular-nums font-mono" style={{ color: netColor }}>
             {isLoss ? '' : '+'}{formatCurrency(revenue.netPositionUsd)}
           </p>
         </div>
 
         <div style={{ borderTop: '1px solid var(--border)', paddingTop: '0.75rem' }}>
-          <p className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-xs uppercase tracking-[0.16em]" style={{ color: 'var(--text-muted)' }}>
             Break-even
           </p>
-          <p className="text-lg font-bold" style={{ color: netColor }}>
+          <p className="mt-2 font-display text-3xl leading-none tracking-[0.08em]" style={{ color: netColor }}>
             {revenue.breakEvenYears === null
               ? 'Never'
               : revenue.breakEvenYears > 500
@@ -121,7 +120,7 @@ export function RevenuePanel({ revenue, projectedCostUsd }: RevenuePanelProps) {
         </div>
       </div>
 
-      <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+      <p className="text-xs leading-6" style={{ color: 'var(--text-muted)' }}>
         {revenue.confidenceNote}
       </p>
     </div>
