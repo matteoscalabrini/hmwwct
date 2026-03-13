@@ -42,9 +42,13 @@ const SOURCES: Record<string, Source> = {
  *   Direct operations only: ~$824B / 20yr = $41B/yr = $112M/day.
  */
 const WATSON_DAILY_ANCHOR_USD: Record<string, number> = {
-  skirmish: 80_000_000,     // $80M/day (Kargil-scale, US-budget-equivalent direct ops)
-  conventional: 400_000_000, // $400M/day (Gulf War 1991 direct ops, inflation-adj to 2023)
-  occupation: 112_000_000,   // $112M/day (Afghanistan direct Pentagon ops, $824B/20yr)
+  // Precision strike: munitions-heavy (Tomahawk $1.5M+, JASSM $1M+), carrier battle group $8M/day,
+  // B-52/B-2 long-range sorties. Calibrated to: Desert Fox ($125M/day), Allied Force ($54M/day).
+  // Higher per-day than skirmish but total cost far lower due to short duration.
+  precision_strike: 150_000_000, // $150M/day (US-budget-equivalent, munitions-dominant)
+  skirmish: 80_000_000,          // $80M/day (Kargil-scale, US-budget-equivalent direct ops)
+  conventional: 400_000_000,     // $400M/day (Gulf War 1991 direct ops, inflation-adj to 2023)
+  occupation: 112_000_000,       // $112M/day (Afghanistan direct Pentagon ops, $824B/20yr)
 };
 const US_REFERENCE_BUDGET_USD = 700_000_000_000; // $700B 2010 average
 

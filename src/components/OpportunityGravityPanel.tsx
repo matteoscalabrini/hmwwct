@@ -56,17 +56,14 @@ export function OpportunityGravityPanel({
     .filter((row): row is ComparisonRow => row !== null);
 
   return (
-    <section style={{ border: '1px solid var(--green-dim)', background: 'var(--panel)' }} className="p-6 sm:p-8 space-y-6">
-      <div className="space-y-2">
+    <section className="space-y-6">
+      <div className="space-y-1">
         <p className="text-xs tracking-widest uppercase" style={{ color: 'var(--green-dim)' }}>
-          &gt; THE SCALE OF THIS COST
+          &gt; WHAT THE SAME MONEY COULD BUY
         </p>
-        <h2 className="text-xl sm:text-2xl font-bold tracking-wide" style={{ color: 'var(--green)' }}>
-          WHAT THE SAME MONEY COULD BUY AGAINST TODAY&apos;S NATIONAL BASELINES
-        </h2>
-        <p className="text-xs leading-relaxed max-w-3xl" style={{ color: 'var(--text-dim)' }}>
-          This view now uses icon-based comparison cards instead of bars. Only categories with strong live country-level
-          coverage are shown, using the latest World Bank observations available for the selected target nation.
+        <p className="text-xs leading-relaxed" style={{ color: 'var(--text-dim)' }}>
+          Compared against live World Bank baselines for the target nation.
+          Only categories with strong country-level coverage are shown.
         </p>
       </div>
 

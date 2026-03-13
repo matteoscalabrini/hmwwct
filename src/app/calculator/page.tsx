@@ -3,18 +3,20 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Suspense } from 'react';
-import { ConflictScenario, OpportunityContextResponse, WarCostResult } from '@/types';
+import { ConflictScenario, OpportunityContextResponse, WarCostResult, OpportunityCostItem } from '@/types';
 import { CountrySelector } from '@/components/CountrySelector';
 import { ScenarioSelector } from '@/components/ScenarioSelector';
 import { CostBreakdown } from '@/components/CostBreakdown';
 import { CostChart } from '@/components/CostChart';
-import { OpportunityCost } from '@/components/OpportunityCost';
 import { OpportunityGravityPanel } from '@/components/OpportunityGravityPanel';
 import { HumanTollBanner } from '@/components/HumanTollBanner';
 import { DataFreshnessIndicator } from '@/components/DataFreshnessIndicator';
 import { RevenuePanel } from '@/components/RevenuePanel';
 import { Skeleton } from '@/components/ui/Skeleton';
-import { formatCurrency, formatCurrencyRange, formatDuration } from '@/lib/utils/formatting';
+import { formatCurrency, formatCurrencyRange, formatDuration, formatNumber } from '@/lib/utils/formatting';
+import { STRONG_OPPORTUNITY_ID_SET } from '@/constants/opportunity-focus';
+import { OPPORTUNITY_ICONS, OPPORTUNITY_ID_ICON_FALLBACKS } from '@/lib/utils/opportunity-icons';
+import { Heart } from 'lucide-react';
 
 const LOADING_LINES = [
   'ACCESSING WORLD BANK DATABASE...',
@@ -25,61 +27,215 @@ const LOADING_LINES = [
   'THE MATH IS SIMPLE. THE DECISION, APPARENTLY, IS NOT.',
 ];
 
+type ResultTab = 'breakdown' | 'revenue' | 'scale';
+
+// ─── Gut-punch rate panel (always visible below hero) ─────────────────────────
+
+function GutPunchPanel({ totalCost, durationYears, topItem }: {
+  totalCost: number;
+  durationYears: number;
+  topItem: OpportunityCostItem | null;
+}) {
+  const safeDays = Math.max(durationYears * 365, 1);
+  const perDay    = totalCost / safeDays;
+  const perHour   = perDay / 24;
+  const perMinute = perHour / 60;
+  const perSecond = perMinute / 60;
+  const perYear   = perDay * 365;
+
+  const Icon = topItem
+    ? (OPPORTUNITY_ICONS[topItem.iconName] ?? OPPORTUNITY_ID_ICON_FALLBACKS[topItem.id] ?? Heart)
+    : null;
+
+  return (
+    <div style={{ border: '1px solid var(--green-dim)', background: 'var(--panel)' }} className="p-6 sm:p-8 space-y-6">
+      <p className="text-xs tracking-widest uppercase" style={{ color: 'var(--green-dim)' }}>
+        &gt; AT THE PROJECTED RATE OF SPENDING
+      </p>
+
+      {/* Headline rate */}
+      <div className="space-y-1">
+        <div className="text-5xl sm:text-6xl font-bold tabular-nums glow" style={{ color: 'var(--green)' }}>
+          {formatCurrency(perDay)}
+        </div>
+        <p className="text-sm tracking-widest uppercase font-bold" style={{ color: 'var(--green-dim)' }}>
+          SPENT EVERY DAY OF THIS CONFLICT
+        </p>
+      </div>
+
+      {/* Rate breakdown grid */}
+      <div
+        className="grid grid-cols-2 lg:grid-cols-4"
+        style={{ border: '1px solid var(--border)' }}
+      >
+        {[
+          { label: 'PER SECOND', value: perSecond },
+          { label: 'PER MINUTE', value: perMinute },
+          { label: 'PER HOUR',   value: perHour   },
+          { label: 'PER YEAR',   value: perYear   },
+        ].map(({ label, value }, i) => (
+          <div
+            key={label}
+            className="p-4 space-y-1"
+            style={{ borderRight: i < 3 ? '1px solid var(--border)' : 'none' }}
+          >
+            <p className="text-xs tracking-widest uppercase" style={{ color: 'var(--text-dim)' }}>{label}</p>
+            <p className="text-base font-bold tabular-nums" style={{ color: 'var(--amber)' }}>
+              {formatCurrency(value)}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {/* Top opportunity cost item */}
+      {topItem && Icon && (
+        <div className="pt-4" style={{ borderTop: '1px solid var(--border)' }}>
+          <p className="text-xs tracking-widest uppercase mb-4" style={{ color: 'var(--text-dim)' }}>
+            ALTERNATIVELY, THE FULL CONFLICT COST WOULD FUND
+          </p>
+          <div className="flex items-center gap-5">
+            <div
+              className="h-14 w-14 shrink-0 flex items-center justify-center"
+              style={{ border: '1px solid rgba(74,222,128,0.35)', background: 'rgba(74,222,128,0.10)' }}
+            >
+              <Icon size={28} style={{ color: 'var(--green)' }} />
+            </div>
+            <div>
+              <div>
+                <span className="text-3xl sm:text-4xl font-bold tabular-nums glow" style={{ color: 'var(--green)' }}>
+                  {formatNumber(topItem.quantity)}
+                </span>
+                <span className="text-sm ml-2 tracking-wider uppercase" style={{ color: 'var(--green-dim)' }}>
+                  {topItem.unit}
+                </span>
+              </div>
+              <p className="text-sm mt-1 tracking-wider uppercase" style={{ color: 'var(--text-dim)' }}>
+                {topItem.label}
+              </p>
+            </div>
+          </div>
+          <p className="text-xs mt-4" style={{ color: 'var(--text-muted)' }}>
+            FOR CONTEXT ONLY — NOT INCLUDED IN COST TOTAL.
+            OPEN THE <span style={{ color: 'var(--green-dim)' }}>SCALE</span> TAB TO SEE ALL COMPARISONS AGAINST LIVE NATIONAL BASELINES.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Live accumulating cost ticker (mounts fresh when SCALE tab opens) ────────
+
+function LiveCostTicker({ totalCost, durationYears }: { totalCost: number; durationYears: number }) {
+  const [elapsed, setElapsed] = useState(0);
+  const ratePerSecond = totalCost / Math.max(durationYears * 365, 1) / 86400;
+
+  useEffect(() => {
+    const id = setInterval(() => setElapsed(s => s + 1), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const accumulated = elapsed * ratePerSecond;
+
+  return (
+    <div
+      style={{ border: '1px solid var(--green-dim)', background: 'var(--bg)' }}
+      className="p-6 sm:p-8 space-y-4"
+    >
+      <p className="text-xs tracking-widest uppercase" style={{ color: 'var(--green-dim)' }}>
+        &gt; COST ACCUMULATING SINCE YOU OPENED THIS VIEW
+      </p>
+      <div
+        className="text-5xl sm:text-6xl font-bold tabular-nums count-shimmer"
+        style={{ color: 'var(--green)' }}
+      >
+        {formatCurrency(accumulated)}
+        <span className="cursor ml-1" style={{ opacity: 0.6 }} />
+      </div>
+      <p className="text-xs tabular-nums" style={{ color: 'var(--text-dim)' }}>
+        {formatCurrency(ratePerSecond)}/SEC
+        &nbsp;·&nbsp;
+        {formatCurrency(ratePerSecond * 60)}/MIN
+        &nbsp;·&nbsp;
+        {formatCurrency(ratePerSecond * 3600)}/HR
+        &nbsp;·&nbsp;
+        {formatCurrency(ratePerSecond * 86400)}/DAY
+      </p>
+      <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+        Projected total spread evenly across the full conflict duration.
+        Actual spending is front-loaded — early months cost significantly more.
+      </p>
+    </div>
+  );
+}
+
+// ─── Main calculator ───────────────────────────────────────────────────────────
+
 function CalculatorContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
   const [aggressorCode, setAggressorCode] = useState<string | null>(searchParams.get('aggressor'));
-  const [targetCode, setTargetCode] = useState<string | null>(searchParams.get('target'));
-  const [scenario, setScenario] = useState<ConflictScenario | null>(
+  const [targetCode,    setTargetCode]    = useState<string | null>(searchParams.get('target'));
+  const [scenario,      setScenario]      = useState<ConflictScenario | null>(
     (searchParams.get('scenario') as ConflictScenario) ?? null
   );
-  const [result, setResult] = useState<WarCostResult | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [visibleLoadingLines, setVisibleLoadingLines] = useState(0);
-  const [displayedPoint, setDisplayedPoint] = useState(0);
-  const [loadingProgress, setLoadingProgress] = useState(0);
-  const [showOpportunityContext, setShowOpportunityContext] = useState(false);
-  const [opportunityContext, setOpportunityContext] = useState<OpportunityContextResponse | null>(null);
-  const [opportunityContextLoading, setOpportunityContextLoading] = useState(false);
-  const [opportunityContextError, setOpportunityContextError] = useState<string | null>(null);
-  const rafRef = useRef<number>(0);
-  const abortRef = useRef<AbortController | null>(null);
-  const opportunityAbortRef = useRef<AbortController | null>(null);
+  const [result,   setResult]   = useState<WarCostResult | null>(null);
+  const [loading,  setLoading]  = useState(false);
+  const [error,    setError]    = useState<string | null>(null);
 
+  const [visibleLoadingLines, setVisibleLoadingLines] = useState(0);
+  const [displayedPoint,      setDisplayedPoint]      = useState(0);
+  const [loadingProgress,     setLoadingProgress]     = useState(0);
+
+  const [activeTab, setActiveTab] = useState<ResultTab>('breakdown');
+
+  const [opportunityContext,        setOpportunityContext]        = useState<OpportunityContextResponse | null>(null);
+  const [opportunityContextLoading, setOpportunityContextLoading] = useState(false);
+  const [opportunityContextError,   setOpportunityContextError]   = useState<string | null>(null);
+
+  const rafRef              = useRef<number>(0);
+  const abortRef            = useRef<AbortController | null>(null);
+  const opportunityAbortRef = useRef<AbortController | null>(null);
+  // tracks which targetCode we've already fetched context for
+  const scaleTabFetchedRef  = useRef<string | null>(null);
+
+  // Sync URL params
   useEffect(() => {
     const params = new URLSearchParams();
     if (aggressorCode) params.set('aggressor', aggressorCode);
-    if (targetCode) params.set('target', targetCode);
-    if (scenario) params.set('scenario', scenario);
+    if (targetCode)    params.set('target',    targetCode);
+    if (scenario)      params.set('scenario',  scenario);
     router.replace(`/calculator?${params.toString()}`, { scroll: false });
   }, [aggressorCode, targetCode, scenario, router]);
 
+  // Auto-calculate when all inputs are set
   useEffect(() => {
     if (!aggressorCode || !targetCode || !scenario) return;
     handleCalculate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [aggressorCode, targetCode, scenario]);
 
+  // Reset opportunity context when target changes
   useEffect(() => {
     if (opportunityAbortRef.current) {
       opportunityAbortRef.current.abort();
       opportunityAbortRef.current = null;
     }
-    setShowOpportunityContext(false);
     setOpportunityContext(null);
     setOpportunityContextError(null);
     setOpportunityContextLoading(false);
+    scaleTabFetchedRef.current = null;
   }, [targetCode]);
 
   // Keyboard shortcuts: [1/2/3] scenario, [Esc] reset
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
-      if (e.key === '1') setScenario('skirmish');
-      else if (e.key === '2') setScenario('conventional');
-      else if (e.key === '3') setScenario('occupation');
+      if      (e.key === '1')      setScenario('precision_strike');
+      else if (e.key === '2')      setScenario('skirmish');
+      else if (e.key === '3')      setScenario('conventional');
+      else if (e.key === '4')      setScenario('occupation');
       else if (e.key === 'Escape') { setResult(null); setError(null); }
     };
     window.addEventListener('keydown', handler);
@@ -102,12 +258,12 @@ function CalculatorContent() {
   // Animated count-up when result arrives
   useEffect(() => {
     if (!result) { setDisplayedPoint(0); return; }
-    const target = result.total.point;
+    const target   = result.total.point;
     const duration = 2200;
     const startTime = performance.now();
     const animate = (now: number) => {
       const progress = Math.min((now - startTime) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
+      const eased    = 1 - Math.pow(1 - progress, 3);
       setDisplayedPoint(Math.round(eased * target));
       if (progress < 1) rafRef.current = requestAnimationFrame(animate);
     };
@@ -118,7 +274,6 @@ function CalculatorContent() {
   const handleCalculate = async () => {
     if (!aggressorCode || !targetCode || !scenario) return;
 
-    // Cancel any in-flight request
     if (abortRef.current) abortRef.current.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -126,12 +281,11 @@ function CalculatorContent() {
     setLoading(true);
     setError(null);
     setLoadingProgress(0);
+    setActiveTab('breakdown');
 
-    // Smooth progress bar: accelerates to ~85% then slows, never reaches 100% until done
     const progressStart = Date.now();
     const progressInterval = setInterval(() => {
       const elapsed = (Date.now() - progressStart) / 1000;
-      // asymptotic curve: approaches 90% over ~20s
       setLoadingProgress(Math.min(90, 90 * (1 - Math.exp(-elapsed / 6))));
     }, 200);
 
@@ -154,7 +308,6 @@ function CalculatorContent() {
       setResult(data);
     } catch (err) {
       if (controller.signal.aborted) {
-        // If aborted by a newer request, don't show error
         if (abortRef.current !== controller) return;
         setError('Request timed out — the data source may be slow. Try again.');
       } else {
@@ -162,18 +315,11 @@ function CalculatorContent() {
       }
     } finally {
       clearInterval(progressInterval);
-      if (abortRef.current === controller) {
-        setLoading(false);
-      }
+      if (abortRef.current === controller) setLoading(false);
     }
   };
 
-  const handleRevealGravity = async () => {
-    if (!targetCode) return;
-
-    setShowOpportunityContext(true);
-    if (opportunityContext || opportunityContextLoading) return;
-
+  const fetchOpportunityContext = async (code: string) => {
     if (opportunityAbortRef.current) opportunityAbortRef.current.abort();
     const controller = new AbortController();
     opportunityAbortRef.current = controller;
@@ -182,14 +328,11 @@ function CalculatorContent() {
     setOpportunityContextError(null);
 
     try {
-      const res = await fetch(`/api/opportunity-context?target=${targetCode}`, {
-        signal: controller.signal,
-      });
+      const res = await fetch(`/api/opportunity-context?target=${code}`, { signal: controller.signal });
       if (!res.ok) {
         const err = await res.json().catch(() => null);
         throw new Error(err?.error ?? 'Opportunity context lookup failed');
       }
-
       const data: OpportunityContextResponse = await res.json();
       if (opportunityAbortRef.current !== controller) return;
       setOpportunityContext(data);
@@ -204,13 +347,34 @@ function CalculatorContent() {
     }
   };
 
+  const handleTabChange = (tab: ResultTab) => {
+    setActiveTab(tab);
+    if (tab === 'scale' && targetCode && scaleTabFetchedRef.current !== targetCode) {
+      scaleTabFetchedRef.current = targetCode;
+      fetchOpportunityContext(targetCode);
+    }
+  };
+
   const canCalculate = aggressorCode && targetCode && scenario;
+
+  const topOpportunityItem: OpportunityCostItem | null = result
+    ? (result.opportunityCosts.find(i => STRONG_OPPORTUNITY_ID_SET.has(i.id) && i.quantity >= 1) ?? null)
+    : null;
+
+  const TABS: { id: ResultTab; label: string }[] = [
+    { id: 'breakdown', label: 'BREAKDOWN' },
+    { id: 'revenue',   label: 'REVENUE'   },
+    { id: 'scale',     label: 'SCALE'     },
+  ];
 
   return (
     <div className="px-5 py-6 space-y-6">
 
       {/* Header */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end" style={{ borderBottom: '1px solid var(--border)', paddingBottom: '1.5rem' }}>
+      <div
+        className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end"
+        style={{ borderBottom: '1px solid var(--border)', paddingBottom: '1.5rem' }}
+      >
         <div>
           <p className="text-xs tracking-widest uppercase mb-1" style={{ color: 'var(--text-dim)' }}>
             WOPR // STRATEGIC COST ANALYSIS
@@ -229,10 +393,8 @@ function CalculatorContent() {
         </div>
       </div>
 
-      {/* Inputs — two columns on larger screens */}
+      {/* Inputs */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-        {/* Step 1 */}
         <section className="space-y-3">
           <div>
             <p className="text-xs tracking-widest uppercase" style={{ color: 'var(--green-dim)' }}>
@@ -250,7 +412,6 @@ function CalculatorContent() {
           />
         </section>
 
-        {/* Step 2 */}
         <section className="space-y-3">
           <div className="flex items-start justify-between gap-4">
             <div>
@@ -261,9 +422,7 @@ function CalculatorContent() {
                 Duration is always optimistic in the initial briefing.
               </p>
             </div>
-            <p className="text-xs shrink-0 tracking-widest" style={{ color: 'var(--text-muted)' }}>
-              [1] [2] [3]
-            </p>
+            <p className="text-xs shrink-0 tracking-widest" style={{ color: 'var(--text-muted)' }}>[1] [2] [3] [4]</p>
           </div>
           <ScenarioSelector value={scenario} onChange={setScenario} />
         </section>
@@ -321,7 +480,6 @@ function CalculatorContent() {
               <Skeleton className="h-28 w-full" />
               <Skeleton className="h-20 w-full" />
               <Skeleton className="h-20 w-full" />
-              <Skeleton className="h-20 w-full" />
             </div>
             <div className="space-y-3">
               <Skeleton className="h-44 w-full" />
@@ -350,21 +508,18 @@ function CalculatorContent() {
 
       {/* Results */}
       {result && !loading && (
-        <div className="space-y-8 access-granted">
+        <div className="space-y-6 access-granted">
 
-          {/* Cost + Impact + Revenue + Net — four-column hero */}
+          {/* Hero — four-column cost grid */}
           <div style={{ border: '1px solid var(--green-dim)', background: 'var(--panel)' }} className="p-6 sm:p-8">
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 items-start">
 
-              {/* Col 1: Total cost */}
+              {/* Total cost */}
               <div className="space-y-2">
                 <p className="text-xs tracking-widest uppercase" style={{ color: 'var(--text-dim)' }}>
                   TOTAL PROJECTED COST
                 </p>
-                <div
-                  className="text-4xl sm:text-5xl font-bold tabular-nums count-shimmer"
-                  style={{ color: 'var(--green)' }}
-                >
+                <div className="text-4xl sm:text-5xl font-bold tabular-nums count-shimmer" style={{ color: 'var(--green)' }}>
                   {formatCurrency(displayedPoint)}
                 </div>
                 <p className="text-xs" style={{ color: 'var(--green-dim)' }}>
@@ -378,7 +533,7 @@ function CalculatorContent() {
                 </p>
               </div>
 
-              {/* Col 2: Economic impact */}
+              {/* Economic impact */}
               <div className="space-y-2" style={{ borderLeft: '1px solid var(--border)', paddingLeft: '1.5rem' }}>
                 <p className="text-xs tracking-widest uppercase" style={{ color: 'var(--text-dim)' }}>
                   ECONOMIC IMPACT
@@ -394,7 +549,7 @@ function CalculatorContent() {
                 </p>
               </div>
 
-              {/* Col 3: Best-case revenue */}
+              {/* Best-case revenue */}
               <div className="space-y-2" style={{ borderLeft: '1px solid var(--border)', paddingLeft: '1.5rem' }}>
                 <p className="text-xs tracking-widest uppercase" style={{ color: 'var(--text-dim)' }}>
                   BEST-CASE REVENUE
@@ -408,12 +563,10 @@ function CalculatorContent() {
                     ? 'NEVER'
                     : `${result.revenue.breakEvenYears} YRS`}
                 </p>
-                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                  Assumes full territorial control.
-                </p>
+                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Assumes full territorial control.</p>
               </div>
 
-              {/* Col 4: Net position */}
+              {/* Net position */}
               <div className="space-y-2" style={{ borderLeft: '1px solid var(--border)', paddingLeft: '1.5rem' }}>
                 <p className="text-xs tracking-widest uppercase" style={{ color: 'var(--text-dim)' }}>
                   NET POSITION
@@ -429,70 +582,91 @@ function CalculatorContent() {
                 </p>
               </div>
             </div>
-            <div className="pt-6 mt-6" style={{ borderTop: '1px solid var(--border)' }}>
-              <button
-                onClick={handleRevealGravity}
-                disabled={opportunityContextLoading}
-                className="w-full px-5 py-5 sm:py-6 text-4xl sm:text-5xl leading-none font-bold tracking-[0.08em] uppercase transition-opacity hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
-                style={{
-                  border: '1px solid var(--red)',
-                  background: 'rgba(255,68,68,0.10)',
-                  color: 'var(--red)',
-                  boxShadow: '0 0 18px rgba(255,68,68,0.08)',
-                }}
-              >
-                {opportunityContextLoading
-                  ? 'LOADING THE SCALE OF THESE COSTS'
-                  : 'I DO NOT UNDERSTAND THE GRAVITY OF THESE COSTS'}
-              </button>
-            </div>
           </div>
 
-          {showOpportunityContext && (
-            <OpportunityGravityPanel
-              metrics={opportunityContext?.metrics ?? []}
-              items={result.opportunityCosts}
-              loading={opportunityContextLoading}
-              error={opportunityContextError}
-            />
-          )}
+          {/* Gut-punch rate panel */}
+          <GutPunchPanel
+            totalCost={result.total.point}
+            durationYears={result.duration.point}
+            topItem={topOpportunityItem}
+          />
 
-          {/* Revenue detail — full width, directly below the hero */}
+          {/* Tabbed detail */}
           <div>
-            <p className="text-xs tracking-widest uppercase mb-1" style={{ color: 'var(--green-dim)' }}>
-              &gt; ESTIMATED REVENUE // BEST-CASE BREAKDOWN
-            </p>
-            <p className="text-xs mb-4" style={{ color: 'var(--text-muted)' }}>
-              Assumes the aggressor wins and maintains full control; read assumptions before interpreting.
-            </p>
-            <RevenuePanel revenue={result.revenue} projectedCostUsd={result.total.point} />
-          </div>
-
-          {/* Main grid — 3 columns with sidebar */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-            {/* Left: breakdown + human toll */}
-            <div className="lg:col-span-2 space-y-6">
-              <HumanTollBanner toll={result.humanToll} />
-              <div>
-                <p className="text-xs tracking-widest uppercase mb-1" style={{ color: 'var(--green-dim)' }}>
-                  &gt; COST BREAKDOWN BY CATEGORY
-                </p>
-                <p className="text-xs mb-4" style={{ color: 'var(--text-muted)' }}>
-                  Economic impact is broken out in the header; click any category to inspect the model.
-                </p>
-                <CostBreakdown categories={result.breakdown} />
-              </div>
+            {/* Tab bar */}
+            <div className="flex" style={{ borderBottom: '1px solid var(--green-dim)' }}>
+              {TABS.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => handleTabChange(tab.id)}
+                  className="px-5 py-3 text-xs tracking-widest uppercase transition-colors"
+                  style={{
+                    color:        activeTab === tab.id ? 'var(--green)' : 'var(--text-dim)',
+                    background:   activeTab === tab.id ? 'var(--panel)' : 'transparent',
+                    border:       '1px solid',
+                    borderColor:  activeTab === tab.id ? 'var(--green-dim)' : 'var(--border)',
+                    borderBottom: activeTab === tab.id ? '1px solid var(--panel)' : '1px solid var(--green-dim)',
+                    marginBottom: '-1px',
+                    position:     'relative',
+                    zIndex:       activeTab === tab.id ? 1 : 0,
+                  }}
+                >
+                  &gt; {tab.label}
+                </button>
+              ))}
             </div>
 
-            {/* Right: chart + opportunity cost */}
-            <div className="space-y-6">
-              <div style={{ border: '1px solid var(--border)', background: 'var(--panel)' }} className="p-5">
-                <CostChart result={result} />
-              </div>
-              <div style={{ border: '1px solid var(--border)', background: 'var(--panel)' }} className="p-5">
-                <OpportunityCost items={result.opportunityCosts} />
-              </div>
+            {/* Tab content */}
+            <div
+              style={{ border: '1px solid var(--green-dim)', borderTop: 'none', background: 'var(--panel)' }}
+              className="p-6 sm:p-8"
+            >
+
+              {/* BREAKDOWN TAB */}
+              {activeTab === 'breakdown' && (
+                <div className="space-y-6">
+                  <HumanTollBanner toll={result.humanToll} />
+                  <div>
+                    <p className="text-xs tracking-widest uppercase mb-1" style={{ color: 'var(--green-dim)' }}>
+                      &gt; COST BREAKDOWN BY CATEGORY
+                    </p>
+                    <p className="text-xs mb-4" style={{ color: 'var(--text-muted)' }}>
+                      Economic impact is broken out in the header; click any category to inspect the model.
+                    </p>
+                    <CostBreakdown categories={result.breakdown} />
+                  </div>
+                  <CostChart result={result} />
+                </div>
+              )}
+
+              {/* REVENUE TAB */}
+              {activeTab === 'revenue' && (
+                <div>
+                  <p className="text-xs tracking-widest uppercase mb-1" style={{ color: 'var(--green-dim)' }}>
+                    &gt; ESTIMATED REVENUE // BEST-CASE BREAKDOWN
+                  </p>
+                  <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>
+                    Assumes the aggressor wins and maintains full control; read assumptions before interpreting.
+                  </p>
+                  <RevenuePanel revenue={result.revenue} projectedCostUsd={result.total.point} />
+                </div>
+              )}
+
+              {/* SCALE TAB */}
+              {activeTab === 'scale' && (
+                <div className="space-y-8">
+                  <LiveCostTicker
+                    totalCost={result.total.point}
+                    durationYears={result.duration.point}
+                  />
+                  <OpportunityGravityPanel
+                    metrics={opportunityContext?.metrics ?? []}
+                    items={result.opportunityCosts}
+                    loading={opportunityContextLoading}
+                    error={opportunityContextError}
+                  />
+                </div>
+              )}
             </div>
           </div>
 

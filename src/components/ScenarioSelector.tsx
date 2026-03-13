@@ -10,9 +10,10 @@ interface ScenarioSelectorProps {
 }
 
 const DEFCON: Record<string, { level: number; color: string; bars: number }> = {
-  skirmish:     { level: 4, color: 'var(--amber)', bars: 2 },
-  conventional: { level: 3, color: '#ff8800',      bars: 3 },
-  occupation:   { level: 2, color: 'var(--red)',   bars: 4 },
+  precision_strike: { level: 4, color: 'var(--green-dim)', bars: 1 },
+  skirmish:         { level: 4, color: 'var(--amber)',     bars: 2 },
+  conventional:     { level: 3, color: '#ff8800',          bars: 3 },
+  occupation:       { level: 2, color: 'var(--red)',       bars: 4 },
 };
 
 function DefconBars({ bars, color, selected }: { bars: number; color: string; selected: boolean }) {
@@ -34,11 +35,16 @@ function DefconBars({ bars, color, selected }: { bars: number; color: string; se
   );
 }
 
-const KEYS: Record<string, string> = { skirmish: '1', conventional: '2', occupation: '3' };
+const KEYS: Record<string, string> = {
+  precision_strike: '1',
+  skirmish:         '2',
+  conventional:     '3',
+  occupation:       '4',
+};
 
 export function ScenarioSelector({ value, onChange }: ScenarioSelectorProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
       {Object.values(SCENARIOS).map((s) => {
         const selected = value === s.id;
         const defcon = DEFCON[s.id];

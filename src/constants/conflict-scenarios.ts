@@ -1,12 +1,32 @@
 import { ScenarioDefinition } from '@/types';
 
 export const SCENARIOS: Record<string, ScenarioDefinition> = {
+  precision_strike: {
+    id: 'precision_strike',
+    label: 'Precision Strike Campaign',
+    description:
+      'Drones, cruise missiles, strategic bombers (B-52, B-2). No boots on the ground. Days to weeks.',
+    examples: 'e.g. 1999 Kosovo ($4.2B, 78 days), 1998 Desert Fox ($500M, 4 days), 2024 Yemen strikes',
+    durationYears: { min: 0.003, max: 0.15, point: 0.05 }, // ~1 day to ~7 weeks, point ~18 days
+    intensityMultiplier: 0.7,
+    // Minimal displacement — no ground occupation, aggressor doesn't push civilians out of their homes.
+    // Infrastructure damage may cause some internal movement but far below any ground-war threshold.
+    displacementMultiplier: 0.01,
+    // Annual reconstruction rate: damaged infrastructure (power, roads, military sites) but no occupation damage.
+    // Kosovo: ~$2B reconstruction for $15B GDP over 2yr = ~7%/yr. Lower bound used.
+    reconstructionRate: { min: 0.01, max: 0.08, point: 0.03 },
+    // Aggressor: negligible GDP impact (US economy unaffected by Kosovo strikes).
+    // Target: moderate disruption — infrastructure damage, supply chain disruption, tourism/trade collapse.
+    gdpImpactPct: { aggressor: 0.001, target: 0.03 },
+    // High attrition: expensive munitions (Tomahawk $1.5M+, JASSM $1M+), possible drone/aircraft losses.
+    equipmentAttritionPct: 0.12,
+  },
   skirmish: {
     id: 'skirmish',
-    label: 'Limited Military Skirmish',
+    label: 'Limited Ground War',
     description:
-      'Border clashes, limited airstrikes, no sustained ground invasion. Days to months in duration.',
-    examples: 'e.g. 1999 Kargil War, 2020 Armenia–Azerbaijan, 2019 US–Iran skirmishes',
+      'Border clashes, limited ground offensives, air support. No full-scale invasion. Weeks to months.',
+    examples: 'e.g. 1999 Kargil War, 2020 Armenia–Azerbaijan, 2006 Lebanon War',
     durationYears: { min: 0.05, max: 0.5, point: 0.2 }, // ~18 days to 6 months
     intensityMultiplier: 0.4,
     // Skirmish displacement: only the immediate border/conflict zone is affected (~5% of country's
@@ -63,6 +83,7 @@ export const SCENARIOS: Record<string, ScenarioDefinition> = {
 // Watson Institute: daily cost estimates for US-scale conflicts
 // Source: https://watson.brown.edu/costsofwar/
 export const WATSON_DAILY_COST_USD = {
+  precision_strike: { low: 50_000_000, high: 500_000_000 },
   skirmish: { low: 50_000_000, high: 500_000_000 },
   conventional: { low: 500_000_000, high: 2_000_000_000 },
   occupation: { low: 200_000_000, high: 800_000_000 },

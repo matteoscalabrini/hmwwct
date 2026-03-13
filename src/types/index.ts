@@ -34,7 +34,7 @@ export interface Country {
 
 // ─── Scenario ─────────────────────────────────────────────────────────────────
 
-export type ConflictScenario = 'skirmish' | 'conventional' | 'occupation';
+export type ConflictScenario = 'precision_strike' | 'skirmish' | 'conventional' | 'occupation';
 
 export interface ScenarioDefinition {
   id: ConflictScenario;
