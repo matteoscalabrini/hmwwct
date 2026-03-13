@@ -87,7 +87,17 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json(result);
+    return NextResponse.json({
+      ...result,
+      inputs: {
+        aggressorGdp: aggressor.gdp,
+        aggressorPopulation: aggressor.population,
+        targetGdp: target.gdp,
+        targetPopulation: target.population,
+        aggressorName: aggressor.name,
+        targetName: target.name,
+      },
+    });
   } catch (err) {
     console.error('[/api/calculate]', err);
     return NextResponse.json(

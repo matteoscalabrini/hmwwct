@@ -8,22 +8,22 @@ interface HumanTollBannerProps {
 export function HumanTollBanner({ toll }: HumanTollBannerProps) {
   return (
     <div
-      style={{ border: '1px solid var(--amber)', background: 'rgba(255,176,0,0.05)' }}
-      className="p-5"
+      className="rounded-lg p-5"
+      style={{ border: '1px solid var(--accent-amber)', background: 'rgba(245,158,11,0.06)' }}
     >
-      <p className="text-xs font-bold tracking-widest uppercase glow-amber mb-2" style={{ color: 'var(--amber)' }}>
-        ⚠ HUMAN TOLL // NOT MONETIZED
+      <p className="text-xs font-semibold mb-2" style={{ color: 'var(--accent-amber)' }}>
+        Human Toll — Not Monetized
       </p>
-      <p className="text-sm leading-relaxed" style={{ color: 'var(--amber)', opacity: 0.9 }}>
-        EST.{' '}
+      <p className="text-sm leading-relaxed" style={{ color: 'var(--accent-amber)' }}>
+        Est.{' '}
         <strong>
           {formatLargeNumber(toll.displacedPersonsMin)} –{' '}
-          {formatLargeNumber(toll.displacedPersonsMax)} PEOPLE
+          {formatLargeNumber(toll.displacedPersonsMax)} people
         </strong>{' '}
-        DISPLACED (POINT:{' '}
+        displaced (point:{' '}
         <strong>{formatLargeNumber(toll.displacedPersonsPoint)}</strong>).
       </p>
-      <p className="mt-2 text-xs leading-relaxed" style={{ color: 'var(--amber)', opacity: 0.65 }}>
+      <p className="mt-2 text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
         {toll.note}
       </p>
       <a
@@ -31,9 +31,9 @@ export function HumanTollBanner({ toll }: HumanTollBannerProps) {
         target="_blank"
         rel="noopener noreferrer"
         className="mt-1 text-xs underline"
-        style={{ color: 'var(--amber)', opacity: 0.65 }}
+        style={{ color: 'var(--accent-amber)', opacity: 0.7 }}
       >
-        SRC: {toll.source.name} ({toll.source.year})
+        Source: {toll.source.name} ({toll.source.year})
       </a>
     </div>
   );

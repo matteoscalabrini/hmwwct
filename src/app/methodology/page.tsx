@@ -226,28 +226,30 @@ const LIMITATIONS = [
   'Shadow-economy disruption and illicit finance networks in already-sanctioned states.',
 ];
 
+/* ------------------------------------------------------------------ */
+/*  Sub-components                                                     */
+/* ------------------------------------------------------------------ */
+
 function SectionHeader({
-  index,
   title,
   summary,
+  accentColor = 'var(--accent-blue)',
 }: {
-  index: string;
   title: string;
   summary: string;
+  accentColor?: string;
 }) {
   return (
     <div className="space-y-2">
-      <p className="text-xs tracking-[0.3em] uppercase" style={{ color: 'var(--green-dim)' }}>
-        Section {index}
-      </p>
-      <div className="grid gap-3 md:grid-cols-[minmax(0,220px)_1fr] md:items-end">
-        <h2 className="text-xl sm:text-2xl font-bold tracking-wide" style={{ color: 'var(--green)' }}>
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-1 h-8 rounded-full" style={{ background: accentColor }} />
+        <h2 className="text-2xl font-bold" style={{ color: 'var(--text)' }}>
           {title}
         </h2>
-        <p className="text-sm leading-relaxed" style={{ color: 'var(--text-dim)' }}>
-          {summary}
-        </p>
       </div>
+      <p className="text-sm leading-relaxed max-w-3xl" style={{ color: 'var(--text-secondary)' }}>
+        {summary}
+      </p>
     </div>
   );
 }
@@ -255,11 +257,11 @@ function SectionHeader({
 function EquationPanel({ lines }: { lines: string[] }) {
   return (
     <div
-      className="p-4 text-xs space-y-2"
-      style={{ background: 'var(--bg)', border: '1px solid var(--border)', color: 'var(--green-dim)' }}
+      className="rounded-lg p-4 font-mono text-sm space-y-1.5"
+      style={{ background: 'var(--bg)', border: '1px solid var(--border)', color: 'var(--accent-cyan)' }}
     >
       {lines.map((line) => (
-        <p key={line} className="font-mono leading-relaxed">
+        <p key={line} className="leading-relaxed">
           {line}
         </p>
       ))}
@@ -267,50 +269,62 @@ function EquationPanel({ lines }: { lines: string[] }) {
   );
 }
 
+function StatBadge({ value, label }: { value: string; label: string }) {
+  return (
+    <div
+      className="rounded-lg px-5 py-3 text-center"
+      style={{ background: 'var(--surface-bright)', border: '1px solid var(--border-bright)' }}
+    >
+      <p className="text-2xl font-bold" style={{ color: 'var(--accent-blue)' }}>
+        {value}
+      </p>
+      <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
+        {label}
+      </p>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Page                                                               */
+/* ------------------------------------------------------------------ */
+
 export default function MethodologyPage() {
   return (
-    <div className="px-5 py-6 space-y-8">
-      <header
-        className="p-8 sm:p-12 space-y-5"
-        style={{ border: '1px solid var(--border)', background: 'var(--panel)' }}
-      >
-        <p className="text-xs tracking-[0.35em] uppercase" style={{ color: 'var(--text-dim)' }}>
-          Working Paper
-        </p>
+    <div className="max-w-screen-xl mx-auto px-6 py-12 space-y-16">
+      {/* ── Header ── */}
+      <header className="space-y-8">
         <div className="space-y-3">
-          <h1
-            className="font-workbench glow"
-            style={{ color: 'var(--green)', fontSize: 'clamp(2rem, 4vw, 4rem)', lineHeight: 1.05 }}
-          >
+          <p className="text-sm font-medium" style={{ color: 'var(--accent-blue)' }}>
+            Technical Documentation
+          </p>
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight" style={{ color: 'var(--text)' }}>
             Methodology
           </h1>
-          <p className="max-w-4xl text-sm leading-relaxed" style={{ color: 'var(--green-dim)' }}>
+          <p className="max-w-3xl text-base leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
             This page documents the implemented calculator, not an aspirational model. It describes the public APIs,
             static datasets, mathematical transformations, fallback rules, uncertainty treatment, and audit notes that
             currently drive the application.
           </p>
         </div>
-        <div
-          className="grid gap-4 md:grid-cols-3 text-xs"
-          style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem', color: 'var(--text-dim)' }}
-        >
-          <p>4 external live APIs in active use.</p>
-          <p>8 local datasets plus validation layers and fallbacks.</p>
-          <p>4 cost modules plus a separate revenue counterfactual.</p>
+        <div className="grid gap-4 sm:grid-cols-3 max-w-lg">
+          <StatBadge value="4" label="Live APIs" />
+          <StatBadge value="8" label="Static Datasets" />
+          <StatBadge value="4" label="Cost Modules" />
         </div>
       </header>
 
-      <section className="space-y-4">
+      {/* ── Abstract ── */}
+      <section className="space-y-6">
         <SectionHeader
-          index="00"
           title="Abstract"
           summary="The application estimates the cost of interstate conflict by merging live macroeconomic indicators with curated static conflict datasets, then evaluating a fixed scenario archetype through three headline cost modules plus a separate economic-impact module."
         />
         <div
-          className="grid gap-4 lg:grid-cols-[1.3fr_0.7fr]"
-          style={{ border: '1px solid var(--border)', background: 'var(--panel)' }}
+          className="rounded-lg grid gap-0 lg:grid-cols-[1.3fr_0.7fr] overflow-hidden"
+          style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
         >
-          <div className="p-6 space-y-4 text-sm leading-relaxed" style={{ color: 'var(--text-dim)' }}>
+          <div className="p-6 sm:p-8 space-y-4 text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
             <p>
               The system treats war-cost estimation as a transparent accounting exercise. Every user-facing number must
               either come from a named public source or from a deterministic transformation applied to those sources.
@@ -325,8 +339,11 @@ export default function MethodologyPage() {
               parameterized in code.
             </p>
           </div>
-          <div className="p-6 space-y-3" style={{ borderLeft: '1px solid var(--border)' }}>
-            <p className="text-xs tracking-[0.3em] uppercase" style={{ color: 'var(--green-dim)' }}>
+          <div
+            className="p-6 sm:p-8 space-y-4 flex flex-col justify-center"
+            style={{ borderLeft: '1px solid var(--border)', background: 'var(--surface-bright)' }}
+          >
+            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
               Core Principle
             </p>
             <EquationPanel
@@ -340,24 +357,34 @@ export default function MethodologyPage() {
         </div>
       </section>
 
-      <section className="space-y-4">
+      {/* ── System Design ── */}
+      <section className="space-y-6">
         <SectionHeader
-          index="01"
           title="System Design"
           summary="The codebase is organized as a small Next.js application: static pages at the top, server routes in the middle, and deterministic calculation modules beneath them."
+          accentColor="var(--accent-indigo)"
         />
-        <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
-          <div style={{ border: '1px solid var(--border)', background: 'var(--panel)' }}>
+        <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+          {/* Internal Routes */}
+          <div
+            className="rounded-lg overflow-hidden"
+            style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
+          >
+            <div className="px-6 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
+              <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
+                Internal Routes
+              </p>
+            </div>
             {INTERNAL_ROUTES.map((item, index) => (
               <div
                 key={item.route}
-                className="p-5 space-y-2"
+                className="px-6 py-5 space-y-2"
                 style={{ borderBottom: index < INTERNAL_ROUTES.length - 1 ? '1px solid var(--border)' : 'none' }}
               >
-                <p className="text-sm font-bold" style={{ color: 'var(--green)' }}>
+                <p className="text-sm font-mono font-semibold" style={{ color: 'var(--accent-cyan)' }}>
                   {item.route}
                 </p>
-                <p className="text-xs leading-relaxed" style={{ color: 'var(--text-dim)' }}>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
                   {item.purpose}
                 </p>
                 <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -366,128 +393,142 @@ export default function MethodologyPage() {
               </div>
             ))}
           </div>
+          {/* Country Assembly Pipeline */}
           <div
-            className="p-6 space-y-4"
-            style={{ border: '1px solid var(--border)', background: 'var(--panel)' }}
+            className="rounded-lg p-6 sm:p-8 space-y-5"
+            style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
           >
-            <p className="text-xs tracking-[0.3em] uppercase" style={{ color: 'var(--green-dim)' }}>
+            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
               Country Assembly Pipeline
             </p>
-            <p className="text-sm leading-relaxed" style={{ color: 'var(--text-dim)' }}>
+            <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
               The calculation route starts by building two enriched country objects. Geographic metadata comes from REST
               Countries, live indicators come from World Bank, GDP can fall back to IMF DataMapper, military and
               sanctions context can fall back to local datasets, and missing data-sparse states are explicitly labeled
-              through the `hasStaticFallback` flag.
+              through the <span className="font-mono text-xs" style={{ color: 'var(--accent-cyan)' }}>hasStaticFallback</span> flag.
             </p>
             <EquationPanel lines={COUNTRY_ASSEMBLY_LINES} />
           </div>
         </div>
       </section>
 
-      <section className="space-y-4">
+      {/* ── Data Sources ── */}
+      <section className="space-y-6">
         <SectionHeader
-          index="02"
           title="Data Sources"
           summary="The calculator mixes live public APIs with versioned local datasets. Live APIs are used for recency; local files are used for coverage, calibration, and transparent fallback behavior."
+          accentColor="var(--accent-emerald)"
         />
-        <div className="space-y-4">
-          <div style={{ border: '1px solid var(--border)', background: 'var(--panel)' }}>
-            <div className="p-5 border-b" style={{ borderColor: 'var(--border)' }}>
-              <p className="text-sm font-bold tracking-wide" style={{ color: 'var(--green)' }}>
-                Live APIs
-              </p>
-            </div>
-            {LIVE_APIS.map((api, index) => (
-              <div
-                key={api.name}
-                className="p-5 grid gap-3 lg:grid-cols-[0.9fr_1.1fr_0.8fr]"
-                style={{ borderBottom: index < LIVE_APIS.length - 1 ? '1px solid var(--border)' : 'none' }}
-              >
-                <div className="space-y-1">
-                  <a
-                    href={api.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs font-bold tracking-[0.2em] uppercase hover:opacity-80 transition-opacity"
-                    style={{ color: 'var(--green)' }}
-                  >
-                    {api.name}
-                  </a>
-                  <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-                    Variables: {api.variables}
-                  </p>
-                </div>
-                <div className="space-y-2 text-xs leading-relaxed" style={{ color: 'var(--text-dim)' }}>
-                  <p>{api.role}</p>
-                  <p style={{ color: 'var(--text-muted)' }}>{api.fallback}</p>
-                </div>
-                <div className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+
+        {/* Live APIs Table */}
+        <div
+          className="rounded-lg overflow-hidden"
+          style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
+        >
+          <div className="px-6 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
+            <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
+              Live APIs
+            </p>
+          </div>
+          {LIVE_APIS.map((api, index) => (
+            <div
+              key={api.name}
+              className="px-6 py-5 grid gap-4 lg:grid-cols-[1fr_1.2fr_auto]"
+              style={{ borderBottom: index < LIVE_APIS.length - 1 ? '1px solid var(--border)' : 'none' }}
+            >
+              <div className="space-y-1.5">
+                <a
+                  href={api.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-semibold hover:underline transition-colors"
+                  style={{ color: 'var(--accent-blue)' }}
+                >
+                  {api.name}
+                </a>
+                <p className="text-xs font-mono leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+                  {api.variables}
+                </p>
+              </div>
+              <div className="space-y-2 text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                <p>{api.role}</p>
+                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                  {api.fallback}
+                </p>
+              </div>
+              <div className="flex items-start">
+                <span
+                  className="rounded-full px-3 py-1 text-xs font-medium whitespace-nowrap"
+                  style={{ background: 'var(--surface-bright)', color: 'var(--text-muted)', border: '1px solid var(--border-bright)' }}
+                >
                   Cache: {api.cache}
-                </div>
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Static Datasets Grid */}
+        <div
+          className="rounded-lg overflow-hidden"
+          style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
+        >
+          <div className="px-6 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
+            <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
+              Static Datasets and Fallback Layers
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2">
+            {STATIC_DATASETS.map((dataset, index) => (
+              <div
+                key={dataset.name}
+                className="px-6 py-5 space-y-2"
+                style={{
+                  borderBottom: index < STATIC_DATASETS.length - 1 ? '1px solid var(--border)' : 'none',
+                  borderRight: index % 2 === 0 ? '1px solid var(--border)' : 'none',
+                }}
+              >
+                <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
+                  {dataset.name}
+                </p>
+                <p className="text-xs font-medium" style={{ color: 'var(--accent-emerald)' }}>
+                  {dataset.count}
+                </p>
+                <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+                  {dataset.note}
+                </p>
               </div>
             ))}
-          </div>
-
-          <div style={{ border: '1px solid var(--border)', background: 'var(--panel)' }}>
-            <div className="p-5 border-b" style={{ borderColor: 'var(--border)' }}>
-              <p className="text-sm font-bold tracking-wide" style={{ color: 'var(--green)' }}>
-                Static Datasets and Fallback Layers
-              </p>
-            </div>
-            <div className="grid gap-0 md:grid-cols-2">
-              {STATIC_DATASETS.map((dataset, index) => (
-                <div
-                  key={dataset.name}
-                  className="p-5 space-y-2"
-                  style={{
-                    borderBottom: index < STATIC_DATASETS.length - 2 ? '1px solid var(--border)' : 'none',
-                    borderRight: index % 2 === 0 ? '1px solid var(--border)' : 'none',
-                  }}
-                >
-                  <p className="text-xs font-bold tracking-[0.2em] uppercase" style={{ color: 'var(--green)' }}>
-                    {dataset.name}
-                  </p>
-                  <p className="text-xs" style={{ color: 'var(--green-dim)' }}>
-                    {dataset.count}
-                  </p>
-                  <p className="text-xs leading-relaxed" style={{ color: 'var(--text-dim)' }}>
-                    {dataset.note}
-                  </p>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </section>
 
-      <section className="space-y-4">
+      {/* ── Model Specification ── */}
+      <section className="space-y-6">
         <SectionHeader
-          index="03"
           title="Model Specification"
           summary="Every category shown in the UI maps to a dedicated TypeScript module. The equations below are reduced forms of the implemented code, using the same constants and branching logic."
+          accentColor="var(--accent-amber)"
         />
-        <div className="space-y-4">
+        <div className="space-y-6">
           {MODEL_SECTIONS.map((section) => (
             <div
               key={section.id}
-              className="grid gap-0 lg:grid-cols-[0.8fr_1.2fr]"
-              style={{ border: '1px solid var(--border)', background: 'var(--panel)' }}
+              className="rounded-lg overflow-hidden grid gap-0 lg:grid-cols-[1fr_1.2fr]"
+              style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
             >
-              <div className="p-6 space-y-3" style={{ borderRight: '1px solid var(--border)' }}>
-                <p className="text-xs tracking-[0.3em] uppercase" style={{ color: 'var(--green-dim)' }}>
-                  Model {section.id}
-                </p>
-                <h3 className="text-lg font-bold" style={{ color: 'var(--green)' }}>
+              <div className="p-6 sm:p-8 space-y-4" style={{ borderRight: '1px solid var(--border)' }}>
+                <h3 className="text-lg font-bold" style={{ color: 'var(--text)' }}>
                   {section.title}
                 </h3>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-dim)' }}>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
                   {section.body}
                 </p>
                 <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
                   {section.notes}
                 </p>
               </div>
-              <div className="p-6">
+              <div className="p-6 sm:p-8 flex items-center">
                 <EquationPanel lines={section.equations} />
               </div>
             </div>
@@ -495,22 +536,26 @@ export default function MethodologyPage() {
         </div>
       </section>
 
-      <section className="space-y-4">
+      {/* ── Calibration and Audit Notes ── */}
+      <section className="space-y-6">
         <SectionHeader
-          index="04"
           title="Calibration and Audit Notes"
           summary="This repository was checked against the shipped data files and the running model logic. The goal was not to prove truth, but to document what the current code can defensibly claim."
+          accentColor="var(--accent-cyan)"
         />
         <div
-          className="p-6 space-y-4"
-          style={{ border: '1px solid var(--border)', background: 'var(--panel)' }}
+          className="rounded-lg p-6 sm:p-8 space-y-5"
+          style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
         >
           {AUDIT_NOTES.map((note, index) => (
-            <div key={note} className="flex gap-3 items-start">
-              <span className="text-xs font-bold" style={{ color: 'var(--green)' }}>
-                [{String(index + 1).padStart(2, '0')}]
+            <div key={note} className="flex gap-4 items-start">
+              <span
+                className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
+                style={{ background: 'var(--surface-bright)', color: 'var(--accent-cyan)', border: '1px solid var(--border-bright)' }}
+              >
+                {index + 1}
               </span>
-              <p className="text-sm leading-relaxed" style={{ color: 'var(--text-dim)' }}>
+              <p className="text-sm leading-relaxed pt-1" style={{ color: 'var(--text-secondary)' }}>
                 {note}
               </p>
             </div>
@@ -518,22 +563,26 @@ export default function MethodologyPage() {
         </div>
       </section>
 
-      <section className="space-y-4">
+      {/* ── Scope Limits ── */}
+      <section className="space-y-6">
         <SectionHeader
-          index="05"
           title="Scope Limits"
           summary="Exclusions are a methodological choice rather than an omission. The model only prices what the code can currently source, parameterize, and explain line by line."
+          accentColor="var(--accent-red)"
         />
         <div
-          className="grid gap-3 md:grid-cols-2"
-          style={{ border: '1px solid var(--border)', background: 'var(--panel)', padding: '1.5rem' }}
+          className="rounded-lg p-6 sm:p-8 grid gap-4 md:grid-cols-2"
+          style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
         >
           {LIMITATIONS.map((item) => (
             <div key={item} className="flex gap-3 items-start">
-              <span className="text-xs font-bold mt-0.5" style={{ color: 'var(--red)' }}>
-                x
+              <span
+                className="flex-shrink-0 mt-0.5 text-sm font-bold"
+                style={{ color: 'var(--accent-red)' }}
+              >
+                ✕
               </span>
-              <p className="text-xs leading-relaxed" style={{ color: 'var(--text-dim)' }}>
+              <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
                 {item}
               </p>
             </div>
@@ -541,23 +590,24 @@ export default function MethodologyPage() {
         </div>
       </section>
 
+      {/* ── Back to Calculator CTA ── */}
       <section
-        className="p-6 sm:p-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
-        style={{ border: '1px solid var(--border)', background: 'var(--panel)' }}
+        className="rounded-lg p-6 sm:p-8 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between"
+        style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
       >
-        <div className="space-y-1">
-          <p className="text-xs tracking-[0.3em] uppercase" style={{ color: 'var(--green-dim)' }}>
-            Recommended Reading Order
+        <div className="space-y-2">
+          <p className="text-lg font-bold" style={{ color: 'var(--text)' }}>
+            Ready to run the numbers?
           </p>
-          <p className="text-sm leading-relaxed" style={{ color: 'var(--text-dim)' }}>
+          <p className="text-sm leading-relaxed max-w-xl" style={{ color: 'var(--text-secondary)' }}>
             Start with the calculator for the result, then inspect each category line item, then return here for the
             underlying model assumptions and data pipeline.
           </p>
         </div>
         <Link
           href="/calculator"
-          className="inline-flex items-center justify-center px-8 py-4 text-sm font-bold tracking-[0.2em] uppercase hover:opacity-90 transition-opacity"
-          style={{ background: 'var(--green)', color: 'var(--bg)' }}
+          className="inline-flex items-center justify-center px-8 py-3.5 rounded-lg text-sm font-semibold transition-opacity hover:opacity-90 whitespace-nowrap"
+          style={{ background: 'var(--accent-blue)', color: '#ffffff' }}
         >
           Open Calculator
         </Link>

@@ -8,13 +8,13 @@ interface DataFreshnessIndicatorProps {
 
 export function DataFreshnessIndicator({ dataFreshness, hasStaticFallback }: DataFreshnessIndicatorProps) {
   return (
-    <div className="flex flex-wrap gap-3 items-center text-xs tracking-wider" style={{ color: 'var(--text-dim)' }}>
-      <span>DATA FEED:</span>
+    <div className="flex flex-wrap gap-2 items-center text-xs" style={{ color: 'var(--text-muted)' }}>
+      <span>Data:</span>
       <Badge variant={hasStaticFallback ? 'static' : 'live'}>
-        {hasStaticFallback ? 'PARTIAL STATIC' : 'LIVE API'}
+        {hasStaticFallback ? 'Partial Static' : 'Live API'}
       </Badge>
       <span>{dataFreshness.worldBank}</span>
-      <span style={{ color: 'var(--text-muted)' }}>·</span>
+      <span>&middot;</span>
       <span>{dataFreshness.sipri}</span>
     </div>
   );

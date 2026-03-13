@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ConflictScenario } from '@/types';
+import { Share2, Check } from 'lucide-react';
 
 interface ShareButtonProps {
   aggressorCode: string;
@@ -34,15 +35,16 @@ export function ShareButton({ aggressorCode, targetCode, scenario }: ShareButton
     <button
       type="button"
       onClick={handleShare}
-      className="inline-flex items-center gap-2 px-4 py-2 text-xs tracking-widest uppercase transition-colors focus:outline-none"
+      className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg transition-all focus:outline-none"
       style={{
-        border: '1px solid var(--green-dim)',
-        color: copied ? 'var(--green)' : 'var(--text-dim)',
-        background: 'transparent',
+        border: '1px solid var(--border-bright)',
+        color: copied ? 'var(--accent-emerald)' : 'var(--text-secondary)',
+        background: 'var(--surface)',
       }}
       aria-label="Share this calculation"
     >
-      {copied ? '✓ COPIED' : '> SHARE LINK'}
+      {copied ? <Check size={14} /> : <Share2 size={14} />}
+      {copied ? 'Copied!' : 'Share'}
     </button>
   );
 }

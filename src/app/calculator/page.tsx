@@ -1,130 +1,49 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Suspense } from 'react';
 import { ConflictScenario, OpportunityContextResponse, WarCostResult, OpportunityCostItem } from '@/types';
+import WorldMap from '@/components/WorldMap';
 import { CountrySelector } from '@/components/CountrySelector';
 import { ScenarioSelector } from '@/components/ScenarioSelector';
 import { CostBreakdown } from '@/components/CostBreakdown';
 import { CostChart } from '@/components/CostChart';
-import { OpportunityGravityPanel } from '@/components/OpportunityGravityPanel';
 import { HumanTollBanner } from '@/components/HumanTollBanner';
 import { DataFreshnessIndicator } from '@/components/DataFreshnessIndicator';
 import { RevenuePanel } from '@/components/RevenuePanel';
-import { Skeleton } from '@/components/ui/Skeleton';
+import { BudgetReallocation } from '@/components/BudgetReallocation';
+import { CostPerTaxpayer } from '@/components/CostPerTaxpayer';
+import { GdpComparisonPanel } from '@/components/GdpComparisonPanel';
+import { ShareButton } from '@/components/ShareButton';
 import { formatCurrency, formatCurrencyRange, formatDuration, formatNumber } from '@/lib/utils/formatting';
 import { STRONG_OPPORTUNITY_ID_SET } from '@/constants/opportunity-focus';
 import { OPPORTUNITY_ICONS, OPPORTUNITY_ID_ICON_FALLBACKS } from '@/lib/utils/opportunity-icons';
-import { Heart } from 'lucide-react';
+import { Heart, ArrowRightLeft, Loader2 } from 'lucide-react';
 
-const LOADING_LINES = [
-  'ACCESSING WORLD BANK DATABASE...',
-  'LOADING SIPRI MILITARY EXPENDITURE DATA...',
-  'VERIFYING FIGURES THAT DEFENSE MINISTRIES PREFER YOU DIDN\'T KNOW...',
-  'RUNNING WATSON INSTITUTE COST MODEL (FUNDED BY NO DEFENSE CONTRACTOR)...',
-  'CALCULATING HUMANITARIAN PROJECTIONS (THE PART THAT DOESN\'T FIT IN A PRESS RELEASE)...',
-  'THE MATH IS SIMPLE. THE DECISION, APPARENTLY, IS NOT.',
-];
+// ---------------------------------------------------------------------------
+// Country info type (fetched from /api/countries on mount)
+// ---------------------------------------------------------------------------
 
-type ResultTab = 'breakdown' | 'revenue' | 'scale';
-
-// ─── Gut-punch rate panel (always visible below hero) ─────────────────────────
-
-function GutPunchPanel({ totalCost, durationYears, topItem }: {
-  totalCost: number;
-  durationYears: number;
-  topItem: OpportunityCostItem | null;
-}) {
-  const safeDays = Math.max(durationYears * 365, 1);
-  const perDay    = totalCost / safeDays;
-  const perHour   = perDay / 24;
-  const perMinute = perHour / 60;
-  const perSecond = perMinute / 60;
-  const perYear   = perDay * 365;
-
-  const Icon = topItem
-    ? (OPPORTUNITY_ICONS[topItem.iconName] ?? OPPORTUNITY_ID_ICON_FALLBACKS[topItem.id] ?? Heart)
-    : null;
-
-  return (
-    <div style={{ border: '1px solid var(--green-dim)', background: 'var(--panel)' }} className="p-6 sm:p-8 space-y-6">
-      <p className="text-xs tracking-widest uppercase" style={{ color: 'var(--green-dim)' }}>
-        &gt; AT THE PROJECTED RATE OF SPENDING
-      </p>
-
-      {/* Headline rate */}
-      <div className="space-y-1">
-        <div className="text-5xl sm:text-6xl font-bold tabular-nums glow" style={{ color: 'var(--green)' }}>
-          {formatCurrency(perDay)}
-        </div>
-        <p className="text-sm tracking-widest uppercase font-bold" style={{ color: 'var(--green-dim)' }}>
-          SPENT EVERY DAY OF THIS CONFLICT
-        </p>
-      </div>
-
-      {/* Rate breakdown grid */}
-      <div
-        className="grid grid-cols-2 lg:grid-cols-4"
-        style={{ border: '1px solid var(--border)' }}
-      >
-        {[
-          { label: 'PER SECOND', value: perSecond },
-          { label: 'PER MINUTE', value: perMinute },
-          { label: 'PER HOUR',   value: perHour   },
-          { label: 'PER YEAR',   value: perYear   },
-        ].map(({ label, value }, i) => (
-          <div
-            key={label}
-            className="p-4 space-y-1"
-            style={{ borderRight: i < 3 ? '1px solid var(--border)' : 'none' }}
-          >
-            <p className="text-xs tracking-widest uppercase" style={{ color: 'var(--text-dim)' }}>{label}</p>
-            <p className="text-base font-bold tabular-nums" style={{ color: 'var(--amber)' }}>
-              {formatCurrency(value)}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      {/* Top opportunity cost item */}
-      {topItem && Icon && (
-        <div className="pt-4" style={{ borderTop: '1px solid var(--border)' }}>
-          <p className="text-xs tracking-widest uppercase mb-4" style={{ color: 'var(--text-dim)' }}>
-            ALTERNATIVELY, THE FULL CONFLICT COST WOULD FUND
-          </p>
-          <div className="flex items-center gap-5">
-            <div
-              className="h-14 w-14 shrink-0 flex items-center justify-center"
-              style={{ border: '1px solid rgba(74,222,128,0.35)', background: 'rgba(74,222,128,0.10)' }}
-            >
-              <Icon size={28} style={{ color: 'var(--green)' }} />
-            </div>
-            <div>
-              <div>
-                <span className="text-3xl sm:text-4xl font-bold tabular-nums glow" style={{ color: 'var(--green)' }}>
-                  {formatNumber(topItem.quantity)}
-                </span>
-                <span className="text-sm ml-2 tracking-wider uppercase" style={{ color: 'var(--green-dim)' }}>
-                  {topItem.unit}
-                </span>
-              </div>
-              <p className="text-sm mt-1 tracking-wider uppercase" style={{ color: 'var(--text-dim)' }}>
-                {topItem.label}
-              </p>
-            </div>
-          </div>
-          <p className="text-xs mt-4" style={{ color: 'var(--text-muted)' }}>
-            FOR CONTEXT ONLY — NOT INCLUDED IN COST TOTAL.
-            OPEN THE <span style={{ color: 'var(--green-dim)' }}>SCALE</span> TAB TO SEE ALL COMPARISONS AGAINST LIVE NATIONAL BASELINES.
-          </p>
-        </div>
-      )}
-    </div>
-  );
+interface BasicCountryInfo {
+  code: string;
+  name: string;
+  population: number | null;
+  gdp: number | null;
 }
 
-// ─── Live accumulating cost ticker (mounts fresh when SCALE tab opens) ────────
+interface ResultInputs {
+  aggressorGdp: number | null;
+  aggressorPopulation: number | null;
+  targetGdp: number | null;
+  targetPopulation: number | null;
+  aggressorName: string;
+  targetName: string;
+}
+
+// ---------------------------------------------------------------------------
+// Live cost ticker (kept, restyled)
+// ---------------------------------------------------------------------------
 
 function LiveCostTicker({ totalCost, durationYears }: { totalCost: number; durationYears: number }) {
   const [elapsed, setElapsed] = useState(0);
@@ -138,28 +57,21 @@ function LiveCostTicker({ totalCost, durationYears }: { totalCost: number; durat
   const accumulated = elapsed * ratePerSecond;
 
   return (
-    <div
-      style={{ border: '1px solid var(--green-dim)', background: 'var(--bg)' }}
-      className="p-6 sm:p-8 space-y-4"
-    >
-      <p className="text-xs tracking-widest uppercase" style={{ color: 'var(--green-dim)' }}>
-        &gt; COST ACCUMULATING SINCE YOU OPENED THIS VIEW
+    <div className="rounded-lg border p-6 space-y-4" style={{ borderColor: 'var(--border-bright)', background: 'var(--bg)' }}>
+      <p className="text-xs font-medium" style={{ color: 'var(--accent-cyan)' }}>
+        Cost accumulating since you opened this view
       </p>
-      <div
-        className="text-5xl sm:text-6xl font-bold tabular-nums count-shimmer"
-        style={{ color: 'var(--green)' }}
-      >
+      <div className="text-4xl sm:text-5xl font-bold tabular-nums font-mono" style={{ color: 'var(--accent-cyan)' }}>
         {formatCurrency(accumulated)}
-        <span className="cursor ml-1" style={{ opacity: 0.6 }} />
       </div>
-      <p className="text-xs tabular-nums" style={{ color: 'var(--text-dim)' }}>
-        {formatCurrency(ratePerSecond)}/SEC
-        &nbsp;·&nbsp;
-        {formatCurrency(ratePerSecond * 60)}/MIN
-        &nbsp;·&nbsp;
-        {formatCurrency(ratePerSecond * 3600)}/HR
-        &nbsp;·&nbsp;
-        {formatCurrency(ratePerSecond * 86400)}/DAY
+      <p className="text-xs tabular-nums font-mono" style={{ color: 'var(--text-secondary)' }}>
+        {formatCurrency(ratePerSecond)}/sec
+        {' \u00B7 '}
+        {formatCurrency(ratePerSecond * 60)}/min
+        {' \u00B7 '}
+        {formatCurrency(ratePerSecond * 3600)}/hr
+        {' \u00B7 '}
+        {formatCurrency(ratePerSecond * 86400)}/day
       </p>
       <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
         Projected total spread evenly across the full conflict duration.
@@ -169,43 +81,91 @@ function LiveCostTicker({ totalCost, durationYears }: { totalCost: number; durat
   );
 }
 
-// ─── Main calculator ───────────────────────────────────────────────────────────
+// ---------------------------------------------------------------------------
+// Result tab types
+// ---------------------------------------------------------------------------
+
+type ResultTab = 'breakdown' | 'budget' | 'personal' | 'scale' | 'revenue';
+
+const TABS: { id: ResultTab; label: string }[] = [
+  { id: 'breakdown', label: 'Cost Breakdown' },
+  { id: 'budget',    label: 'Budget Impact' },
+  { id: 'personal',  label: 'Personal Cost' },
+  { id: 'scale',     label: 'What It Could Buy' },
+  { id: 'revenue',   label: 'Revenue' },
+];
+
+// ---------------------------------------------------------------------------
+// Main calculator component
+// ---------------------------------------------------------------------------
 
 function CalculatorContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
+  // --- core inputs ---
   const [aggressorCode, setAggressorCode] = useState<string | null>(searchParams.get('aggressor'));
-  const [targetCode,    setTargetCode]    = useState<string | null>(searchParams.get('target'));
-  const [scenario,      setScenario]      = useState<ConflictScenario | null>(
-    (searchParams.get('scenario') as ConflictScenario) ?? null
+  const [targetCode, setTargetCode] = useState<string | null>(searchParams.get('target'));
+  const [scenario, setScenario] = useState<ConflictScenario | null>(
+    (searchParams.get('scenario') as ConflictScenario) ?? null,
   );
-  const [result,   setResult]   = useState<WarCostResult | null>(null);
-  const [loading,  setLoading]  = useState(false);
-  const [error,    setError]    = useState<string | null>(null);
 
-  const [visibleLoadingLines, setVisibleLoadingLines] = useState(0);
-  const [displayedPoint,      setDisplayedPoint]      = useState(0);
-  const [loadingProgress,     setLoadingProgress]     = useState(0);
+  // --- map selection mode ---
+  const [selectionMode, setSelectionMode] = useState<'aggressor' | 'target'>('aggressor');
 
+  // --- results ---
+  const [result, setResult] = useState<(WarCostResult & { inputs?: ResultInputs }) | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+
+  // --- display ---
+  const [displayedPoint, setDisplayedPoint] = useState(0);
   const [activeTab, setActiveTab] = useState<ResultTab>('breakdown');
 
-  const [opportunityContext,        setOpportunityContext]        = useState<OpportunityContextResponse | null>(null);
+  // --- opportunity context ---
+  const [opportunityContext, setOpportunityContext] = useState<OpportunityContextResponse | null>(null);
   const [opportunityContextLoading, setOpportunityContextLoading] = useState(false);
-  const [opportunityContextError,   setOpportunityContextError]   = useState<string | null>(null);
+  const [opportunityContextError, setOpportunityContextError] = useState<string | null>(null);
 
-  const rafRef              = useRef<number>(0);
-  const abortRef            = useRef<AbortController | null>(null);
+  // --- country data ---
+  const [countries, setCountries] = useState<BasicCountryInfo[]>([]);
+
+  // --- refs ---
+  const rafRef = useRef<number>(0);
+  const abortRef = useRef<AbortController | null>(null);
   const opportunityAbortRef = useRef<AbortController | null>(null);
-  // tracks which targetCode we've already fetched context for
-  const scaleTabFetchedRef  = useRef<string | null>(null);
+  const scaleTabFetchedRef = useRef<string | null>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
+
+  // --- derived (prefer result.inputs which has real GDP from World Bank) ---
+  const aggressorGdp = result?.inputs?.aggressorGdp ?? countries.find(c => c.code === aggressorCode)?.gdp ?? 0;
+  const aggressorPop = result?.inputs?.aggressorPopulation ?? countries.find(c => c.code === aggressorCode)?.population ?? 0;
+  const aggressorName = result?.inputs?.aggressorName ?? countries.find(c => c.code === aggressorCode)?.name ?? aggressorCode ?? 'Aggressor';
+  const targetName = result?.inputs?.targetName ?? countries.find(c => c.code === targetCode)?.name ?? targetCode ?? 'Target';
+
+  // Fetch country list on mount
+  useEffect(() => {
+    fetch('/api/countries')
+      .then(res => res.ok ? res.json() : [])
+      .then((data: Array<{ cca3?: string; code?: string; name: { common: string } | string; population?: number; gdp?: number | null }>) => {
+        const mapped: BasicCountryInfo[] = data.map((c) => ({
+          code: (c.cca3 ?? c.code ?? '') as string,
+          name: typeof c.name === 'string' ? c.name : c.name?.common ?? '',
+          population: c.population ?? null,
+          gdp: (c as Record<string, unknown>).gdp as number | null ?? null,
+        }));
+        setCountries(mapped);
+      })
+      .catch(() => {/* degrade gracefully */});
+  }, []);
 
   // Sync URL params
   useEffect(() => {
     const params = new URLSearchParams();
     if (aggressorCode) params.set('aggressor', aggressorCode);
-    if (targetCode)    params.set('target',    targetCode);
-    if (scenario)      params.set('scenario',  scenario);
+    if (targetCode) params.set('target', targetCode);
+    if (scenario) params.set('scenario', scenario);
     router.replace(`/calculator?${params.toString()}`, { scroll: false });
   }, [aggressorCode, targetCode, scenario, router]);
 
@@ -228,42 +188,29 @@ function CalculatorContent() {
     scaleTabFetchedRef.current = null;
   }, [targetCode]);
 
-  // Keyboard shortcuts: [1/2/3] scenario, [Esc] reset
+  // Keyboard shortcuts: 1-4 for scenarios, Escape to reset
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
-      if      (e.key === '1')      setScenario('precision_strike');
-      else if (e.key === '2')      setScenario('skirmish');
-      else if (e.key === '3')      setScenario('conventional');
-      else if (e.key === '4')      setScenario('occupation');
+      if (e.key === '1') setScenario('precision_strike');
+      else if (e.key === '2') setScenario('skirmish');
+      else if (e.key === '3') setScenario('conventional');
+      else if (e.key === '4') setScenario('occupation');
       else if (e.key === 'Escape') { setResult(null); setError(null); }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, []);
 
-  // Sequential loading lines
-  useEffect(() => {
-    if (!loading) { setVisibleLoadingLines(0); return; }
-    setVisibleLoadingLines(1);
-    const id = setInterval(() => {
-      setVisibleLoadingLines(n => {
-        if (n >= LOADING_LINES.length) { clearInterval(id); return n; }
-        return n + 1;
-      });
-    }, 480);
-    return () => clearInterval(id);
-  }, [loading]);
-
   // Animated count-up when result arrives
   useEffect(() => {
     if (!result) { setDisplayedPoint(0); return; }
-    const target   = result.total.point;
+    const target = result.total.point;
     const duration = 2200;
     const startTime = performance.now();
     const animate = (now: number) => {
       const progress = Math.min((now - startTime) / duration, 1);
-      const eased    = 1 - Math.pow(1 - progress, 3);
+      const eased = 1 - Math.pow(1 - progress, 3);
       setDisplayedPoint(Math.round(eased * target));
       if (progress < 1) rafRef.current = requestAnimationFrame(animate);
     };
@@ -271,6 +218,34 @@ function CalculatorContent() {
     return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
   }, [result?.total.point]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Scroll to results when they appear
+  useEffect(() => {
+    if (result && resultsRef.current) {
+      resultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [result]);
+
+  // --- Map click handler ---
+  const handleMapClick = useCallback((code: string) => {
+    if (selectionMode === 'aggressor') {
+      setAggressorCode(code);
+      setSelectionMode('target');
+    } else {
+      if (code === aggressorCode) return; // can't attack yourself
+      setTargetCode(code);
+      setSelectionMode('aggressor');
+    }
+  }, [selectionMode, aggressorCode]);
+
+  // --- Swap countries ---
+  const handleSwap = useCallback(() => {
+    const a = aggressorCode;
+    const t = targetCode;
+    setAggressorCode(t);
+    setTargetCode(a);
+  }, [aggressorCode, targetCode]);
+
+  // --- Calculate ---
   const handleCalculate = async () => {
     if (!aggressorCode || !targetCode || !scenario) return;
 
@@ -319,6 +294,7 @@ function CalculatorContent() {
     }
   };
 
+  // --- Fetch opportunity context ---
   const fetchOpportunityContext = async (code: string) => {
     if (opportunityAbortRef.current) opportunityAbortRef.current.abort();
     const controller = new AbortController();
@@ -347,6 +323,7 @@ function CalculatorContent() {
     }
   };
 
+  // --- Tab change ---
   const handleTabChange = (tab: ResultTab) => {
     setActiveTab(tab);
     if (tab === 'scale' && targetCode && scaleTabFetchedRef.current !== targetCode) {
@@ -361,265 +338,298 @@ function CalculatorContent() {
     ? (result.opportunityCosts.find(i => STRONG_OPPORTUNITY_ID_SET.has(i.id) && i.quantity >= 1) ?? null)
     : null;
 
-  const TABS: { id: ResultTab; label: string }[] = [
-    { id: 'breakdown', label: 'BREAKDOWN' },
-    { id: 'revenue',   label: 'REVENUE'   },
-    { id: 'scale',     label: 'SCALE'     },
-  ];
-
   return (
-    <div className="px-5 py-6 space-y-6">
+    <div className="min-h-screen" style={{ background: 'var(--bg)', color: 'var(--text)' }}>
 
-      {/* Header */}
-      <div
-        className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end"
-        style={{ borderBottom: '1px solid var(--border)', paddingBottom: '1.5rem' }}
-      >
-        <div>
-          <p className="text-xs tracking-widest uppercase mb-1" style={{ color: 'var(--text-dim)' }}>
-            WOPR // STRATEGIC COST ANALYSIS
-          </p>
-          <h1 className="text-2xl font-bold tracking-wider glow" style={{ color: 'var(--green)' }}>
-            WAR COST CALCULATOR
-          </h1>
-          <p className="text-xs mt-2 leading-relaxed" style={{ color: 'var(--text-dim)' }}>
-            ALL ESTIMATES BASED ON REAL DATA FROM OFFICIAL SOURCES. EVERY NUMBER IS CITED.
-            COSTS ARE CONSERVATIVE — ACTUAL CONFLICTS ALWAYS RUN OVER BUDGET.
-          </p>
-        </div>
-        <div className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)', textAlign: 'right' }}>
-          <p>REMEMBER: THESE FIGURES ARE USUALLY PREPARED.</p>
-          <p>THEY ARE RARELY RELEASED.</p>
-        </div>
-      </div>
+      {/* ================================================================== */}
+      {/* TOP SECTION: Map + Side Panel                                      */}
+      {/* ================================================================== */}
+      <div className="flex flex-col lg:flex-row" style={{ height: 'calc(100vh - 2.5rem)' }}>
 
-      {/* Inputs */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <section className="space-y-3">
-          <div>
-            <p className="text-xs tracking-widest uppercase" style={{ color: 'var(--green-dim)' }}>
-              &gt; STEP 01 // SELECT NATIONS
-            </p>
-            <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
-              The initiating party is never called the aggressor, officially.
-            </p>
-          </div>
-          <CountrySelector
+        {/* --- MAP AREA --- */}
+        <div className="relative flex-1 min-w-0 overflow-hidden scanlines">
+          <WorldMap
             aggressorCode={aggressorCode}
             targetCode={targetCode}
-            onAggressorChange={setAggressorCode}
-            onTargetChange={setTargetCode}
+            onCountryClick={handleMapClick}
+            resultMode={!!result}
+            totalCost={result?.total.point}
           />
-        </section>
 
-        <section className="space-y-3">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-xs tracking-widest uppercase" style={{ color: 'var(--green-dim)' }}>
-                &gt; STEP 02 // SELECT CONFLICT TYPE
-              </p>
-              <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
-                Duration is always optimistic in the initial briefing.
+          {/* Map instruction overlay */}
+          <div className="absolute top-3 left-3 pointer-events-none" style={{ zIndex: 2 }}>
+            <div
+              className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider"
+              style={{
+                background: 'rgba(8, 8, 8, 0.9)',
+                border: '1px solid var(--border-bright)',
+                color: selectionMode === 'aggressor' ? 'var(--accent-indigo)' : 'var(--accent-amber)',
+              }}
+            >
+              <span className="inline-block w-1.5 h-1.5 mr-2 animate-pulse-dot" style={{
+                background: selectionMode === 'aggressor' ? 'var(--accent-indigo)' : 'var(--accent-amber)',
+              }} />
+              {selectionMode === 'aggressor' ? 'SELECT AGGRESSOR' : 'SELECT TARGET'}
+            </div>
+          </div>
+
+          {/* Data freshness badge on map */}
+          {result && (
+            <div className="absolute bottom-3 left-3" style={{ zIndex: 2 }}>
+              <DataFreshnessIndicator
+                dataFreshness={result.dataFreshness}
+                hasStaticFallback={result.dataFreshness.worldBank.toLowerCase().includes('static fallback')}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* --- SIDE PANEL --- */}
+        <div
+          className="lg:w-[360px] xl:w-[400px] shrink-0 overflow-y-auto h-full"
+          style={{
+            background: 'var(--surface)',
+            borderLeft: '1px solid var(--border)',
+          }}
+        >
+          <div className="p-4 space-y-5">
+
+            {/* Title */}
+            <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
+              <div className="flex items-center gap-2 mb-1">
+                <span
+                  className="classification-label"
+                  style={{ color: 'var(--accent-cyan)', borderColor: 'var(--accent-cyan)' }}
+                >
+                  CONTROL PANEL
+                </span>
+              </div>
+              <p className="text-xs mt-2" style={{ color: 'var(--text-muted)' }}>
+                Real data from official sources. Every number cited.
               </p>
             </div>
-            <p className="text-xs shrink-0 tracking-widest" style={{ color: 'var(--text-muted)' }}>[1] [2] [3] [4]</p>
+
+            {/* Country selectors */}
+            <div className="space-y-3">
+              <label className="block text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+                Countries
+              </label>
+              <CountrySelector
+                aggressorCode={aggressorCode}
+                targetCode={targetCode}
+                onAggressorChange={(code) => {
+                  setAggressorCode(code);
+                  if (code) setSelectionMode('target');
+                }}
+                onTargetChange={(code) => {
+                  setTargetCode(code);
+                  if (code) setSelectionMode('aggressor');
+                }}
+              />
+              {aggressorCode && targetCode && (
+                <button
+                  onClick={handleSwap}
+                  className="flex items-center gap-2 text-xs px-3 py-1.5 uppercase tracking-wider transition-colors"
+                  style={{
+                    background: 'var(--surface-bright)',
+                    color: 'var(--text-muted)',
+                    border: '1px solid var(--border)',
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--text)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-muted)')}
+                >
+                  <ArrowRightLeft size={12} />
+                  SWAP
+                </button>
+              )}
+            </div>
+
+            {/* Scenario selector */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+                  Scenario
+                </label>
+                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                  [1] [2] [3] [4]
+                </span>
+              </div>
+              <ScenarioSelector value={scenario} onChange={setScenario} />
+            </div>
+
+            {/* Calculate button */}
+            {canCalculate && !loading && !result && (
+              <button
+                onClick={handleCalculate}
+                className="w-full py-2.5 text-xs font-bold uppercase tracking-widest transition-all hover:brightness-125"
+                style={{
+                  background: 'var(--accent-red)',
+                  color: '#fff',
+                  border: '1px solid var(--accent-red)',
+                }}
+              >
+                &gt; EXECUTE ANALYSIS
+              </button>
+            )}
+
+            {/* Loading indicator */}
+            {loading && (
+              <div className="flex items-center gap-3 py-3">
+                <Loader2 size={16} className="animate-spin" style={{ color: 'var(--accent-cyan)' }} />
+                <div className="flex-1">
+                  <div className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>
+                    ANALYZING...
+                  </div>
+                  <div className="h-1 overflow-hidden" style={{ background: 'var(--border)' }}>
+                    <div
+                      className="h-full transition-all duration-300"
+                      style={{
+                        background: 'var(--accent-cyan)',
+                        width: `${loadingProgress}%`,
+                      }}
+                    />
+                  </div>
+                </div>
+                <span className="text-xs tabular-nums" style={{ color: 'var(--text-muted)' }}>
+                  {Math.round(loadingProgress)}%
+                </span>
+              </div>
+            )}
+
+            {/* Error */}
+            {error && (
+              <div
+                className="p-3 space-y-2"
+                style={{
+                  background: 'rgba(239, 68, 68, 0.06)',
+                  border: '1px solid var(--accent-red)',
+                  borderLeft: '3px solid var(--accent-red)',
+                }}
+              >
+                <p className="text-xs font-bold uppercase" style={{ color: 'var(--accent-red)' }}>
+                  ERROR: {error}
+                </p>
+                <button
+                  onClick={handleCalculate}
+                  className="text-xs uppercase tracking-wider"
+                  style={{ color: 'var(--accent-red)' }}
+                >
+                  [RETRY]
+                </button>
+              </div>
+            )}
+
+            {/* Quick summary */}
+            {result && !loading && (
+              <div className="space-y-2 pt-3" style={{ borderTop: '1px solid var(--border)' }}>
+                <p className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+                  RESULT SUMMARY
+                </p>
+                <div className="flex items-baseline justify-between">
+                  <span className="text-xs uppercase" style={{ color: 'var(--text-muted)' }}>TOTAL COST</span>
+                  <span className="text-lg font-bold tabular-nums text-glow-cyan" style={{ color: 'var(--accent-cyan)' }}>
+                    {formatCurrency(displayedPoint)}
+                  </span>
+                </div>
+                <div className="flex items-baseline justify-between">
+                  <span className="text-xs uppercase" style={{ color: 'var(--text-muted)' }}>DURATION</span>
+                  <span className="text-sm tabular-nums" style={{ color: 'var(--text)' }}>
+                    {formatDuration(result.duration.min)} – {formatDuration(result.duration.max)}
+                  </span>
+                </div>
+                <div className="flex items-baseline justify-between">
+                  <span className="text-xs uppercase" style={{ color: 'var(--text-muted)' }}>DISPLACED</span>
+                  <span className="text-sm tabular-nums text-glow-amber" style={{ color: 'var(--accent-amber)' }}>
+                    {formatNumber(result.humanToll.displacedPersonsPoint)}
+                  </span>
+                </div>
+                {scenario && (
+                  <ShareButton aggressorCode={aggressorCode!} targetCode={targetCode!} scenario={scenario} />
+                )}
+              </div>
+            )}
           </div>
-          <ScenarioSelector value={scenario} onChange={setScenario} />
-        </section>
+        </div>
       </div>
 
-      {/* Manual calculate button */}
-      {canCalculate && !loading && !result && (
-        <div className="space-y-2">
-          <button
-            onClick={handleCalculate}
-            style={{ background: 'var(--green)', color: 'var(--bg)' }}
-            className="px-8 py-3 text-sm font-bold tracking-widest uppercase hover:opacity-90 transition-opacity"
-          >
-            &gt; INITIATE ANALYSIS
-          </button>
-          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-            Results include military, economic, humanitarian, and reconstruction modules, all cited.
-          </p>
-        </div>
-      )}
-
-      {/* Loading */}
-      {loading && (
-        <div className="space-y-5">
-          <div style={{ border: '1px solid var(--border)', background: 'var(--panel)' }} className="p-5 space-y-3 text-xs">
-            {LOADING_LINES.slice(0, visibleLoadingLines).map((line, i) => (
-              <p
-                key={i}
-                className={`reveal-line${i === visibleLoadingLines - 1 ? ' cursor' : ''}`}
-                style={{ color: i < 2 ? 'var(--green-dim)' : 'var(--text-dim)' }}
-              >
-                {line}
-              </p>
-            ))}
-            <div className="mt-2">
-              <div className="flex items-center justify-between mb-1">
-                <span style={{ color: 'var(--green-dim)' }} className="tracking-widest">PROGRESS</span>
-                <span style={{ color: 'var(--green)' }} className="tabular-nums">{Math.round(loadingProgress)}%</span>
-              </div>
-              <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', height: '4px' }}>
-                <div
-                  style={{
-                    background: 'var(--green)',
-                    width: `${loadingProgress}%`,
-                    height: '100%',
-                    transition: 'width 0.3s ease-out',
-                    boxShadow: '0 0 8px var(--green)',
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-3">
-              <Skeleton className="h-28 w-full" />
-              <Skeleton className="h-20 w-full" />
-              <Skeleton className="h-20 w-full" />
-            </div>
-            <div className="space-y-3">
-              <Skeleton className="h-44 w-full" />
-              <Skeleton className="h-44 w-full" />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Error */}
-      {error && (
-        <div style={{ border: '1px solid var(--red)', background: 'rgba(255,68,68,0.05)' }} className="p-5">
-          <p className="text-xs font-bold tracking-widest uppercase glow-red mb-2" style={{ color: 'var(--red)' }}>
-            ⚠ SYSTEM ERROR
-          </p>
-          <p className="text-xs" style={{ color: 'var(--red)', opacity: 0.85 }}>{error}</p>
-          <button
-            onClick={handleCalculate}
-            className="mt-3 text-xs underline tracking-widest uppercase"
-            style={{ color: 'var(--red)' }}
-          >
-            &gt; RETRY
-          </button>
-        </div>
-      )}
-
-      {/* Results */}
+      {/* ================================================================== */}
+      {/* RESULTS SECTION (appears below map when results are ready)         */}
+      {/* ================================================================== */}
       {result && !loading && (
-        <div className="space-y-6 access-granted">
+        <div ref={resultsRef} className="px-4 sm:px-6 lg:px-8 py-6 space-y-4 grid-bg animate-fade-in">
 
-          {/* Hero — four-column cost grid */}
-          <div style={{ border: '1px solid var(--green-dim)', background: 'var(--panel)' }} className="p-6 sm:p-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 items-start">
+          {/* Section header */}
+          <div className="flex items-center gap-3 mb-2">
+            <span className="classification-label" style={{ color: 'var(--accent-red)', borderColor: 'var(--accent-red)' }}>
+              ANALYSIS COMPLETE
+            </span>
+            <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
+          </div>
 
-              {/* Total cost */}
-              <div className="space-y-2">
-                <p className="text-xs tracking-widest uppercase" style={{ color: 'var(--text-dim)' }}>
-                  TOTAL PROJECTED COST
-                </p>
-                <div className="text-4xl sm:text-5xl font-bold tabular-nums count-shimmer" style={{ color: 'var(--green)' }}>
-                  {formatCurrency(displayedPoint)}
-                </div>
-                <p className="text-xs" style={{ color: 'var(--green-dim)' }}>
-                  RANGE: {formatCurrencyRange(result.total.min, result.total.max)}
-                </p>
-                <p className="text-xs" style={{ color: 'var(--text-dim)' }}>
-                  {formatDuration(result.duration.min)} – {formatDuration(result.duration.max)}
-                </p>
-                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                  MILITARY + HUMANITARIAN + RECONSTRUCTION
-                </p>
-              </div>
+          {/* --- Results strip: 3-column stat cards --- */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
 
-              {/* Economic impact */}
-              <div className="space-y-2" style={{ borderLeft: '1px solid var(--border)', paddingLeft: '1.5rem' }}>
-                <p className="text-xs tracking-widest uppercase" style={{ color: 'var(--text-dim)' }}>
-                  ECONOMIC IMPACT
-                </p>
-                <div className="text-4xl sm:text-5xl font-bold tabular-nums" style={{ color: 'var(--amber)' }}>
-                  {formatCurrency(result.economicImpact.point)}
-                </div>
-                <p className="text-xs" style={{ color: 'var(--amber)' }}>
-                  RANGE: {formatCurrencyRange(result.economicImpact.min, result.economicImpact.max)}
-                </p>
-                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                  SHOWN SEPARATELY FROM HEADLINE COST
-                </p>
-              </div>
+            {/* Total cost */}
+            <div className="p-3" style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderTop: '2px solid var(--accent-cyan)' }}>
+              <p className="text-xs uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>TOTAL COST</p>
+              <p className="text-xl lg:text-2xl font-bold tabular-nums text-glow-cyan" style={{ color: 'var(--accent-cyan)' }}>
+                {formatCurrency(displayedPoint)}
+              </p>
+              <p className="text-xs mt-1 tabular-nums" style={{ color: 'var(--text-muted)' }}>
+                {formatCurrencyRange(result.total.min, result.total.max)}
+              </p>
+            </div>
 
-              {/* Best-case revenue */}
-              <div className="space-y-2" style={{ borderLeft: '1px solid var(--border)', paddingLeft: '1.5rem' }}>
-                <p className="text-xs tracking-widest uppercase" style={{ color: 'var(--text-dim)' }}>
-                  BEST-CASE REVENUE
-                </p>
-                <div className="text-4xl sm:text-5xl font-bold tabular-nums" style={{ color: 'var(--green-dim)' }}>
-                  {formatCurrency(result.revenue.totalUsd)}
-                </div>
-                <p className="text-xs" style={{ color: 'var(--text-dim)' }}>
-                  BREAK-EVEN:{' '}
-                  {result.revenue.breakEvenYears === null || result.revenue.breakEvenYears > 500
-                    ? 'NEVER'
-                    : `${result.revenue.breakEvenYears} YRS`}
-                </p>
-                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Assumes full territorial control.</p>
-              </div>
+            {/* Economic impact */}
+            <div className="p-3" style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderTop: '2px solid var(--accent-amber)' }}>
+              <p className="text-xs uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>ECON IMPACT</p>
+              <p className="text-xl lg:text-2xl font-bold tabular-nums text-glow-amber" style={{ color: 'var(--accent-amber)' }}>
+                {formatCurrency(result.economicImpact.point)}
+              </p>
+              <p className="text-xs mt-1 tabular-nums" style={{ color: 'var(--text-muted)' }}>
+                {formatCurrencyRange(result.economicImpact.min, result.economicImpact.max)}
+              </p>
+            </div>
 
-              {/* Net position */}
-              <div className="space-y-2" style={{ borderLeft: '1px solid var(--border)', paddingLeft: '1.5rem' }}>
-                <p className="text-xs tracking-widest uppercase" style={{ color: 'var(--text-dim)' }}>
-                  NET POSITION
-                </p>
-                <div
-                  className="text-4xl sm:text-5xl font-bold tabular-nums"
-                  style={{ color: result.revenue.netPositionUsd >= 0 ? 'var(--green)' : 'var(--red)' }}
-                >
-                  {result.revenue.netPositionUsd >= 0 ? '+' : ''}{formatCurrency(result.revenue.netPositionUsd)}
-                </div>
-                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                  NO 21ST-CENTURY WAR HAS PAID FOR ITSELF. OR DID IT?
-                </p>
-              </div>
+            {/* Displaced persons */}
+            <div className="p-3" style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderTop: '2px solid var(--accent-red)' }}>
+              <p className="text-xs uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>DISPLACED</p>
+              <p className="text-xl lg:text-2xl font-bold tabular-nums text-glow-red" style={{ color: 'var(--accent-red)' }}>
+                {formatNumber(result.humanToll.displacedPersonsPoint)}
+              </p>
+              <p className="text-xs mt-1 tabular-nums" style={{ color: 'var(--text-muted)' }}>
+                {formatNumber(result.humanToll.displacedPersonsMin)} – {formatNumber(result.humanToll.displacedPersonsMax)}
+              </p>
             </div>
           </div>
 
-          {/* Gut-punch rate panel */}
-          <GutPunchPanel
-            totalCost={result.total.point}
-            durationYears={result.duration.point}
-            topItem={topOpportunityItem}
-          />
-
-          {/* Tabbed detail */}
+          {/* --- Result detail tabs --- */}
           <div>
             {/* Tab bar */}
-            <div className="flex" style={{ borderBottom: '1px solid var(--green-dim)' }}>
+            <div className="flex flex-wrap gap-0 mb-4" style={{ borderBottom: '1px solid var(--border)' }}>
               {TABS.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => handleTabChange(tab.id)}
-                  className="px-5 py-3 text-xs tracking-widest uppercase transition-colors"
+                  className="px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors"
                   style={{
-                    color:        activeTab === tab.id ? 'var(--green)' : 'var(--text-dim)',
-                    background:   activeTab === tab.id ? 'var(--panel)' : 'transparent',
-                    border:       '1px solid',
-                    borderColor:  activeTab === tab.id ? 'var(--green-dim)' : 'var(--border)',
-                    borderBottom: activeTab === tab.id ? '1px solid var(--panel)' : '1px solid var(--green-dim)',
-                    marginBottom: '-1px',
-                    position:     'relative',
-                    zIndex:       activeTab === tab.id ? 1 : 0,
+                    background: activeTab === tab.id ? 'var(--surface)' : 'transparent',
+                    color: activeTab === tab.id ? 'var(--accent-cyan)' : 'var(--text-muted)',
+                    borderBottom: activeTab === tab.id ? '2px solid var(--accent-cyan)' : '2px solid transparent',
                   }}
                 >
-                  &gt; {tab.label}
+                  {tab.label}
                 </button>
               ))}
             </div>
 
             {/* Tab content */}
             <div
-              style={{ border: '1px solid var(--green-dim)', borderTop: 'none', background: 'var(--panel)' }}
-              className="p-6 sm:p-8"
+              className="p-4 sm:p-5"
+              style={{
+                background: 'var(--surface)',
+                border: '1px solid var(--border)',
+              }}
             >
 
               {/* BREAKDOWN TAB */}
@@ -627,11 +637,11 @@ function CalculatorContent() {
                 <div className="space-y-6">
                   <HumanTollBanner toll={result.humanToll} />
                   <div>
-                    <p className="text-xs tracking-widest uppercase mb-1" style={{ color: 'var(--green-dim)' }}>
-                      &gt; COST BREAKDOWN BY CATEGORY
-                    </p>
+                    <h3 className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: 'var(--text)' }}>
+                      COST BREAKDOWN BY CATEGORY
+                    </h3>
                     <p className="text-xs mb-4" style={{ color: 'var(--text-muted)' }}>
-                      Economic impact is broken out in the header; click any category to inspect the model.
+                      Economic impact shown separately in the summary strip above.
                     </p>
                     <CostBreakdown categories={result.breakdown} />
                   </div>
@@ -639,52 +649,188 @@ function CalculatorContent() {
                 </div>
               )}
 
-              {/* REVENUE TAB */}
-              {activeTab === 'revenue' && (
-                <div>
-                  <p className="text-xs tracking-widest uppercase mb-1" style={{ color: 'var(--green-dim)' }}>
-                    &gt; ESTIMATED REVENUE // BEST-CASE BREAKDOWN
+              {/* BUDGET IMPACT TAB */}
+              {activeTab === 'budget' && (
+                <div className="space-y-6">
+                  <h3 className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text)' }}>
+                    BUDGET REALLOCATION IMPACT
+                  </h3>
+                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                    How the conflict cost compares to domestic spending priorities.
                   </p>
-                  <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>
-                    Assumes the aggressor wins and maintains full control; read assumptions before interpreting.
+                  <BudgetReallocation
+                    totalCost={result.total.point}
+                    durationYears={result.duration.point}
+                    aggressorGdp={aggressorGdp}
+                    aggressorName={aggressorName}
+                  />
+                </div>
+              )}
+
+              {/* PERSONAL COST TAB */}
+              {activeTab === 'personal' && (
+                <div className="space-y-6">
+                  <h3 className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text)' }}>
+                    COST PER TAXPAYER
+                  </h3>
+                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                    What this conflict would cost each citizen of the aggressor country.
                   </p>
-                  <RevenuePanel revenue={result.revenue} projectedCostUsd={result.total.point} />
+                  <CostPerTaxpayer
+                    totalCost={result.total.point}
+                    aggressorPopulation={aggressorPop}
+                    aggressorGdp={aggressorGdp}
+                    aggressorName={aggressorName}
+                    durationYears={result.duration.point}
+                  />
                 </div>
               )}
 
               {/* SCALE TAB */}
               {activeTab === 'scale' && (
-                <div className="space-y-8">
+                <div className="space-y-6">
+                  <h3 className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text)' }}>
+                    ALTERNATIVE EXPENDITURE ANALYSIS
+                  </h3>
                   <LiveCostTicker
                     totalCost={result.total.point}
                     durationYears={result.duration.point}
                   />
-                  <OpportunityGravityPanel
-                    metrics={opportunityContext?.metrics ?? []}
-                    items={result.opportunityCosts}
-                    loading={opportunityContextLoading}
-                    error={opportunityContextError}
+
+                  {/* Top opportunity item highlight */}
+                  {topOpportunityItem && (() => {
+                    const Icon = OPPORTUNITY_ICONS[topOpportunityItem.iconName]
+                      ?? OPPORTUNITY_ID_ICON_FALLBACKS[topOpportunityItem.id]
+                      ?? Heart;
+                    return (
+                      <div
+                        className="rounded-lg p-5 flex items-center gap-5"
+                        style={{
+                          background: 'rgba(16, 185, 129, 0.06)',
+                          border: '1px solid rgba(16, 185, 129, 0.25)',
+                        }}
+                      >
+                        <div
+                          className="h-12 w-12 shrink-0 flex items-center justify-center rounded-lg"
+                          style={{ background: 'rgba(16, 185, 129, 0.15)' }}
+                        >
+                          <Icon size={24} style={{ color: 'var(--accent-emerald)' }} />
+                        </div>
+                        <div>
+                          <div className="flex items-baseline gap-2">
+                            <span className="text-2xl font-bold font-mono tabular-nums" style={{ color: 'var(--accent-emerald)' }}>
+                              {formatNumber(topOpportunityItem.quantity)}
+                            </span>
+                            <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                              {topOpportunityItem.unit}
+                            </span>
+                          </div>
+                          <p className="text-sm mt-0.5" style={{ color: 'var(--text-secondary)' }}>
+                            {topOpportunityItem.label}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })()}
+
+                  {/* Opportunity context items */}
+                  {opportunityContextLoading && (
+                    <div className="flex items-center gap-2 py-4">
+                      <Loader2 size={16} className="animate-spin" style={{ color: 'var(--accent-blue)' }} />
+                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Loading comparison data...</span>
+                    </div>
+                  )}
+
+                  {opportunityContextError && (
+                    <p className="text-xs" style={{ color: 'var(--accent-red)' }}>{opportunityContextError}</p>
+                  )}
+
+                  {opportunityContext && !opportunityContextLoading && (
+                    <div className="space-y-3">
+                      {result.opportunityCosts
+                        .filter(item => item.quantity >= 1)
+                        .map((item) => {
+                          const Icon = OPPORTUNITY_ICONS[item.iconName]
+                            ?? OPPORTUNITY_ID_ICON_FALLBACKS[item.id]
+                            ?? Heart;
+                          const contextMetric = opportunityContext.metrics.find(m => m.id === item.id);
+                          return (
+                            <div
+                              key={item.id}
+                              className="rounded-lg p-4 flex items-center gap-4"
+                              style={{ background: 'var(--surface-bright)', border: '1px solid var(--border)' }}
+                            >
+                              <Icon size={18} style={{ color: 'var(--accent-emerald)' }} />
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-baseline gap-2">
+                                  <span className="text-sm font-bold font-mono tabular-nums" style={{ color: 'var(--text)' }}>
+                                    {formatNumber(item.quantity)}
+                                  </span>
+                                  <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                                    {item.unit}
+                                  </span>
+                                </div>
+                                <p className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>{item.label}</p>
+                                {contextMetric && (
+                                  <p className="text-xs mt-0.5" style={{ color: 'var(--accent-cyan)' }}>
+                                    {contextMetric.currentLabel}: {formatNumber(contextMetric.currentValue)} {contextMetric.currentUnit}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                    </div>
+                  )}
+
+                  {/* GDP comparison */}
+                  <GdpComparisonPanel
+                    totalCost={result.total.point}
+                    targetName={targetName}
                   />
+                </div>
+              )}
+
+              {/* REVENUE TAB */}
+              {activeTab === 'revenue' && (
+                <div className="space-y-4">
+                  <h3 className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text)' }}>
+                    ESTIMATED REVENUE (BEST CASE)
+                  </h3>
+                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                    Assumes aggressor wins and maintains full territorial control. Read assumptions before interpreting.
+                  </p>
+                  <RevenuePanel revenue={result.revenue} projectedCostUsd={result.total.point} />
                 </div>
               )}
             </div>
           </div>
 
-          <DataFreshnessIndicator
-            dataFreshness={result.dataFreshness}
-            hasStaticFallback={result.dataFreshness.worldBank.toLowerCase().includes('static fallback')}
-          />
+          {/* Data freshness at the bottom of results */}
+          <div className="pb-4">
+            <DataFreshnessIndicator
+              dataFreshness={result.dataFreshness}
+              hasStaticFallback={result.dataFreshness.worldBank.toLowerCase().includes('static fallback')}
+            />
+          </div>
         </div>
       )}
     </div>
   );
 }
 
+// ---------------------------------------------------------------------------
+// Page export with Suspense boundary
+// ---------------------------------------------------------------------------
+
 export default function CalculatorPage() {
   return (
     <Suspense fallback={
-      <div className="p-12 text-center text-xs tracking-widest uppercase cursor" style={{ color: 'var(--text-dim)' }}>
-        LOADING SYSTEM
+      <div className="flex items-center justify-center h-screen" style={{ background: 'var(--bg)' }}>
+        <div className="flex items-center gap-3">
+          <Loader2 size={20} className="animate-spin" style={{ color: 'var(--accent-blue)' }} />
+          <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Loading calculator...</span>
+        </div>
       </div>
     }>
       <CalculatorContent />

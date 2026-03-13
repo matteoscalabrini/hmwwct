@@ -1,196 +1,194 @@
+'use client';
+
 import Link from 'next/link';
 
-const INTEL = [
-  { label: 'GLOBAL DEFENSE SPEND', value: '$2,443B', sub: 'SIPRI 2024 · +7.4% YOY' },
-  { label: 'UN PEACEKEEPING BUDGET', value: '$6.5B', sub: '0.27% of military spend' },
-  { label: 'ACTIVE ARMED CONFLICTS', value: '56', sub: 'ACLED 2024 · post-cold war high' },
-  { label: 'U.S. POST-9/11 WAR COSTS', value: '$8T+', sub: 'Watson Institute est.' },
-  { label: 'DISPLACED PERSONS', value: '117M', sub: 'UNHCR 2024 · all-time high' },
+const STATS = [
+  { value: '$2,443B', label: 'GLOBAL DEFENSE SPENDING', source: 'SIPRI 2024' },
+  { value: '56', label: 'ACTIVE ARMED CONFLICTS', source: 'ACLED 2024' },
+  { value: '$8T+', label: 'US POST-9/11 WAR COSTS', source: 'WATSON INSTITUTE' },
+  { value: '117M', label: 'DISPLACED PERSONS', source: 'UNHCR 2024' },
 ];
 
-const BOOT_LOG = [
-  { tag: 'SYS ', text: 'INITIALIZING WOPR SUBSYSTEMS...' },
-  { tag: 'OK  ', text: 'WORLD BANK API: CONNECTED' },
-  { tag: 'OK  ', text: 'SIPRI MILITARY DATABASE: 2024 RELEASE LOADED' },
-  { tag: 'OK  ', text: 'UNHCR DISPLACEMENT RATIOS: CURRENT' },
-  { tag: 'WARN', text: '56 ACTIVE CONFLICTS DETECTED IN OPERATIONAL DATASET' },
-  { tag: 'OK  ', text: 'WATSON INSTITUTE COST MODEL: CALIBRATED' },
-  { tag: 'OK  ', text: 'CALCULATION ENGINE: READY' },
-  { tag: 'SYS ', text: 'AWAITING INPUT.' },
+const FEATURES = [
+  {
+    color: 'var(--accent-cyan)',
+    tag: 'DATA',
+    title: 'LIVE FEEDS',
+    description:
+      'World Bank, SIPRI, IMF, and FRED APIs. Real-time economic and military data. No static estimates.',
+  },
+  {
+    color: 'var(--accent-amber)',
+    tag: 'AUDIT',
+    title: 'FULL TRANSPARENCY',
+    description:
+      'Every number cited with source, methodology, and assumptions. Every formula exposed. No black boxes.',
+  },
+  {
+    color: 'var(--accent-emerald)',
+    tag: 'SCALE',
+    title: 'CONTEXT ENGINE',
+    description:
+      'Compare costs to national budgets, GDP, per-capita burden, and humanitarian benchmarks.',
+  },
 ];
-
-const TAG_COLOR: Record<string, string> = {
-  'SYS ': 'var(--text-dim)',
-  'OK  ': 'var(--green)',
-  'WARN': 'var(--amber)',
-};
 
 export default function Home() {
   return (
-    <div className="px-5 py-6 flex-1 flex flex-col min-h-0">
-
+    <div className="grid-bg relative">
       {/* HERO */}
-      <div style={{ border: '1px solid var(--border)', background: 'var(--panel)' }} className="flex-1 flex flex-col p-8 sm:p-12 gap-8 min-h-0">
-
-        {/* Title */}
-        <h1
-          className="font-workbench glow"
-          style={{ color: 'var(--green)', fontSize: 'clamp(2rem, 5vw, 5rem)', lineHeight: 1.05, whiteSpace: 'nowrap' }}
-        >
-          HOW MUCH WOULD A WAR COST THERE?
-        </h1>
-
-        {/* Statement */}
-        <div className="space-y-2" style={{ borderLeft: '3px solid var(--green-dim)', paddingLeft: '1.25rem' }}>
-          <p className="text-base sm:text-2xl font-bold leading-snug" style={{ color: 'var(--green)' }}>
-            SOMEWHERE RIGHT NOW, A DEFENSE MINISTER IS RUNNING THESE EXACT NUMBERS.
-          </p>
-          <p className="text-sm sm:text-lg font-bold leading-snug" style={{ color: 'var(--green-dim)' }}>
-            WE THOUGHT THE PUBLIC SHOULD HAVE ACCESS TOO.
-          </p>
-        </div>
-
-        {/* Boot log */}
-        <div className="space-y-1 text-sm">
-          {BOOT_LOG.map((line, i) => (
-            <p
-              key={i}
-              className={`reveal-line${i === BOOT_LOG.length - 1 ? ' cursor' : ''}`}
-              style={{ animationDelay: `${0.2 + i * 0.25}s` }}
-            >
-              <span style={{ color: TAG_COLOR[line.tag] ?? 'var(--text-dim)' }}>
-                [{line.tag}]&nbsp;
-              </span>
-              <span style={{ color: i === BOOT_LOG.length - 1 ? 'var(--text-dim)' : 'var(--text-muted)' }}>
-                {line.text}
-              </span>
-            </p>
-          ))}
-        </div>
-
-        {/* CTAs — pinned to bottom */}
-        <div className="mt-auto flex flex-col sm:flex-row gap-0">
-          <Link
-            href="/calculator"
-            style={{ background: 'var(--green)', color: 'var(--bg)', border: '1px solid var(--green)' }}
-            className="inline-flex items-center justify-center px-10 py-4 text-base font-bold tracking-widest uppercase hover:opacity-90 transition-opacity"
-          >
-            &gt; INITIATE ANALYSIS
-          </Link>
-          <Link
-            href="/methodology"
-            style={{ border: '1px solid var(--border)', color: 'var(--text-dim)', marginLeft: '-1px' }}
-            className="inline-flex items-center justify-center px-10 py-4 text-base tracking-widest uppercase hover:text-[var(--green)] hover:border-[var(--green-dim)] transition-colors"
-          >
-            &gt; READ METHODOLOGY
-          </Link>
-        </div>
-      </div>
-
-      {/* BOTTOM ROW — two hover-reveal panels side by side */}
-      <div className="grid grid-cols-2 gap-0" style={{ borderTop: '1px solid var(--border)' }}>
-
-        {/* Live situation feed — hover to reveal */}
-        <div className="reveal-group" style={{ borderRight: '1px solid var(--border)' }}>
-          {/* Trigger tab */}
-          <div
-            className="px-5 py-3 flex items-center gap-2 cursor-default"
-            style={{ background: 'var(--panel)' }}
-          >
+      <section
+        className="flex flex-col justify-center relative"
+        style={{ minHeight: 'calc(100vh - 2.5rem)' }}
+      >
+        <div className="max-w-screen-xl mx-auto px-6 py-20 flex-1 flex flex-col justify-center">
+          {/* System status */}
+          <div className="flex items-center gap-3 mb-8">
             <span
-              style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--green)', display: 'inline-block', boxShadow: '0 0 5px var(--green)', flexShrink: 0 }}
-            />
-            <span className="text-sm tracking-widest uppercase" style={{ color: 'var(--text-dim)' }}>
-              LIVE SITUATION FEED
+              className="classification-label"
+              style={{ color: 'var(--accent-amber)', borderColor: 'var(--accent-amber)' }}
+            >
+              UNCLASSIFIED // FOUO
             </span>
-            <span className="text-xs ml-auto" style={{ color: 'var(--text-muted)' }}>— HOVER —</span>
+            <span className="text-xs uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
+              SYSTEM ONLINE
+            </span>
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse-dot" style={{ background: 'var(--accent-emerald)' }} />
           </div>
-          {/* Panel */}
-          <div
-            className="reveal-panel absolute z-20"
-            style={{
-              left: 0, right: 0,
-              background: 'var(--panel)',
-              border: '1px solid var(--border)',
-              borderTop: 'none',
-            }}
+
+          {/* Heading */}
+          <h1
+            className="text-4xl md:text-6xl lg:text-7xl font-bold leading-none mb-4 font-workbench"
+            style={{ color: '#ffffff' }}
           >
-            {INTEL.map((item, i) => (
-              <div
-                key={item.label}
-                className="px-5 py-3 flex items-baseline justify-between gap-4"
-                style={{ borderBottom: i < INTEL.length - 1 ? '1px solid var(--border)' : 'none' }}
-              >
-                <div>
-                  <p className="text-sm tracking-wider uppercase" style={{ color: 'var(--text-dim)' }}>{item.label}</p>
-                  <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{item.sub}</p>
-                </div>
-                <p className="text-xl font-bold tabular-nums glow shrink-0" style={{ color: 'var(--green)' }}>{item.value}</p>
+            HOW MUCH WOULD
+            <br />
+            A WAR COST THERE<span className="animate-blink" style={{ color: 'var(--accent-cyan)' }}>_</span>
+          </h1>
+
+          {/* Subheading */}
+          <p
+            className="text-sm md:text-base max-w-xl mb-10 leading-relaxed"
+            style={{ color: 'var(--text-muted)' }}
+          >
+            Real data. Transparent methodology.<br />
+            Calculate what defense ministers know but rarely share.
+          </p>
+
+          {/* CTAs */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Link
+              href="/calculator"
+              className="inline-flex items-center justify-center px-6 py-2.5 text-xs uppercase tracking-widest font-bold transition-all duration-150 hover:brightness-125"
+              style={{
+                background: 'var(--accent-red)',
+                color: '#ffffff',
+                border: '1px solid var(--accent-red)',
+              }}
+            >
+              &gt; OPEN CALCULATOR
+            </Link>
+            <Link
+              href="/methodology"
+              className="inline-flex items-center justify-center px-6 py-2.5 text-xs uppercase tracking-widest font-bold transition-all duration-150"
+              style={{
+                border: '1px solid var(--border-bright)',
+                color: 'var(--text-muted)',
+                background: 'transparent',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'var(--text-muted)';
+                e.currentTarget.style.color = 'var(--text)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border-bright)';
+                e.currentTarget.style.color = 'var(--text-muted)';
+              }}
+            >
+              &gt; READ METHODOLOGY
+            </Link>
+          </div>
+        </div>
+
+        {/* Stats bar */}
+        <div style={{ borderTop: '1px solid var(--border)' }}>
+          <div className="max-w-screen-xl mx-auto px-6 py-6 grid grid-cols-2 md:grid-cols-4 gap-6">
+            {STATS.map((stat) => (
+              <div key={stat.label} style={{ borderLeft: '2px solid var(--border-bright)', paddingLeft: '12px' }}>
+                <p className="text-xl font-bold tabular-nums" style={{ color: 'var(--accent-cyan)' }}>
+                  {stat.value}
+                </p>
+                <p className="text-xs mt-1 uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+                  {stat.label}
+                </p>
+                <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)', opacity: 0.6 }}>
+                  {stat.source}
+                </p>
               </div>
             ))}
           </div>
         </div>
+      </section>
 
-        {/* Notice / disclaimer — hover to reveal */}
-        <div className="reveal-group">
-          <div
-            className="px-5 py-3 flex items-center gap-2 cursor-default"
-            style={{ background: 'var(--panel)' }}
-          >
-            <span className="text-sm tracking-widest uppercase glow-amber" style={{ color: 'var(--amber)' }}>
-              ⚠ NOTICE
-            </span>
-            <span className="text-xs ml-auto" style={{ color: 'var(--text-muted)' }}>— HOVER —</span>
-          </div>
-          <div
-            className="reveal-panel absolute z-20"
-            style={{
-              left: 0, right: 0,
-              background: 'rgba(255,176,0,0.04)',
-              border: '1px solid var(--amber)',
-              borderTop: 'none',
-            }}
-          >
-            <div className="px-5 py-4 space-y-2">
-              <p className="text-xs leading-relaxed" style={{ color: 'var(--amber)', opacity: 0.85 }}>
-                FOR EDUCATIONAL AND POLICY ANALYSIS PURPOSES ONLY.
-                THE ACTUAL COST IS ALWAYS HIGHER THAN THE PROJECTION USED TO JUSTIFY THE DECISION.
-                DOES NOT MODEL NUCLEAR ESCALATION, CYBER WARFARE, OR ALLIANCE COSTS.
+      {/* FEATURES */}
+      <section
+        className="max-w-screen-xl mx-auto py-16 px-6"
+        style={{ borderTop: '1px solid var(--border)' }}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {FEATURES.map((feature) => (
+            <div
+              key={feature.title}
+              className="p-5 transition-colors duration-150"
+              style={{
+                background: 'var(--surface)',
+                border: '1px solid var(--border)',
+                borderTop: `2px solid ${feature.color}`,
+              }}
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <span
+                  className="classification-label"
+                  style={{ color: feature.color, borderColor: feature.color }}
+                >
+                  {feature.tag}
+                </span>
+              </div>
+              <h3
+                className="text-sm font-bold uppercase tracking-wider mb-2"
+                style={{ color: 'var(--text)' }}
+              >
+                {feature.title}
+              </h3>
+              <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+                {feature.description}
               </p>
-              <p className="text-xs" style={{ color: 'var(--amber)', opacity: 0.45 }}>
-                IF THIS TOOL PREVENTS EVEN ONE SLIDE IN ONE BRIEFING FROM BEING OPTIMISTIC, IT HAS DONE ITS JOB.
-              </p>
-              <Link href="/methodology" className="text-xs underline" style={{ color: 'var(--amber)', opacity: 0.7, display: 'block' }}>
-                READ FULL METHODOLOGY
-              </Link>
             </div>
-          </div>
+          ))}
         </div>
-
-      </div>
+      </section>
 
       {/* FOOTER */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-5 py-5 text-xs" style={{ borderTop: '1px solid var(--border)' }}>
-        <div className="space-y-1">
-          <p className="tracking-widest uppercase" style={{ color: 'var(--green-dim)' }}>DATA SOURCES</p>
-          <p className="leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-            World Bank WDI · SIPRI (CC BY-NC) · UNHCR · IMF WEO · UN Comtrade · Watson Institute · IEA · WHO · UNICEF · REST Countries
+      <footer style={{ borderTop: '1px solid var(--border)', background: 'var(--surface)' }}>
+        <div className="max-w-screen-xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-xs uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+            FOR EDUCATIONAL AND POLICY ANALYSIS PURPOSES ONLY
           </p>
+          <div className="flex items-center gap-3 text-xs" style={{ color: 'var(--text-muted)' }}>
+            <span>WORLD BANK / SIPRI / UNHCR / IMF / WATSON / FRED</span>
+            <span style={{ color: 'var(--border-bright)' }}>|</span>
+            <Link
+              href="/methodology"
+              className="uppercase tracking-wider transition-colors"
+              style={{ color: 'var(--text-muted)' }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--accent-cyan)')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-muted)')}
+            >
+              [METHOD]
+            </Link>
+          </div>
         </div>
-        <div className="space-y-1">
-          <p className="tracking-widest uppercase" style={{ color: 'var(--green-dim)' }}>DISCLAIMER</p>
-          <p className="leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-            FOR EDUCATIONAL AND POLICY ANALYSIS PURPOSES ONLY.{' '}
-            <Link href="/methodology" className="underline" style={{ color: 'var(--text-dim)' }}>FULL METHODOLOGY</Link>.
-          </p>
-        </div>
-        <div className="space-y-1">
-          <p className="tracking-widest uppercase" style={{ color: 'var(--green-dim)' }}>SYSTEM</p>
-          <p style={{ color: 'var(--text-muted)' }}>&quot;THE ONLY WINNING MOVE IS NOT TO PLAY.&quot;</p>
-          <p style={{ color: 'var(--text-muted)' }}>— W.O.P.R., 1983</p>
-        </div>
-      </div>
-
+      </footer>
     </div>
   );
 }

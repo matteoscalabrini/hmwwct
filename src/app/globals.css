@@ -1,123 +1,117 @@
 @import "tailwindcss";
 
 :root {
-  --bg:          #000000;   /* pure black — monitor screen */
-  --panel:       #010a02;   /* near-black with green tint */
-  --green:       #00ff65;   /* classic green phosphor — P1 terminal */
-  --green-dim:   #00aa44;   /* medium green */
-  --green-dark:  #003d14;   /* dark green */
-  --green-faint: #001a08;   /* near-black green */
-  --border:      #003d14;   /* green-tinted border */
-  --amber:       #ffb000;
-  --red:         #ff4444;
-  --text-dim:    #00cc55;   /* readable dim green */
-  --text-muted:  #007a33;   /* muted green — readable on pure black */
-  --room:        #020402;   /* "desk" behind the monitor */
-  --bezel:       #111214;   /* monitor casing */
-  --bezel-inner: #0a0c0e;   /* inner bezel ring */
+  --bg:             #080808;
+  --surface:        #0e0e0e;
+  --surface-bright: #161616;
+  --border:         #1c1c1c;
+  --border-bright:  #2a2a2a;
+  --text:           #d4d4d4;
+  --text-secondary: #888888;
+  --text-muted:     #555555;
+  --accent-blue:    #3b82f6;
+  --accent-cyan:    #06b6d4;
+  --accent-amber:   #f59e0b;
+  --accent-red:     #ef4444;
+  --accent-emerald: #10b981;
+  --accent-indigo:  #6366f1;
 }
 
 * { box-sizing: border-box; }
 
-/* ─── Room / body ──────────────────────────────────────────────────────────── */
+/* ─── Base ────────────────────────────────────────────────────────────────── */
 html, body {
   height: 100%;
-  overflow: hidden;   /* no outer scroll — only the screen scrolls */
   margin: 0;
   padding: 0;
 }
 
 body {
-  background: var(--room);
-  color: var(--green);
-  font-family: "IBM Plex Mono", 'Courier New', Courier, monospace;
-  animation: flicker 8s infinite;
-  /* Subtle noise texture on the room */
-  background-image: radial-gradient(ellipse at center, #060a08 0%, #000000 80%);
-}
-
-/* ─── Monitor bezel ────────────────────────────────────────────────────────── */
-.monitor-wrapper {
-  height: 100vh;      /* exactly viewport — no outer scroll */
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 32px 24px;
-  box-sizing: border-box;
-}
-
-.monitor-bezel {
-  /* Height fills viewport minus wrapper padding (32px × 2 = 64px) */
-  height: calc(100vh - 64px);
-  /* Width derived from 4:3 height, capped at viewport width */
-  width: min(calc(100vw - 48px), calc((100vh - 64px) * 4 / 3));
-  flex-shrink: 0;
-  background: var(--bezel);
-  border-radius: 24px;
-  padding: 16px;
-  padding-bottom: 28px;   /* extra bottom for the physical base feel */
-  box-shadow:
-    0 0 0 2px #1a1d22,
-    0 0 0 4px #0d0f11,
-    0 4px 60px rgba(0,0,0,0.95),
-    0 0 80px rgba(0,255,101,0.04),   /* faint green phosphor leak */
-    inset 0 1px 0 rgba(255,255,255,0.04);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-/* Brand strip above screen */
-.monitor-brand-strip {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 4px;
-}
-
-/* ─── Monitor screen ────────────────────────────────────────────────────────── */
-.monitor-screen {
-  flex: 1;
-  min-height: 0;      /* critical: allows flex child to scroll instead of expand */
-  display: flex;
-  flex-direction: column;
   background: var(--bg);
-  border-radius: 10px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  position: relative;
-  /* Screen inner shadow — depth illusion with green phosphor tint */
-  box-shadow:
-    inset 0 0 40px rgba(0,0,0,0.8),
-    inset 0 0 0 1px rgba(0,255,101,0.06);
-  /* Custom scrollbar inside screen */
-  scrollbar-width: thin;
-  scrollbar-color: var(--green-dark) var(--bg);
+  color: var(--text);
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 13px;
+  overflow: auto;
+  -webkit-font-smoothing: antialiased;
 }
 
-.monitor-screen::-webkit-scrollbar { width: 4px; }
-.monitor-screen::-webkit-scrollbar-track { background: var(--bg); }
-.monitor-screen::-webkit-scrollbar-thumb { background: var(--green-dark); border-radius: 2px; }
+/* ─── Typography ──────────────────────────────────────────────────────────── */
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
 
-/* CRT screen curvature vignette — softened */
-.monitor-screen::before {
+.font-workbench {
+  font-family: 'Workbench', cursive;
+}
+
+.font-sans {
+  font-family: 'Inter', sans-serif;
+}
+
+/* ─── War-room grid background ───────────────────────────────────────────── */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ─── Scanline overlay ───────────────────────────────────────────────────── */
+.scanlines::after {
   content: '';
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(ellipse at center, transparent 65%, rgba(0,0,0,0.35) 100%);
-  z-index: 9998;
-  border-radius: 10px;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.08) 2px,
+    rgba(0,0,0,0.08) 4px
+  );
+  z-index: 1;
 }
 
-/* ─── Hover-reveal panels ───────────────────────────────────────────────────── */
-/* Usage: wrap trigger + panel in .reveal-group; panel uses .reveal-panel */
+/* ─── Text glow utilities ─────────────────────────────────────────────────── */
+.text-glow-cyan {
+  text-shadow: 0 0 6px rgba(6, 182, 212, 0.5), 0 0 16px rgba(6, 182, 212, 0.2);
+}
+
+.text-glow-emerald {
+  text-shadow: 0 0 6px rgba(16, 185, 129, 0.5), 0 0 16px rgba(16, 185, 129, 0.2);
+}
+
+.text-glow-red {
+  text-shadow: 0 0 6px rgba(239, 68, 68, 0.5), 0 0 16px rgba(239, 68, 68, 0.2);
+}
+
+.text-glow-amber {
+  text-shadow: 0 0 6px rgba(245, 158, 11, 0.5), 0 0 16px rgba(245, 158, 11, 0.2);
+}
+
+/* ─── Scrollbar ───────────────────────────────────────────────────────────── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-bright) var(--bg);
+}
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 0; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ─── Selection ───────────────────────────────────────────────────────────── */
+::selection {
+  background: var(--accent-cyan);
+  color: #000000;
+}
+
+/* ─── Hover-reveal panels ─────────────────────────────────────────────────── */
 .reveal-group { position: relative; }
 .reveal-panel {
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.18s ease, visibility 0.18s ease;
+  transition: opacity 0.12s ease, visibility 0.12s ease;
   pointer-events: none;
 }
 .reveal-group:hover .reveal-panel,
@@ -127,75 +121,50 @@ body {
   pointer-events: auto;
 }
 
-/* ─── Fonts ────────────────────────────────────────────────────────────────── */
-.font-workbench {
-  font-family: "Workbench", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-  font-variation-settings: "BLED" 0, "SCAN" 0;
+/* ─── Classification label ────────────────────────────────────────────────── */
+.classification-label {
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border: 1px solid;
 }
 
-.font-ui { font-family: "IBM Plex Mono", 'Courier New', Courier, monospace; }
+/* ─── Animations ──────────────────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-/* ─── Phosphor glow ────────────────────────────────────────────────────────── */
-.glow       { text-shadow: 0 0 10px rgba(0,255,101,0.7), 0 0 30px rgba(0,255,101,0.25); }
-.glow-amber { text-shadow: 0 0 8px var(--amber), 0 0 20px rgba(255,176,0,0.35); }
-.glow-red   { text-shadow: 0 0 8px var(--red),   0 0 20px rgba(255,68,68,0.35); }
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
 
-/* ─── Blinking cursor ──────────────────────────────────────────────────────── */
+@keyframes slideUpDrawer {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+@keyframes countUp {
+  0%   { opacity: 0.4; filter: blur(2px); }
+  50%  { opacity: 0.8; filter: blur(0.5px); }
+  100% { opacity: 1;   filter: blur(0); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.3; }
+}
+
 @keyframes blink {
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
-}
-.cursor::after {
-  content: '\2588';
-  animation: blink 1.1s step-end infinite;
-  margin-left: 2px;
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0; }
 }
 
-/* ─── CRT flicker ──────────────────────────────────────────────────────────── */
-@keyframes flicker {
-  0%, 96%, 100% { opacity: 1; }
-  97%  { opacity: 0.97; }
-  98%  { opacity: 1; }
-  99%  { opacity: 0.98; }
-}
-
-/* ─── Text selection ───────────────────────────────────────────────────────── */
-::selection { background: var(--green); color: var(--bg); }
-
-/* ─── Ticker marquee ───────────────────────────────────────────────────────── */
-@keyframes marquee {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-/* ─── Sequential line reveal (typewriter effect) ───────────────────────────── */
-@keyframes revealLine {
-  from { opacity: 0; transform: translateX(-4px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-.reveal-line {
-  opacity: 0;
-  animation: revealLine 0.15s ease forwards;
-}
-
-/* ─── Result flash (access granted effect) ─────────────────────────────────── */
-@keyframes accessGranted {
-  0%   { opacity: 0; transform: scale(0.98); }
-  15%  { opacity: 1; transform: scale(1.005); }
-  100% { opacity: 1; transform: scale(1); }
-}
-.access-granted {
-  animation: accessGranted 0.5s ease forwards;
-}
-
-/* ─── Number count-up shimmer ───────────────────────────────────────────────── */
-@keyframes countShimmer {
-  0%   { text-shadow: 0 0 20px rgba(0,255,101,0.9), 0 0 40px rgba(0,255,101,0.5); }
-  100% { text-shadow: 0 0 10px rgba(0,255,101,0.7), 0 0 30px rgba(0,255,101,0.25); }
-}
-.count-shimmer {
-  animation: countShimmer 0.8s ease forwards;
-}
+.animate-fade-in       { animation: fadeIn 0.2s ease forwards; }
+.animate-slide-right   { animation: slideInRight 0.2s ease forwards; }
+.animate-slide-up      { animation: slideUpDrawer 0.25s ease-out forwards; }
+.animate-count-up      { animation: countUp 0.6s ease forwards; }
+.animate-pulse-dot     { animation: pulse-dot 2s ease-in-out infinite; }
+.animate-blink         { animation: blink 1s step-end infinite; }

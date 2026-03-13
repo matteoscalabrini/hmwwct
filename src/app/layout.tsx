@@ -26,89 +26,62 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Workbench&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Workbench&display=swap"
           rel="stylesheet"
         />
       </head>
       <body>
-        <div className="monitor-wrapper">
-          <div className="monitor-bezel">
-
-            {/* Bezel brand strip */}
-            <div className="monitor-brand-strip">
-              <span style={{ fontSize: '9px', letterSpacing: '0.2em', color: '#2a2d32', fontFamily: 'IBM Plex Mono, monospace', textTransform: 'uppercase' }}>
-                W.O.P.R. SYSTEMS INC.
-              </span>
-              {/* Power LED */}
-              <span
-                title="SYSTEM ONLINE"
-                style={{
-                  width: 6, height: 6, borderRadius: '50%',
-                  background: 'var(--green)',
-                  display: 'inline-block',
-                  boxShadow: '0 0 6px var(--green)',
-                  animation: 'blink 2.5s step-end infinite',
-                }}
-              />
-            </div>
-
-            {/* The screen */}
-            <div className="monitor-screen">
-
-              {/* TICKER */}
-              <div
-                className="overflow-hidden text-xs tracking-widest uppercase"
-                style={{ background: 'var(--green)', color: 'var(--bg)', borderBottom: '1px solid var(--green-dim)', padding: '3px 0' }}
-              >
-                <span style={{ display: 'inline-block', animation: 'marquee 50s linear infinite', whiteSpace: 'nowrap' }} aria-hidden="true">
-                  &nbsp;&nbsp;&nbsp;⚡ GLOBAL DEFENSE SPENDING 2024: $2,443B — UP 7.4% YOY (SIPRI)
-                  &nbsp;&nbsp;&nbsp;///&nbsp;&nbsp;&nbsp;
-                  UN PEACEKEEPING BUDGET FY24: $6.5B — 0.27% OF GLOBAL MILITARY SPEND
-                  &nbsp;&nbsp;&nbsp;///&nbsp;&nbsp;&nbsp;
-                  ACTIVE ARMED CONFLICTS: 56 (ACLED 2024) — HIGHEST SINCE COLD WAR
-                  &nbsp;&nbsp;&nbsp;///&nbsp;&nbsp;&nbsp;
-                  COSTS OF WAR PROJECT: U.S. POST-9/11 WARS TOTAL $8T AND COUNTING
-                  &nbsp;&nbsp;&nbsp;///&nbsp;&nbsp;&nbsp;
-                  RECONSTRUCTION COSTS ALWAYS ESTIMATED LAST. ALWAYS WRONG.
-                  &nbsp;&nbsp;&nbsp;///&nbsp;&nbsp;&nbsp;
-                  THIS SYSTEM IS FOR EDUCATIONAL USE. THE DECISION-MAKERS HAVE THEIR OWN.
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  &nbsp;&nbsp;&nbsp;⚡ GLOBAL DEFENSE SPENDING 2024: $2,443B — UP 7.4% YOY (SIPRI)
-                  &nbsp;&nbsp;&nbsp;///&nbsp;&nbsp;&nbsp;
-                  UN PEACEKEEPING BUDGET FY24: $6.5B — 0.27% OF GLOBAL MILITARY SPEND
-                  &nbsp;&nbsp;&nbsp;///&nbsp;&nbsp;&nbsp;
-                  ACTIVE ARMED CONFLICTS: 56 (ACLED 2024) — HIGHEST SINCE COLD WAR
-                  &nbsp;&nbsp;&nbsp;///&nbsp;&nbsp;&nbsp;
-                  COSTS OF WAR PROJECT: U.S. POST-9/11 WARS TOTAL $8T AND COUNTING
-                  &nbsp;&nbsp;&nbsp;///&nbsp;&nbsp;&nbsp;
-                  RECONSTRUCTION COSTS ALWAYS ESTIMATED LAST. ALWAYS WRONG.
-                  &nbsp;&nbsp;&nbsp;///&nbsp;&nbsp;&nbsp;
-                  THIS SYSTEM IS FOR EDUCATIONAL USE. THE DECISION-MAKERS HAVE THEIR OWN.
-                  &nbsp;&nbsp;&nbsp;
+        <div className="min-h-screen flex flex-col" style={{ background: 'var(--bg)' }}>
+          {/* Status bar */}
+          <nav
+            className="shrink-0"
+            style={{
+              borderBottom: '1px solid var(--border)',
+              background: 'var(--surface)',
+            }}
+          >
+            <div className="max-w-screen-2xl mx-auto px-4 h-10 flex items-center justify-between">
+              {/* Left: system indicator */}
+              <a href="/" className="flex items-center gap-2">
+                <div
+                  className="w-1.5 h-1.5 rounded-full animate-pulse-dot"
+                  style={{
+                    background: 'var(--accent-emerald)',
+                    boxShadow: '0 0 6px var(--accent-emerald)',
+                  }}
+                />
+                <span
+                  className="text-xs font-bold tracking-widest uppercase"
+                  style={{ color: 'var(--text-secondary)', letterSpacing: '0.15em' }}
+                >
+                  HMWWCT
                 </span>
+                <span className="text-xs hidden sm:block" style={{ color: 'var(--text-muted)' }}>
+                  // STRATEGIC COST ANALYSIS
+                </span>
+              </a>
+              {/* Right: nav links */}
+              <div className="flex items-center gap-1 text-xs uppercase tracking-wider">
+                <a
+                  href="/calculator"
+                  className="px-3 py-1 transition-colors hover:text-[var(--accent-cyan)]"
+                  style={{ color: 'var(--text-muted)' }}
+                >
+                  [CALC]
+                </a>
+                <a
+                  href="/methodology"
+                  className="px-3 py-1 transition-colors hover:text-[var(--accent-cyan)]"
+                  style={{ color: 'var(--text-muted)' }}
+                >
+                  [METHOD]
+                </a>
               </div>
-
-              {/* NAV */}
-              <nav style={{ borderBottom: '1px solid var(--border)', background: 'var(--panel)' }}>
-                <div className="px-5 h-10 flex items-center justify-between">
-                  <a href="/" className="glow text-xs font-bold tracking-widest uppercase" style={{ color: 'var(--green)' }}>
-                    W.O.P.R. <span style={{ color: 'var(--text-dim)' }}>//</span> HMWWCT
-                  </a>
-                  <div className="flex items-center gap-6 text-xs tracking-widest uppercase" style={{ color: 'var(--text-dim)' }}>
-                    <span className="hidden sm:block" style={{ color: 'var(--text-muted)' }}>EDUCATIONAL MODE</span>
-                    <a href="/calculator" className="hover:text-[var(--green)] transition-colors">&gt; CALCULATOR</a>
-                    <a href="/methodology" className="hover:text-[var(--green)] transition-colors">&gt; METHODOLOGY</a>
-                  </div>
-                </div>
-              </nav>
-
-              {/* Page content */}
-              <main style={{ flex: '1 1 0', minHeight: 0, display: 'flex', flexDirection: 'column' }}>{children}</main>
-
-
-            </div>{/* end .monitor-screen */}
-          </div>{/* end .monitor-bezel */}
-        </div>{/* end .monitor-wrapper */}
+            </div>
+          </nav>
+          {/* Main content */}
+          <main className="flex-1">{children}</main>
+        </div>
       </body>
     </html>
   );
