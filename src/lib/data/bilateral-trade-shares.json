@@ -3,88 +3,309 @@
     "source": "UN Comtrade Database, OECD Trade in Value Added (TiVA)",
     "url": "https://comtradeplus.un.org/",
     "year": 2022,
-    "note": "Trade volume = exports + imports (goods only). Keys are sorted alpha-3 pairs (AAA-BBB where AAA < BBB lexically). Values in USD."
+    "note": "Trade volume = exports + imports (goods only). Keys are canonical alpha-3 pairs (AAA-BBB where AAA < BBB lexically). Values in USD.",
+    "schemaVersion": 2
   },
   "pairs": {
-    "CAN-USA": { "tradeVolumeUsd": 804000000000, "year": 2022 },
-    "CHN-USA": { "tradeVolumeUsd": 690000000000, "year": 2022 },
-    "MEX-USA": { "tradeVolumeUsd": 780000000000, "year": 2022 },
-    "CHN-JPN": { "tradeVolumeUsd": 317000000000, "year": 2022 },
-    "AUS-CHN": { "tradeVolumeUsd": 230000000000, "year": 2022 },
-    "CHN-KOR": { "tradeVolumeUsd": 362000000000, "year": 2022 },
-    "DEU-FRA": { "tradeVolumeUsd": 180000000000, "year": 2022 },
-    "DEU-USA": { "tradeVolumeUsd": 228000000000, "year": 2022 },
-    "DEU-GBR": { "tradeVolumeUsd": 160000000000, "year": 2022 },
-    "DEU-NLD": { "tradeVolumeUsd": 230000000000, "year": 2022 },
-    "DEU-POL": { "tradeVolumeUsd": 150000000000, "year": 2022 },
-    "DEU-ITA": { "tradeVolumeUsd": 140000000000, "year": 2022 },
-    "DEU-CHN": { "tradeVolumeUsd": 297000000000, "year": 2022 },
-    "FRA-GBR": { "tradeVolumeUsd": 95000000000, "year": 2022 },
-    "FRA-ITA": { "tradeVolumeUsd": 100000000000, "year": 2022 },
-    "FRA-BEL": { "tradeVolumeUsd": 110000000000, "year": 2022 },
-    "GBR-USA": { "tradeVolumeUsd": 160000000000, "year": 2022 },
-    "JPN-USA": { "tradeVolumeUsd": 215000000000, "year": 2022 },
-    "CHN-SGP": { "tradeVolumeUsd": 124000000000, "year": 2022 },
-    "CHN-TWN": { "tradeVolumeUsd": 211000000000, "year": 2022 },
-    "CHN-VNM": { "tradeVolumeUsd": 235000000000, "year": 2022 },
-    "CHN-DEU": { "tradeVolumeUsd": 297000000000, "year": 2022 },
-    "CHN-RUS": { "tradeVolumeUsd": 190000000000, "year": 2022 },
-    "CHN-AUS": { "tradeVolumeUsd": 230000000000, "year": 2022 },
-    "CHN-IND": { "tradeVolumeUsd": 136000000000, "year": 2022 },
-    "CHN-MYS": { "tradeVolumeUsd": 170000000000, "year": 2022 },
-    "CHN-THA": { "tradeVolumeUsd": 130000000000, "year": 2022 },
-    "CHN-NLD": { "tradeVolumeUsd": 130000000000, "year": 2022 },
-    "CHN-GBR": { "tradeVolumeUsd": 100000000000, "year": 2022 },
-    "CHN-FRA": { "tradeVolumeUsd": 85000000000, "year": 2022 },
-    "IND-USA": { "tradeVolumeUsd": 128000000000, "year": 2022 },
-    "IND-CHN": { "tradeVolumeUsd": 136000000000, "year": 2022 },
-    "IND-ARE": { "tradeVolumeUsd": 83000000000, "year": 2022 },
-    "IRQ-USA": { "tradeVolumeUsd": 7000000000, "year": 2022 },
-    "IRN-CHN": { "tradeVolumeUsd": 14000000000, "year": 2022 },
-    "KOR-USA": { "tradeVolumeUsd": 168000000000, "year": 2022 },
-    "KOR-JPN": { "tradeVolumeUsd": 90000000000, "year": 2022 },
-    "JPN-AUS": { "tradeVolumeUsd": 90000000000, "year": 2022 },
-    "BRA-CHN": { "tradeVolumeUsd": 150000000000, "year": 2022 },
-    "BRA-USA": { "tradeVolumeUsd": 75000000000, "year": 2022 },
-    "ARG-BRA": { "tradeVolumeUsd": 35000000000, "year": 2022 },
-    "RUS-DEU": { "tradeVolumeUsd": 54000000000, "year": 2022 },
-    "RUS-NLD": { "tradeVolumeUsd": 47000000000, "year": 2022 },
-    "RUS-TUR": { "tradeVolumeUsd": 62000000000, "year": 2022 },
-    "RUS-IND": { "tradeVolumeUsd": 35000000000, "year": 2022 },
-    "RUS-KAZ": { "tradeVolumeUsd": 25000000000, "year": 2022 },
-    "MYS-SGP": { "tradeVolumeUsd": 90000000000, "year": 2022 },
-    "SGP-USA": { "tradeVolumeUsd": 75000000000, "year": 2022 },
-    "SGP-JPN": { "tradeVolumeUsd": 40000000000, "year": 2022 },
-    "TWN-USA": { "tradeVolumeUsd": 130000000000, "year": 2022 },
-    "TWN-JPN": { "tradeVolumeUsd": 75000000000, "year": 2022 },
-    "TWN-KOR": { "tradeVolumeUsd": 55000000000, "year": 2022 },
-    "SAU-CHN": { "tradeVolumeUsd": 105000000000, "year": 2022 },
-    "SAU-JPN": { "tradeVolumeUsd": 55000000000, "year": 2022 },
-    "SAU-IND": { "tradeVolumeUsd": 42000000000, "year": 2022 },
-    "SAU-USA": { "tradeVolumeUsd": 30000000000, "year": 2022 },
-    "ARE-IND": { "tradeVolumeUsd": 83000000000, "year": 2022 },
-    "ARE-CHN": { "tradeVolumeUsd": 45000000000, "year": 2022 },
-    "TUR-DEU": { "tradeVolumeUsd": 48000000000, "year": 2022 },
-    "TUR-GBR": { "tradeVolumeUsd": 25000000000, "year": 2022 },
-    "NGA-CHN": { "tradeVolumeUsd": 18000000000, "year": 2022 },
-    "ZAF-CHN": { "tradeVolumeUsd": 22000000000, "year": 2022 },
-    "EGY-CHN": { "tradeVolumeUsd": 15000000000, "year": 2022 },
-    "DZA-ITA": { "tradeVolumeUsd": 20000000000, "year": 2022 },
-    "DZA-ESP": { "tradeVolumeUsd": 17000000000, "year": 2022 },
-    "IDN-CHN": { "tradeVolumeUsd": 100000000000, "year": 2022 },
-    "IDN-JPN": { "tradeVolumeUsd": 45000000000, "year": 2022 },
-    "IDN-USA": { "tradeVolumeUsd": 35000000000, "year": 2022 },
-    "VNM-USA": { "tradeVolumeUsd": 138000000000, "year": 2022 },
-    "VNM-JPN": { "tradeVolumeUsd": 50000000000, "year": 2022 },
-    "THA-CHN": { "tradeVolumeUsd": 130000000000, "year": 2022 },
-    "THA-USA": { "tradeVolumeUsd": 65000000000, "year": 2022 },
-    "THA-JPN": { "tradeVolumeUsd": 65000000000, "year": 2022 },
-    "PAK-CHN": { "tradeVolumeUsd": 27000000000, "year": 2022 },
-    "PAK-USA": { "tradeVolumeUsd": 7000000000, "year": 2022 },
-    "BGD-USA": { "tradeVolumeUsd": 9000000000, "year": 2022 },
-    "BGD-CHN": { "tradeVolumeUsd": 22000000000, "year": 2022 },
-    "PHL-CHN": { "tradeVolumeUsd": 55000000000, "year": 2022 },
-    "PHL-JPN": { "tradeVolumeUsd": 25000000000, "year": 2022 },
-    "PHL-USA": { "tradeVolumeUsd": 25000000000, "year": 2022 }
+    "ARE-CHN": {
+      "tradeVolumeUsd": 45000000000,
+      "year": 2022
+    },
+    "ARE-IND": {
+      "tradeVolumeUsd": 83000000000,
+      "year": 2022
+    },
+    "ARG-BRA": {
+      "tradeVolumeUsd": 35000000000,
+      "year": 2022
+    },
+    "AUS-CHN": {
+      "tradeVolumeUsd": 230000000000,
+      "year": 2022
+    },
+    "AUS-JPN": {
+      "tradeVolumeUsd": 90000000000,
+      "year": 2022
+    },
+    "BEL-FRA": {
+      "tradeVolumeUsd": 110000000000,
+      "year": 2022
+    },
+    "BGD-CHN": {
+      "tradeVolumeUsd": 22000000000,
+      "year": 2022
+    },
+    "BGD-USA": {
+      "tradeVolumeUsd": 9000000000,
+      "year": 2022
+    },
+    "BRA-CHN": {
+      "tradeVolumeUsd": 150000000000,
+      "year": 2022
+    },
+    "BRA-USA": {
+      "tradeVolumeUsd": 75000000000,
+      "year": 2022
+    },
+    "CAN-USA": {
+      "tradeVolumeUsd": 804000000000,
+      "year": 2022
+    },
+    "CHN-DEU": {
+      "tradeVolumeUsd": 297000000000,
+      "year": 2022
+    },
+    "CHN-EGY": {
+      "tradeVolumeUsd": 15000000000,
+      "year": 2022
+    },
+    "CHN-FRA": {
+      "tradeVolumeUsd": 85000000000,
+      "year": 2022
+    },
+    "CHN-GBR": {
+      "tradeVolumeUsd": 100000000000,
+      "year": 2022
+    },
+    "CHN-IDN": {
+      "tradeVolumeUsd": 100000000000,
+      "year": 2022
+    },
+    "CHN-IND": {
+      "tradeVolumeUsd": 136000000000,
+      "year": 2022
+    },
+    "CHN-IRN": {
+      "tradeVolumeUsd": 14000000000,
+      "year": 2022
+    },
+    "CHN-JPN": {
+      "tradeVolumeUsd": 317000000000,
+      "year": 2022
+    },
+    "CHN-KOR": {
+      "tradeVolumeUsd": 362000000000,
+      "year": 2022
+    },
+    "CHN-MYS": {
+      "tradeVolumeUsd": 170000000000,
+      "year": 2022
+    },
+    "CHN-NGA": {
+      "tradeVolumeUsd": 18000000000,
+      "year": 2022
+    },
+    "CHN-NLD": {
+      "tradeVolumeUsd": 130000000000,
+      "year": 2022
+    },
+    "CHN-PAK": {
+      "tradeVolumeUsd": 27000000000,
+      "year": 2022
+    },
+    "CHN-PHL": {
+      "tradeVolumeUsd": 55000000000,
+      "year": 2022
+    },
+    "CHN-RUS": {
+      "tradeVolumeUsd": 190000000000,
+      "year": 2022
+    },
+    "CHN-SAU": {
+      "tradeVolumeUsd": 105000000000,
+      "year": 2022
+    },
+    "CHN-SGP": {
+      "tradeVolumeUsd": 124000000000,
+      "year": 2022
+    },
+    "CHN-THA": {
+      "tradeVolumeUsd": 130000000000,
+      "year": 2022
+    },
+    "CHN-TWN": {
+      "tradeVolumeUsd": 211000000000,
+      "year": 2022
+    },
+    "CHN-USA": {
+      "tradeVolumeUsd": 690000000000,
+      "year": 2022
+    },
+    "CHN-VNM": {
+      "tradeVolumeUsd": 235000000000,
+      "year": 2022
+    },
+    "CHN-ZAF": {
+      "tradeVolumeUsd": 22000000000,
+      "year": 2022
+    },
+    "DEU-FRA": {
+      "tradeVolumeUsd": 180000000000,
+      "year": 2022
+    },
+    "DEU-GBR": {
+      "tradeVolumeUsd": 160000000000,
+      "year": 2022
+    },
+    "DEU-ITA": {
+      "tradeVolumeUsd": 140000000000,
+      "year": 2022
+    },
+    "DEU-NLD": {
+      "tradeVolumeUsd": 230000000000,
+      "year": 2022
+    },
+    "DEU-POL": {
+      "tradeVolumeUsd": 150000000000,
+      "year": 2022
+    },
+    "DEU-RUS": {
+      "tradeVolumeUsd": 54000000000,
+      "year": 2022
+    },
+    "DEU-TUR": {
+      "tradeVolumeUsd": 48000000000,
+      "year": 2022
+    },
+    "DEU-USA": {
+      "tradeVolumeUsd": 228000000000,
+      "year": 2022
+    },
+    "DZA-ESP": {
+      "tradeVolumeUsd": 17000000000,
+      "year": 2022
+    },
+    "DZA-ITA": {
+      "tradeVolumeUsd": 20000000000,
+      "year": 2022
+    },
+    "FRA-GBR": {
+      "tradeVolumeUsd": 95000000000,
+      "year": 2022
+    },
+    "FRA-ITA": {
+      "tradeVolumeUsd": 100000000000,
+      "year": 2022
+    },
+    "GBR-TUR": {
+      "tradeVolumeUsd": 25000000000,
+      "year": 2022
+    },
+    "GBR-USA": {
+      "tradeVolumeUsd": 160000000000,
+      "year": 2022
+    },
+    "IDN-JPN": {
+      "tradeVolumeUsd": 45000000000,
+      "year": 2022
+    },
+    "IDN-USA": {
+      "tradeVolumeUsd": 35000000000,
+      "year": 2022
+    },
+    "IND-RUS": {
+      "tradeVolumeUsd": 35000000000,
+      "year": 2022
+    },
+    "IND-SAU": {
+      "tradeVolumeUsd": 42000000000,
+      "year": 2022
+    },
+    "IND-USA": {
+      "tradeVolumeUsd": 128000000000,
+      "year": 2022
+    },
+    "IRQ-USA": {
+      "tradeVolumeUsd": 7000000000,
+      "year": 2022
+    },
+    "JPN-KOR": {
+      "tradeVolumeUsd": 90000000000,
+      "year": 2022
+    },
+    "JPN-PHL": {
+      "tradeVolumeUsd": 25000000000,
+      "year": 2022
+    },
+    "JPN-SAU": {
+      "tradeVolumeUsd": 55000000000,
+      "year": 2022
+    },
+    "JPN-SGP": {
+      "tradeVolumeUsd": 40000000000,
+      "year": 2022
+    },
+    "JPN-THA": {
+      "tradeVolumeUsd": 65000000000,
+      "year": 2022
+    },
+    "JPN-TWN": {
+      "tradeVolumeUsd": 75000000000,
+      "year": 2022
+    },
+    "JPN-USA": {
+      "tradeVolumeUsd": 215000000000,
+      "year": 2022
+    },
+    "JPN-VNM": {
+      "tradeVolumeUsd": 50000000000,
+      "year": 2022
+    },
+    "KAZ-RUS": {
+      "tradeVolumeUsd": 25000000000,
+      "year": 2022
+    },
+    "KOR-TWN": {
+      "tradeVolumeUsd": 55000000000,
+      "year": 2022
+    },
+    "KOR-USA": {
+      "tradeVolumeUsd": 168000000000,
+      "year": 2022
+    },
+    "MEX-USA": {
+      "tradeVolumeUsd": 780000000000,
+      "year": 2022
+    },
+    "MYS-SGP": {
+      "tradeVolumeUsd": 90000000000,
+      "year": 2022
+    },
+    "NLD-RUS": {
+      "tradeVolumeUsd": 47000000000,
+      "year": 2022
+    },
+    "PAK-USA": {
+      "tradeVolumeUsd": 7000000000,
+      "year": 2022
+    },
+    "PHL-USA": {
+      "tradeVolumeUsd": 25000000000,
+      "year": 2022
+    },
+    "RUS-TUR": {
+      "tradeVolumeUsd": 62000000000,
+      "year": 2022
+    },
+    "SAU-USA": {
+      "tradeVolumeUsd": 30000000000,
+      "year": 2022
+    },
+    "SGP-USA": {
+      "tradeVolumeUsd": 75000000000,
+      "year": 2022
+    },
+    "THA-USA": {
+      "tradeVolumeUsd": 65000000000,
+      "year": 2022
+    },
+    "TWN-USA": {
+      "tradeVolumeUsd": 130000000000,
+      "year": 2022
+    },
+    "USA-VNM": {
+      "tradeVolumeUsd": 138000000000,
+      "year": 2022
+    }
   }
 }

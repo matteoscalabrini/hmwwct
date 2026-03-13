@@ -1,34 +1,133 @@
 @import "tailwindcss";
 
 :root {
-  --bg:          #000000;   /* pure black */
-  --panel:       #030608;   /* near-black panel */
-  --green:       #a8daff;   /* bright whitened blue — high contrast on dark bg */
-  --green-dim:   #5bb8e8;   /* medium blue */
-  --green-dark:  #0d3a5c;   /* dark blue */
-  --green-faint: #010a12;   /* near-black blue tint */
-  --border:      #0e3050;   /* border */
+  --bg:          #000000;   /* pure black — monitor screen */
+  --panel:       #010a02;   /* near-black with green tint */
+  --green:       #00ff65;   /* classic green phosphor — P1 terminal */
+  --green-dim:   #00aa44;   /* medium green */
+  --green-dark:  #003d14;   /* dark green */
+  --green-faint: #001a08;   /* near-black green */
+  --border:      #003d14;   /* green-tinted border */
   --amber:       #ffb000;
   --red:         #ff4444;
-  --text-dim:    #3a7a99;   /* readable dim text */
-  --text-muted:  #254d66;   /* dim — readable on pure black */
+  --text-dim:    #00cc55;   /* readable dim green */
+  --text-muted:  #007a33;   /* muted green — readable on pure black */
+  --room:        #020402;   /* "desk" behind the monitor */
+  --bezel:       #111214;   /* monitor casing */
+  --bezel-inner: #0a0c0e;   /* inner bezel ring */
 }
 
 * { box-sizing: border-box; }
 
-html {
-  scrollbar-color: var(--green-dark) var(--bg);
-  scrollbar-width: thin;
+/* ─── Room / body ──────────────────────────────────────────────────────────── */
+html, body {
+  height: 100%;
+  overflow: hidden;   /* no outer scroll — only the screen scrolls */
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  background: var(--bg);
+  background: var(--room);
   color: var(--green);
   font-family: "IBM Plex Mono", 'Courier New', Courier, monospace;
-  min-height: 100vh;
   animation: flicker 8s infinite;
+  /* Subtle noise texture on the room */
+  background-image: radial-gradient(ellipse at center, #060a08 0%, #000000 80%);
 }
 
+/* ─── Monitor bezel ────────────────────────────────────────────────────────── */
+.monitor-wrapper {
+  height: 100vh;      /* exactly viewport — no outer scroll */
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  box-sizing: border-box;
+}
+
+.monitor-bezel {
+  /* Height fills viewport minus wrapper padding (32px × 2 = 64px) */
+  height: calc(100vh - 64px);
+  /* Width derived from 4:3 height, capped at viewport width */
+  width: min(calc(100vw - 48px), calc((100vh - 64px) * 4 / 3));
+  flex-shrink: 0;
+  background: var(--bezel);
+  border-radius: 24px;
+  padding: 16px;
+  padding-bottom: 28px;   /* extra bottom for the physical base feel */
+  box-shadow:
+    0 0 0 2px #1a1d22,
+    0 0 0 4px #0d0f11,
+    0 4px 60px rgba(0,0,0,0.95),
+    0 0 80px rgba(0,255,101,0.04),   /* faint green phosphor leak */
+    inset 0 1px 0 rgba(255,255,255,0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Brand strip above screen */
+.monitor-brand-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+}
+
+/* ─── Monitor screen ────────────────────────────────────────────────────────── */
+.monitor-screen {
+  flex: 1;
+  min-height: 0;      /* critical: allows flex child to scroll instead of expand */
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  border-radius: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  /* Screen inner shadow — depth illusion with green phosphor tint */
+  box-shadow:
+    inset 0 0 40px rgba(0,0,0,0.8),
+    inset 0 0 0 1px rgba(0,255,101,0.06);
+  /* Custom scrollbar inside screen */
+  scrollbar-width: thin;
+  scrollbar-color: var(--green-dark) var(--bg);
+}
+
+.monitor-screen::-webkit-scrollbar { width: 4px; }
+.monitor-screen::-webkit-scrollbar-track { background: var(--bg); }
+.monitor-screen::-webkit-scrollbar-thumb { background: var(--green-dark); border-radius: 2px; }
+
+/* CRT screen curvature vignette — softened */
+.monitor-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 65%, rgba(0,0,0,0.35) 100%);
+  z-index: 9998;
+  border-radius: 10px;
+}
+
+/* ─── Hover-reveal panels ───────────────────────────────────────────────────── */
+/* Usage: wrap trigger + panel in .reveal-group; panel uses .reveal-panel */
+.reveal-group { position: relative; }
+.reveal-panel {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.18s ease, visibility 0.18s ease;
+  pointer-events: none;
+}
+.reveal-group:hover .reveal-panel,
+.reveal-group:focus-within .reveal-panel {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* ─── Fonts ────────────────────────────────────────────────────────────────── */
 .font-workbench {
   font-family: "Workbench", sans-serif;
   font-optical-sizing: auto;
@@ -37,39 +136,25 @@ body {
   font-variation-settings: "BLED" 0, "SCAN" 0;
 }
 
-/* CRT scanline overlay */
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0, 0, 0, 0.12) 2px,
-    rgba(0, 0, 0, 0.12) 4px
-  );
-  z-index: 9999;
-}
+.font-ui { font-family: "IBM Plex Mono", 'Courier New', Courier, monospace; }
 
-/* Phosphor glow */
-.glow       { text-shadow: 0 0 8px var(--green), 0 0 20px rgba(168,218,255,0.3); }
+/* ─── Phosphor glow ────────────────────────────────────────────────────────── */
+.glow       { text-shadow: 0 0 10px rgba(0,255,101,0.7), 0 0 30px rgba(0,255,101,0.25); }
 .glow-amber { text-shadow: 0 0 8px var(--amber), 0 0 20px rgba(255,176,0,0.35); }
 .glow-red   { text-shadow: 0 0 8px var(--red),   0 0 20px rgba(255,68,68,0.35); }
 
-/* Blinking cursor */
+/* ─── Blinking cursor ──────────────────────────────────────────────────────── */
 @keyframes blink {
   0%, 49% { opacity: 1; }
   50%, 100% { opacity: 0; }
 }
 .cursor::after {
-  content: '█';
+  content: '\2588';
   animation: blink 1.1s step-end infinite;
   margin-left: 2px;
 }
 
-/* Subtle CRT flicker */
+/* ─── CRT flicker ──────────────────────────────────────────────────────────── */
 @keyframes flicker {
   0%, 96%, 100% { opacity: 1; }
   97%  { opacity: 0.97; }
@@ -77,19 +162,40 @@ body::after {
   99%  { opacity: 0.98; }
 }
 
-/* Blue text selection */
+/* ─── Text selection ───────────────────────────────────────────────────────── */
 ::selection { background: var(--green); color: var(--bg); }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--green-dark); }
-::-webkit-scrollbar-thumb:hover { background: var(--green-dim); }
-
-.font-ui { font-family: "IBM Plex Mono", 'Courier New', Courier, monospace; }
-
-/* Ticker marquee */
+/* ─── Ticker marquee ───────────────────────────────────────────────────────── */
 @keyframes marquee {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-50%); }
+}
+
+/* ─── Sequential line reveal (typewriter effect) ───────────────────────────── */
+@keyframes revealLine {
+  from { opacity: 0; transform: translateX(-4px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.reveal-line {
+  opacity: 0;
+  animation: revealLine 0.15s ease forwards;
+}
+
+/* ─── Result flash (access granted effect) ─────────────────────────────────── */
+@keyframes accessGranted {
+  0%   { opacity: 0; transform: scale(0.98); }
+  15%  { opacity: 1; transform: scale(1.005); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.access-granted {
+  animation: accessGranted 0.5s ease forwards;
+}
+
+/* ─── Number count-up shimmer ───────────────────────────────────────────────── */
+@keyframes countShimmer {
+  0%   { text-shadow: 0 0 20px rgba(0,255,101,0.9), 0 0 40px rgba(0,255,101,0.5); }
+  100% { text-shadow: 0 0 10px rgba(0,255,101,0.7), 0 0 30px rgba(0,255,101,0.25); }
+}
+.count-shimmer {
+  animation: countShimmer 0.8s ease forwards;
 }

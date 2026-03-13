@@ -27,6 +27,7 @@ export interface Country {
   militaryPctGdp: number | null;
   militaryPersonnel: number | null;
   tradeGdpPct: number | null;
+  goldReservesUsd: number | null;   // official reserves in monetary gold (USD), WB FI.RES.TOTL.CD - FI.RES.XGLD.CD
   dataYear: number;
   hasStaticFallback: boolean;
 }
@@ -82,12 +83,29 @@ export interface CostCategory {
 // ─── Opportunity Cost ─────────────────────────────────────────────────────────
 
 export interface OpportunityCostItem {
+  id: string;
   label: string;
   iconName: string;
   quantity: number;
   unit: string;
   unitCost: number;
   source: Source;
+}
+
+export interface OpportunityContextMetric {
+  id: string;
+  label: string;
+  currentLabel: string;
+  currentValue: number;
+  currentUnit: string;
+  asOf: string;
+  note: string;
+  sources: Source[];
+}
+
+export interface OpportunityContextResponse {
+  metrics: OpportunityContextMetric[];
+  fetchedAt: string;
 }
 
 // ─── Human Toll ───────────────────────────────────────────────────────────────
@@ -114,7 +132,7 @@ export interface WarRevenueResult {
   totalUsd: number;
   annualRateUsd: number;
   items: RevenueItem[];
-  netPositionUsd: number;        // revenue - total cost (almost always negative)
+  netPositionUsd: number;        // revenue - headline projected cost (almost always negative)
   breakEvenYears: number | null; // null = never
   assumptions: string[];
   confidenceNote: string;
@@ -123,7 +141,8 @@ export interface WarRevenueResult {
 // ─── Final Result ─────────────────────────────────────────────────────────────
 
 export interface WarCostResult {
-  total: { min: number; max: number; point: number };
+  total: { min: number; max: number; point: number }; // headline projected cost: military + humanitarian + reconstruction
+  economicImpact: { min: number; max: number; point: number }; // separate macroeconomic impact, excluded from headline total
   revenue: WarRevenueResult;
   breakdown: {
     military: CostCategory;
@@ -141,7 +160,26 @@ export interface WarCostResult {
     worldBank: string;
     sipri: string;
     unhcr: string;
+    fred?: string;   // present when FRED commodity prices were fetched live
+    imf?: string;    // present when IMF fallback was used for GDP
   };
+}
+
+// ─── Live Data Inputs ─────────────────────────────────────────────────────────
+
+/** Live commodity spot prices fetched from FRED (St. Louis Fed). */
+export interface CommodityPrices {
+  oilUsdPerBarrel: number | null;
+  gasUsdPerMmbtu: number | null;
+  wheatUsdPerTon: number | null;
+  fetchedAt: string;
+}
+
+/** Sanctions regime data for the aggressor country, from literature. */
+export interface SanctionsInfo {
+  regime: string;
+  additionalWarSanctionsPct: number; // incremental GDP contraction/yr from war-related escalation
+  note: string;
 }
 
 // ─── Calculation Input ────────────────────────────────────────────────────────
@@ -150,6 +188,13 @@ export interface CalculationInput {
   aggressor: Country;
   target: Country;
   scenario: ConflictScenario;
+  /** Live external data injected by the API route; all fields optional for graceful degradation. */
+  liveData?: {
+    commodityPrices?: CommodityPrices;
+    aggressorSanctions?: SanctionsInfo | null;
+    /** CPI scalar = currentCPI / 2023_avg_CPI (FRED CPIAUCSL). Inflates Watson anchors forward from 2023 USD. */
+    cpiScalar?: number;
+  };
 }
 
 // ─── API Response Types ───────────────────────────────────────────────────────

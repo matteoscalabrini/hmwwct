@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { ArrowLeftRight } from 'lucide-react';
 import Select, { components, OptionProps, SingleValueProps, StylesConfig } from 'react-select';
 import { RestCountryRaw } from '@/lib/api/restcountries';
 
@@ -44,7 +45,7 @@ const terminalStyles: StylesConfig<CountryOption> = {
     borderRadius: 0,
     boxShadow: state.isFocused ? '0 0 0 1px var(--green-dark)' : 'none',
     color: 'var(--green)',
-    fontFamily: "'Courier New', Courier, monospace",
+    fontFamily: "'IBM Plex Mono', 'Courier New', monospace",
     fontSize: '12px',
     padding: '2px 4px',
     '&:hover': { borderColor: 'var(--green-dark)' },
@@ -61,13 +62,13 @@ const terminalStyles: StylesConfig<CountryOption> = {
     ...base,
     background: state.isFocused ? 'var(--green-faint)' : 'var(--panel)',
     color: state.isFocused ? 'var(--green)' : 'var(--green-dim)',
-    fontFamily: "'Courier New', Courier, monospace",
+    fontFamily: "'IBM Plex Mono', 'Courier New', monospace",
     fontSize: '12px',
     cursor: 'pointer',
   }),
   singleValue: (base) => ({ ...base, color: 'var(--green)' }),
   placeholder: (base) => ({ ...base, color: 'var(--text-dim)', fontSize: '12px' }),
-  input: (base) => ({ ...base, color: 'var(--green)', fontFamily: "'Courier New', Courier, monospace" }),
+  input: (base) => ({ ...base, color: 'var(--green)', fontFamily: "'IBM Plex Mono', 'Courier New', monospace" }),
   indicatorSeparator: () => ({ display: 'none' }),
   dropdownIndicator: (base) => ({ ...base, color: 'var(--text-dim)', padding: '4px' }),
   loadingIndicator: (base) => ({ ...base, color: 'var(--green-dim)' }),
@@ -77,13 +78,14 @@ const terminalStyles: StylesConfig<CountryOption> = {
 interface CountrySelectorProps {
   aggressorCode: string | null;
   targetCode: string | null;
-  onAggressorChange: (code: string) => void;
-  onTargetChange: (code: string) => void;
+  onAggressorChange: (code: string | null) => void;
+  onTargetChange: (code: string | null) => void;
 }
 
 export function CountrySelector({ aggressorCode, targetCode, onAggressorChange, onTargetChange }: CountrySelectorProps) {
   const [countries, setCountries] = useState<CountryOption[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isSwapHovered, setIsSwapHovered] = useState(false);
 
   useEffect(() => {
     fetch('/api/countries')
@@ -94,44 +96,83 @@ export function CountrySelector({ aggressorCode, targetCode, onAggressorChange, 
 
   const aggressorOptions = countries.filter((c) => c.value !== targetCode);
   const targetOptions = countries.filter((c) => c.value !== aggressorCode);
+  const canSwap = aggressorCode !== null || targetCode !== null;
+
+  function handleSwap() {
+    if (!canSwap) return;
+    onAggressorChange(targetCode);
+    onTargetChange(aggressorCode);
+  }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div>
-        <label className="block text-xs tracking-widest uppercase mb-2" style={{ color: 'var(--green-dim)' }}>
-          AGGRESSOR NATION
-        </label>
-        <Select
-          instanceId="aggressor"
-          options={aggressorOptions}
-          value={aggressorOptions.find((c) => c.value === aggressorCode) ?? null}
-          onChange={(opt) => { if (opt && !Array.isArray(opt)) onAggressorChange((opt as CountryOption).value); }}
-          components={{ Option: FlagOption, SingleValue: FlagSingleValue }}
-          isLoading={loading}
-          placeholder="TYPE TO SEARCH..."
-          isSearchable
-          styles={terminalStyles}
-          aria-label="Select aggressor country"
-          noOptionsMessage={() => 'NO MATCH FOUND'}
-        />
+    <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:grid-rows-[auto_1fr] gap-4 md:gap-x-6 md:gap-y-2 items-center">
+      <label
+        className="hidden md:block md:col-start-1 md:row-start-1 text-xs tracking-widest uppercase"
+        style={{ color: 'var(--green-dim)' }}
+      >
+        AGGRESSOR NATION
+      </label>
+      <label
+        className="hidden md:block md:col-start-3 md:row-start-1 text-xs tracking-widest uppercase"
+        style={{ color: 'var(--green-dim)' }}
+      >
+        TARGET NATION
+      </label>
+
+      <div className="md:col-start-1 md:row-start-2">
+          <label className="block text-xs tracking-widest uppercase mb-2 md:hidden" style={{ color: 'var(--green-dim)' }}>
+            AGGRESSOR NATION
+          </label>
+          <Select
+            instanceId="aggressor"
+            options={aggressorOptions}
+            value={aggressorOptions.find((c) => c.value === aggressorCode) ?? null}
+            onChange={(opt) => { if (opt && !Array.isArray(opt)) onAggressorChange((opt as CountryOption).value); }}
+            components={{ Option: FlagOption, SingleValue: FlagSingleValue }}
+            isLoading={loading}
+            placeholder="TYPE TO SEARCH..."
+            isSearchable
+            styles={terminalStyles}
+            aria-label="Select aggressor country"
+            noOptionsMessage={() => 'NO MATCH FOUND'}
+          />
       </div>
-      <div>
-        <label className="block text-xs tracking-widest uppercase mb-2" style={{ color: 'var(--green-dim)' }}>
-          TARGET NATION
-        </label>
-        <Select
-          instanceId="target"
-          options={targetOptions}
-          value={targetOptions.find((c) => c.value === targetCode) ?? null}
-          onChange={(opt) => { if (opt && !Array.isArray(opt)) onTargetChange((opt as CountryOption).value); }}
-          components={{ Option: FlagOption, SingleValue: FlagSingleValue }}
-          isLoading={loading}
-          placeholder="TYPE TO SEARCH..."
-          isSearchable
-          styles={terminalStyles}
-          aria-label="Select target country"
-          noOptionsMessage={() => 'NO MATCH FOUND'}
-        />
+      <div className="flex justify-center self-center md:col-start-2 md:row-start-2">
+          <button
+            type="button"
+            onClick={handleSwap}
+            onMouseEnter={() => setIsSwapHovered(true)}
+            onMouseLeave={() => setIsSwapHovered(false)}
+            disabled={!canSwap}
+            aria-label="Swap aggressor and target nations"
+            className="inline-flex items-center gap-2 px-3 py-2 text-xs tracking-widest uppercase transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            style={{
+              border: `1px solid ${canSwap && isSwapHovered ? 'var(--green-dim)' : 'var(--border)'}`,
+              background: canSwap && isSwapHovered ? 'var(--green-faint)' : 'var(--panel)',
+              color: canSwap ? (isSwapHovered ? 'var(--green)' : 'var(--green-dim)') : 'var(--text-dim)',
+            }}
+          >
+            <ArrowLeftRight size={14} strokeWidth={1.75} />
+            <span>Swap</span>
+          </button>
+      </div>
+      <div className="md:col-start-3 md:row-start-2">
+          <label className="block text-xs tracking-widest uppercase mb-2 md:hidden" style={{ color: 'var(--green-dim)' }}>
+            TARGET NATION
+          </label>
+          <Select
+            instanceId="target"
+            options={targetOptions}
+            value={targetOptions.find((c) => c.value === targetCode) ?? null}
+            onChange={(opt) => { if (opt && !Array.isArray(opt)) onTargetChange((opt as CountryOption).value); }}
+            components={{ Option: FlagOption, SingleValue: FlagSingleValue }}
+            isLoading={loading}
+            placeholder="TYPE TO SEARCH..."
+            isSearchable
+            styles={terminalStyles}
+            aria-label="Select target country"
+            noOptionsMessage={() => 'NO MATCH FOUND'}
+          />
       </div>
     </div>
   );

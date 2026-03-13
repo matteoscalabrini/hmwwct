@@ -1,6 +1,6 @@
 import { CalculationInput, RevenueItem, WarRevenueResult } from '@/types';
 import { SCENARIOS } from '@/constants/conflict-scenarios';
-import commodityData from '@/lib/data/commodity-producers.json';
+import { commodityProducersData } from '@/lib/data/validated';
 
 // ─── World Market Annual Values (2023 estimates) ──────────────────────────────
 // Sources: IEA Oil Market Report 2023, IEA Gas Market Report Q4 2023,
@@ -25,6 +25,14 @@ const CAPTURE_RATE: Record<string, number> = {
   occupation:   0.50, // Sustained control, but sabotage and extraction costs halve yield
 };
 
+// Monetary gold reserves are a one-time stock (central bank asset), not an annual flow.
+// We model only a partial seizure probability by scenario.
+const GOLD_RESERVE_SEIZURE_RATE: Record<string, number> = {
+  skirmish: 0.00,
+  conventional: 0.08,
+  occupation: 0.25,
+};
+
 // Only aggressors with large domestic defense industries see a stimulus effect.
 // Proxy: military budget > $30B (implies domestic production base).
 // Source: US BEA shows defense sector multiplier ~1.4x; UK DASA; French DGA reports.
@@ -41,11 +49,11 @@ export function calculateRevenue(
   const durationYears = def.durationYears.point;
 
   const items: RevenueItem[] = [];
-  const oil = (commodityData.oil as Record<string, { pctWorldProduction: number; note: string }>)[target.code];
-  const gas = (commodityData.naturalGas as Record<string, { pctWorldProduction: number; note: string }>)[target.code];
-  const wheat = (commodityData.wheat as Record<string, { pctWorldExports: number; note: string }>)[target.code];
-  const chips = (commodityData.semiconductors as Record<string, { pctWorldProduction: number; note: string }>)[target.code];
-  const lithium = (commodityData.lithium as Record<string, { pctWorldProduction: number; note: string }>)[target.code];
+  const oil = commodityProducersData.oil[target.code];
+  const gas = commodityProducersData.naturalGas[target.code];
+  const wheat = commodityProducersData.wheat[target.code];
+  const chips = commodityProducersData.semiconductors[target.code];
+  const lithium = commodityProducersData.lithium[target.code];
 
   if (oil && captureRate > 0) {
     const annualUsd = (oil.pctWorldProduction / 100) * WORLD_MARKET_USD.oil * captureRate;
@@ -102,6 +110,21 @@ export function calculateRevenue(
     });
   }
 
+  // Monetary gold reserves (one-time transfer if control over central-bank assets is achieved)
+  const targetGoldReservesUsd = target.goldReservesUsd ?? 0;
+  const goldSeizureRate = GOLD_RESERVE_SEIZURE_RATE[scenario] ?? 0;
+  if (targetGoldReservesUsd > 0 && goldSeizureRate > 0) {
+    const totalUsd = targetGoldReservesUsd * goldSeizureRate;
+    const annualUsd = totalUsd / Math.max(durationYears, 1);
+    items.push({
+      label: 'MONETARY GOLD RESERVE SEIZURE (ONE-TIME)',
+      annualUsd,
+      totalUsd,
+      confidence: 'low',
+      note: `Target monetary gold reserves ≈ ${formatCurrency(targetGoldReservesUsd)} (WB FI.RES.TOTL.CD - FI.RES.XGLD.CD) · ${(goldSeizureRate * 100).toFixed(0)}% seizure rate`,
+    });
+  }
+
   // Defense industry stimulus — aggressor domestic economy only
   // Only applies to countries with large domestic arms industries
   const aggressorBudget = aggressor.militaryBudgetUsd ?? 0;
@@ -137,6 +160,7 @@ export function calculateRevenue(
       'AGGRESSOR WINS AND MAINTAINS FULL TERRITORIAL CONTROL THROUGHOUT',
       'RESOURCE EXTRACTION BEGINS IN YEAR 1 AND IS SUSTAINED FOR THE FULL DURATION',
       `${(captureRate * 100).toFixed(0)}% CAPTURE RATE APPLIED — ACCOUNTS FOR EXTRACTION COSTS, RESISTANCE, AND SABOTAGE`,
+      'MONETARY GOLD RESERVES (IF AVAILABLE) ARE TREATED AS A ONE-TIME STOCK TRANSFER USING WORLD BANK RESERVE INDICATORS',
       'DEFENSE STIMULUS ONLY APPLIES TO AGGRESSORS WITH MILITARY BUDGETS >$30B (DOMESTIC INDUSTRY PROXY)',
       'EXCLUDES: WAR REPARATIONS (RARELY PAID IN FULL), TERRITORY RESALE VALUE, GEOPOLITICAL LEVERAGE',
       'BEST-CASE SCENARIO — HISTORICAL REALITY IS ALMOST ALWAYS WORSE',
@@ -144,4 +168,11 @@ export function calculateRevenue(
     confidenceNote:
       'OVERALL CONFIDENCE: LOW. NO 21ST-CENTURY WAR HAS RECOVERED ITS COSTS THROUGH RESOURCE REVENUE ALONE. IRAQ OIL DID NOT PAY FOR THE IRAQ WAR. THIS SECTION EXISTS TO SHOW WHY.',
   };
+}
+
+function formatCurrency(n: number): string {
+  if (n >= 1e12) return `$${(n / 1e12).toFixed(1)}T`;
+  if (n >= 1e9) return `$${(n / 1e9).toFixed(1)}B`;
+  if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
+  return `$${n.toFixed(0)}`;
 }

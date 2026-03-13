@@ -3,7 +3,7 @@ import { formatCurrency } from '@/lib/utils/formatting';
 
 interface RevenuePanelProps {
   revenue: WarRevenueResult;
-  totalCostUsd: number;
+  projectedCostUsd: number;
 }
 
 function confidenceBadge(c: 'high' | 'medium' | 'low') {
@@ -22,7 +22,7 @@ function confidenceBadge(c: 'high' | 'medium' | 'low') {
   );
 }
 
-export function RevenuePanel({ revenue, totalCostUsd }: RevenuePanelProps) {
+export function RevenuePanel({ revenue, projectedCostUsd }: RevenuePanelProps) {
   const isLoss = revenue.netPositionUsd < 0;
   const netColor = isLoss ? 'var(--red)' : 'var(--green)';
 
@@ -37,7 +37,7 @@ export function RevenuePanel({ revenue, totalCostUsd }: RevenuePanelProps) {
         <ul className="space-y-1">
           {revenue.assumptions.map((a, i) => (
             <li key={i} className="text-xs leading-relaxed flex gap-2" style={{ color: 'var(--amber)', opacity: 0.75 }}>
-              <span className="shrink-0">//</span>
+              <span className="shrink-0">&gt;</span>
               <span>{a}</span>
             </li>
           ))}
@@ -51,7 +51,7 @@ export function RevenuePanel({ revenue, totalCostUsd }: RevenuePanelProps) {
             NO EXTRACTABLE RESOURCE REVENUE IDENTIFIED FOR THIS TARGET.
           </p>
           <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
-            // target is not a major commodity producer per IEA/USGS/FAO data
+            The target is not a major producer and has no significant API-reported monetary gold reserves.
           </p>
         </div>
       ) : (
@@ -97,10 +97,13 @@ export function RevenuePanel({ revenue, totalCostUsd }: RevenuePanelProps) {
           </div>
           <div>
             <p className="text-xs tracking-widest uppercase mb-1" style={{ color: 'var(--text-dim)' }}>
-              TOTAL COST
+              PROJECTED COST
             </p>
             <p className="text-xl font-bold tabular-nums" style={{ color: 'var(--red)' }}>
-              {formatCurrency(totalCostUsd)}
+              {formatCurrency(projectedCostUsd)}
+            </p>
+            <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
+              EXCLUDES SEPARATE ECONOMIC IMPACT
             </p>
           </div>
         </div>
@@ -127,7 +130,7 @@ export function RevenuePanel({ revenue, totalCostUsd }: RevenuePanelProps) {
           </p>
           {revenue.breakEvenYears !== null && revenue.breakEvenYears <= 500 && (
             <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
-              // at {formatCurrency(revenue.annualRateUsd)}/yr revenue rate
+              At {formatCurrency(revenue.annualRateUsd)}/yr revenue rate.
             </p>
           )}
         </div>

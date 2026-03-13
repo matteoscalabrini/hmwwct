@@ -30,11 +30,12 @@ import extraCountriesData from '@/lib/data/extra-countries.json';
  * Cached for 1 week — this data rarely changes.
  * NOTE: REST Countries API v3 allows max 10 fields.
  */
-export async function fetchAllCountries(): Promise<RestCountryRaw[]> {
+export async function fetchAllCountries(signal?: AbortSignal): Promise<RestCountryRaw[]> {
   // Exactly 10 fields (API limit)
   const fields = 'cca2,cca3,name,flags,region,subregion,latlng,area,unMember,population';
   const res = await fetch(`${RC_BASE}/all?fields=${fields}`, {
     next: { revalidate: 604800 }, // 1 week
+    signal,
   });
   if (!res.ok) throw new Error(`REST Countries API error: ${res.status}`);
   const data: RestCountryRaw[] = await res.json();

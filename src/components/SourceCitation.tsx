@@ -39,14 +39,15 @@ export function SourceCitation({ sources, className = '' }: SourceCitationProps)
         </div>
       }
     >
-      <button
-        type="button"
+      <span
+        role="button"
+        tabIndex={0}
         aria-label={`View ${sources.length} data source${sources.length > 1 ? 's' : ''}`}
-        className="ml-1 inline-flex h-4 w-4 items-center justify-center text-xs font-bold focus:outline-none"
+        className="ml-1 inline-flex h-4 w-4 items-center justify-center text-xs font-bold focus:outline-none cursor-pointer"
         style={{ border: '1px solid var(--border)', color: 'var(--text-dim)' }}
       >
         ?
-      </button>
+      </span>
     </Tooltip>
   );
 }

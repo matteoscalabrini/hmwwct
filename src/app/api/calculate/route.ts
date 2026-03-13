@@ -1,12 +1,28 @@
 import { NextResponse } from 'next/server';
-import { ConflictScenario } from '@/types';
+import { ConflictScenario, SanctionsInfo } from '@/types';
 import { fetchCountryIndicators } from '@/lib/api/worldbank';
 import { fetchAllCountries, RestCountryRaw } from '@/lib/api/restcountries';
 import { enrichCountry } from '@/lib/utils/enrichCountry';
 import { calculateWarCost } from '@/lib/calculations';
-import { SCENARIOS } from '@/constants/conflict-scenarios';
+import { fetchCommodityPrices, fetchCpiScalar } from '@/lib/api/fred';
+import sanctionsData from '@/lib/data/sanctions-regimes.json';
 
 const VALID_SCENARIOS = new Set<ConflictScenario>(['skirmish', 'conventional', 'occupation']);
+
+/** Resolve sanctions data for the aggressor from our static literature-based dataset. */
+function resolveSanctions(aggressorCode: string): SanctionsInfo | null {
+  const entry = (sanctionsData.countries as Record<string, {
+    regime: string;
+    additionalWarSanctionsPct: number;
+    note: string;
+  }>)[aggressorCode];
+  if (!entry) return null;
+  return {
+    regime: entry.regime,
+    additionalWarSanctionsPct: entry.additionalWarSanctionsPct,
+    note: entry.note,
+  };
+}
 
 export async function POST(req: Request) {
   let body: { aggressorCode: string; targetCode: string; scenario: ConflictScenario };
@@ -30,11 +46,16 @@ export async function POST(req: Request) {
   }
 
   try {
-    // Parallel fetch: REST Countries metadata + World Bank indicators for both countries
-    const [allCountries, aggressorLive, targetLive] = await Promise.all([
-      fetchAllCountries(),
-      fetchCountryIndicators(aggressorCode),
-      fetchCountryIndicators(targetCode),
+    // 15s timeout signal — passed into every external fetch so the underlying HTTP
+    // connections are actually aborted (not just a wrapper promise).
+    const signal = AbortSignal.timeout(15_000);
+
+    const [allCountries, aggressorLive, targetLive, commodityPrices, cpiScalar] = await Promise.all([
+      fetchAllCountries(signal),
+      fetchCountryIndicators(aggressorCode, signal),
+      fetchCountryIndicators(targetCode, signal),
+      fetchCommodityPrices(signal).catch(() => undefined),
+      fetchCpiScalar(signal).catch(() => 1.0),
     ]);
 
     const countriesMap = new Map<string, RestCountryRaw>(allCountries.map((c) => [c.cca3, c]));
@@ -52,7 +73,19 @@ export async function POST(req: Request) {
     const aggressor = enrichCountry(aggressorRaw, aggressorLive);
     const target = enrichCountry(targetRaw, targetLive);
 
-    const result = calculateWarCost({ aggressor, target, scenario });
+    // Sanctions resolved from static literature-based dataset — no extra network call
+    const aggressorSanctions = resolveSanctions(aggressorCode);
+
+    const result = calculateWarCost({
+      aggressor,
+      target,
+      scenario,
+      liveData: {
+        commodityPrices,
+        aggressorSanctions,
+        cpiScalar,
+      },
+    });
 
     return NextResponse.json(result);
   } catch (err) {

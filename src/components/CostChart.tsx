@@ -8,8 +8,8 @@ import {
 } from 'recharts';
 import { useState } from 'react';
 
-// Terminal blue palette for chart segments
-const CHART_COLORS = ['#a8daff', '#5bb8e8', '#ffb000', '#3a7a99'];
+// White phosphor palette for chart segments
+const CHART_COLORS = ['#e8e8e8', '#909090', '#ffb000', '#505050'];
 
 interface CostChartProps { result: WarCostResult; }
 type ChartView = 'bar' | 'pie';
@@ -28,7 +28,7 @@ export function CostChart({ result }: CostChartProps) {
     border: '1px solid var(--green-dim)',
     borderRadius: 0,
     fontSize: 11,
-    fontFamily: "'Courier New', Courier, monospace",
+    fontFamily: "'IBM Plex Mono', 'IBM Plex Mono', 'Courier New', monospace",
     color: 'var(--green)',
   };
 
@@ -36,7 +36,7 @@ export function CostChart({ result }: CostChartProps) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <p className="text-xs tracking-widest uppercase" style={{ color: 'var(--green-dim)' }}>
-          COST CHART
+          COST / IMPACT CHART
         </p>
         <div className="flex text-xs" style={{ border: '1px solid var(--border)' }}>
           {(['bar', 'pie'] as ChartView[]).map((v) => (
@@ -61,14 +61,14 @@ export function CostChart({ result }: CostChartProps) {
             <XAxis
               type="number"
               tickFormatter={(v) => formatCurrency(v)}
-              tick={{ fontSize: 9, fill: '#3a7a99', fontFamily: "'Courier New', monospace" }}
+              tick={{ fontSize: 9, fill: '#808080', fontFamily: "'IBM Plex Mono', 'Courier New', monospace" }}
               axisLine={false}
               tickLine={false}
             />
             <YAxis
               type="category"
               dataKey="name"
-              tick={{ fontSize: 9, fill: '#3a7a99', fontFamily: "'Courier New', monospace" }}
+              tick={{ fontSize: 9, fill: '#808080', fontFamily: "'IBM Plex Mono', 'Courier New', monospace" }}
               axisLine={false}
               tickLine={false}
               width={85}
@@ -76,7 +76,8 @@ export function CostChart({ result }: CostChartProps) {
             <Tooltip
               formatter={(v) => [formatCurrency(Number(v)), 'POINT EST.']}
               contentStyle={tooltipStyle}
-              cursor={{ fill: 'rgba(168,218,255,0.05)' }}
+              wrapperStyle={{ zIndex: 10000 }}
+              cursor={{ fill: 'rgba(232,232,232,0.05)' }}
             />
             <Bar dataKey="value" isAnimationActive radius={0}>
               {data.map((entry, i) => <Cell key={i} fill={entry.color} />)}
@@ -103,7 +104,7 @@ export function CostChart({ result }: CostChartProps) {
             </Pie>
             <Legend
               formatter={(value) => (
-                <span style={{ fontSize: 9, fontFamily: "'Courier New', monospace", color: '#3a7a99' }}>
+                <span style={{ fontSize: 9, fontFamily: "'IBM Plex Mono', 'Courier New', monospace", color: '#808080' }}>
                   {value}
                 </span>
               )}
@@ -111,14 +112,20 @@ export function CostChart({ result }: CostChartProps) {
             <Tooltip
               formatter={(v) => [formatCurrency(Number(v)), 'POINT EST.']}
               contentStyle={tooltipStyle}
+              wrapperStyle={{ zIndex: 10000 }}
             />
           </PieChart>
         </ResponsiveContainer>
       )}
 
-      <p className="text-xs text-center tracking-wider" style={{ color: 'var(--text-dim)' }}>
-        RANGE: {formatCurrency(result.total.min)} — {formatCurrency(result.total.max)}
-      </p>
+      <div className="space-y-1 text-center">
+        <p className="text-xs tracking-wider" style={{ color: 'var(--text-dim)' }}>
+          DIRECT COST RANGE: {formatCurrency(result.total.min)} — {formatCurrency(result.total.max)}
+        </p>
+        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+          Economic impact is charted above but excluded from the headline projected cost.
+        </p>
+      </div>
     </div>
   );
 }

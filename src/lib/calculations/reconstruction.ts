@@ -35,29 +35,100 @@ export function calculateReconstructionCost(input: CalculationInput): {
   const durationYears = def.durationYears.point;
   const rate = def.reconstructionRate.point;
 
+  // Reconstruction has physical costs that scale sublinearly with GDP.
+  // Calibrated at Afghanistan ($20B GDP); richer countries are dampened.
+  // Formula: effectiveGdp = REFERENCE^(1-α) × GDP^α, where α = 0.85
+  // At $20B GDP → effectiveGdp = $20B (no change). At $4T → ~$1.7T instead of $4T.
+  const RECONSTRUCTION_REFERENCE_GDP = 20_000_000_000; // Afghanistan calibration point
+  const GDP_DAMPENING_ALPHA = 0.85;
+  const effectiveGdp = Math.pow(RECONSTRUCTION_REFERENCE_GDP, 1 - GDP_DAMPENING_ALPHA) * Math.pow(targetGdp, GDP_DAMPENING_ALPHA);
+
   // reconstructionRate is an ANNUAL rate; multiply by duration for total cost.
   // This correctly scales short conflicts (Kargil 73 days) vs long occupations (Afghanistan 20yr).
-  const reconstructionCost = targetGdp * rate * durationYears;
-  const reconstructionMin = targetGdp * def.reconstructionRate.min * durationYears;
-  const reconstructionMax = targetGdp * def.reconstructionRate.max * durationYears;
+  // Overlap discount: ~30% of reconstruction need is already reflected in the GDP contraction
+  // computed by the economic module (destruction → lost output → GDP drop).
+  const RECONSTRUCTION_OVERLAP_DISCOUNT = 0.70;
+  const reconstructionCost = effectiveGdp * rate * durationYears * RECONSTRUCTION_OVERLAP_DISCOUNT;
+  const reconstructionMin = effectiveGdp * def.reconstructionRate.min * durationYears * RECONSTRUCTION_OVERLAP_DISCOUNT;
+  const reconstructionMax = effectiveGdp * def.reconstructionRate.max * durationYears * RECONSTRUCTION_OVERLAP_DISCOUNT;
+
+  // World Bank post-conflict sector allocation (avg across Syria, Iraq, Afghanistan, Bosnia studies)
+  const infraCost      = reconstructionCost * 0.40; // roads, bridges, utilities, communications
+  const housingCost    = reconstructionCost * 0.30; // residential, temporary shelters → permanent
+  const servicesCost   = reconstructionCost * 0.20; // schools, hospitals, government institutions
+  const economicRecovery = reconstructionCost * 0.10; // SME support, agriculture, market re-integration
+
+  const confidence: LineItem['confidence'] = scenario === 'skirmish' ? 'medium' : 'low';
+  const rateNote = `${(rate * 100).toFixed(0)}%/yr of effective GDP (${formatUsd(effectiveGdp)}, dampened from ${formatUsd(targetGdp)}) × ${durationYears}yr × 0.70 overlap discount (World Bank range: ${(def.reconstructionRate.min * 100).toFixed(0)}–${(def.reconstructionRate.max * 100).toFixed(0)}%/yr for ${def.label.toLowerCase()})`;
 
   const items: LineItem[] = [
     {
-      label: 'Post-conflict reconstruction',
-      amount: reconstructionCost,
+      label: 'Infrastructure repair & rebuild',
+      amount: infraCost,
       isEstimate: true,
-      confidence: scenario === 'skirmish' ? 'medium' : 'low',
+      confidence,
       assumptions: [
         {
-          id: 'reconstruction-rate',
-          description: `Reconstruction cost = ${(rate * 100).toFixed(0)}%/yr of target GDP × ${durationYears}yr (World Bank historical average for ${def.label.toLowerCase()}, range: ${(def.reconstructionRate.min * 100).toFixed(0)}–${(def.reconstructionRate.max * 100).toFixed(0)}%/yr)`,
-          formula: `${formatUsd(targetGdp)} × ${rate}/yr × ${durationYears}yr = ${formatUsd(reconstructionCost)}`,
-          value: reconstructionCost,
+          id: 'infra-reconstruction',
+          description: `Infrastructure = 40% of total reconstruction (World Bank post-conflict studies: roads, bridges, power grids, water/sanitation, telecommunications). ${rateNote}`,
+          formula: `${formatUsd(reconstructionCost)} × 40% = ${formatUsd(infraCost)}`,
+          value: infraCost,
+          unit: 'USD',
+          sources: [SOURCES.worldbank_reconstruction],
+        },
+      ],
+      sources: [SOURCES.worldbank_reconstruction, SOURCES.watson_reconstruction],
+    },
+    {
+      label: 'Housing & shelter reconstruction',
+      amount: housingCost,
+      isEstimate: true,
+      confidence,
+      assumptions: [
+        {
+          id: 'housing-reconstruction',
+          description: `Housing = 30% of total reconstruction (World Bank: temporary shelters, transitional housing, permanent reconstruction for displaced population). ${rateNote}`,
+          formula: `${formatUsd(reconstructionCost)} × 30% = ${formatUsd(housingCost)}`,
+          value: housingCost,
+          unit: 'USD',
+          sources: [SOURCES.worldbank_reconstruction],
+        },
+      ],
+      sources: [SOURCES.worldbank_reconstruction],
+    },
+    {
+      label: 'Public services (health, education, governance)',
+      amount: servicesCost,
+      isEstimate: true,
+      confidence,
+      assumptions: [
+        {
+          id: 'services-reconstruction',
+          description: `Public services = 20% of total reconstruction (schools, hospitals, courts, public administration — UN/World Bank joint assessment methodology). ${rateNote}`,
+          formula: `${formatUsd(reconstructionCost)} × 20% = ${formatUsd(servicesCost)}`,
+          value: servicesCost,
           unit: 'USD',
           sources: [SOURCES.worldbank_reconstruction, SOURCES.watson_reconstruction],
         },
       ],
       sources: [SOURCES.worldbank_reconstruction, SOURCES.watson_reconstruction],
+    },
+    {
+      label: 'Economic recovery & livelihoods',
+      amount: economicRecovery,
+      isEstimate: true,
+      confidence: 'low',
+      assumptions: [
+        {
+          id: 'economic-recovery',
+          description: `Economic recovery = 10% of total reconstruction (SME grants, agricultural rehabilitation, trade facilitation, market re-integration — World Bank FCV strategy). ${rateNote}`,
+          formula: `${formatUsd(reconstructionCost)} × 10% = ${formatUsd(economicRecovery)}`,
+          value: economicRecovery,
+          unit: 'USD',
+          sources: [SOURCES.worldbank_reconstruction],
+        },
+      ],
+      sources: [SOURCES.worldbank_reconstruction],
     },
   ];
 
@@ -74,7 +145,10 @@ export function calculateReconstructionCost(input: CalculationInput): {
       color: '#4a5568',
       items,
       methodology: `Reconstruction costs based on World Bank post-conflict studies. For ${def.label.toLowerCase()}, ` +
-        `reconstruction typically runs ${(def.reconstructionRate.min * 100).toFixed(0)}–${(def.reconstructionRate.max * 100).toFixed(0)}%/yr of the target nation's GDP × conflict duration. ` +
+        `reconstruction typically runs ${(def.reconstructionRate.min * 100).toFixed(0)}–${(def.reconstructionRate.max * 100).toFixed(0)}%/yr of the target nation's effective GDP × conflict duration. ` +
+        `GDP base dampened for wealthy nations (sublinear physical-cost scaling, calibrated at Afghanistan $20B GDP). ` +
+        `30% overlap discount applied — GDP contraction in the Economic module already partially captures destruction costs. ` +
+        `Sector allocation follows World Bank post-conflict assessments (Syria, Iraq, Afghanistan, Bosnia): infrastructure 40%, housing 30%, public services 20%, economic recovery 10%. ` +
         `Reference: Afghanistan ~$145B over 20yr (~36%/yr of $20B GDP); Iraq ~$60B over 3yr (~18%/yr of $110B GDP); Kargil ~$0.5B (~0.7% of $80B Pakistan GDP).`,
       sources: [SOURCES.worldbank_reconstruction, SOURCES.watson_reconstruction, SOURCES.worldbank_gdp],
     },
@@ -97,6 +171,7 @@ function calculateOpportunityCosts(totalUsd: number): OpportunityCostItem[] {
   };
 
   return data.items.map((item) => ({
+    id: item.id,
     label: item.label,
     iconName: item.iconName,
     quantity: Math.floor(totalUsd / item.unitCostUsd),

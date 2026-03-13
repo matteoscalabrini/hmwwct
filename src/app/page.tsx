@@ -27,22 +27,22 @@ const TAG_COLOR: Record<string, string> = {
 
 export default function Home() {
   return (
-    <div className="px-4 sm:px-10 py-10 space-y-0">
+    <div className="px-5 py-6 flex-1 flex flex-col min-h-0">
 
       {/* HERO */}
-      <div style={{ border: '1px solid var(--border)', background: 'var(--panel)' }} className="p-8 sm:p-14 space-y-8">
+      <div style={{ border: '1px solid var(--border)', background: 'var(--panel)' }} className="flex-1 flex flex-col p-8 sm:p-12 gap-8 min-h-0">
 
-        {/* Title — Workbench, one line */}
+        {/* Title */}
         <h1
           className="font-workbench glow"
-          style={{ color: 'var(--green)', fontSize: 'clamp(2rem, 5.5vw, 5.5rem)', lineHeight: 1.05, whiteSpace: 'nowrap' }}
+          style={{ color: 'var(--green)', fontSize: 'clamp(2rem, 5vw, 5rem)', lineHeight: 1.05, whiteSpace: 'nowrap' }}
         >
           HOW MUCH WOULD A WAR COST THERE?
         </h1>
 
         {/* Statement */}
-        <div className="space-y-1" style={{ borderLeft: '3px solid var(--green-dim)', paddingLeft: '1.25rem' }}>
-          <p className="text-lg sm:text-2xl font-bold leading-snug" style={{ color: 'var(--green)' }}>
+        <div className="space-y-2" style={{ borderLeft: '3px solid var(--green-dim)', paddingLeft: '1.25rem' }}>
+          <p className="text-base sm:text-2xl font-bold leading-snug" style={{ color: 'var(--green)' }}>
             SOMEWHERE RIGHT NOW, A DEFENSE MINISTER IS RUNNING THESE EXACT NUMBERS.
           </p>
           <p className="text-sm sm:text-lg font-bold leading-snug" style={{ color: 'var(--green-dim)' }}>
@@ -51,9 +51,13 @@ export default function Home() {
         </div>
 
         {/* Boot log */}
-        <div className="space-y-0.5 text-xs">
+        <div className="space-y-1 text-sm">
           {BOOT_LOG.map((line, i) => (
-            <p key={i} className={i === BOOT_LOG.length - 1 ? 'cursor' : ''}>
+            <p
+              key={i}
+              className={`reveal-line${i === BOOT_LOG.length - 1 ? ' cursor' : ''}`}
+              style={{ animationDelay: `${0.2 + i * 0.25}s` }}
+            >
               <span style={{ color: TAG_COLOR[line.tag] ?? 'var(--text-dim)' }}>
                 [{line.tag}]&nbsp;
               </span>
@@ -64,99 +68,126 @@ export default function Home() {
           ))}
         </div>
 
-        {/* CTAs */}
-        <div className="flex flex-col sm:flex-row gap-0 pt-2">
+        {/* CTAs — pinned to bottom */}
+        <div className="mt-auto flex flex-col sm:flex-row gap-0">
           <Link
             href="/calculator"
             style={{ background: 'var(--green)', color: 'var(--bg)', border: '1px solid var(--green)' }}
-            className="inline-flex items-center justify-center px-10 py-4 text-sm font-bold tracking-widest uppercase hover:opacity-90 transition-opacity"
+            className="inline-flex items-center justify-center px-10 py-4 text-base font-bold tracking-widest uppercase hover:opacity-90 transition-opacity"
           >
             &gt; INITIATE ANALYSIS
           </Link>
           <Link
             href="/methodology"
             style={{ border: '1px solid var(--border)', color: 'var(--text-dim)', marginLeft: '-1px' }}
-            className="inline-flex items-center justify-center px-10 py-4 text-sm tracking-widest uppercase hover:text-[var(--green)] hover:border-[var(--green-dim)] transition-colors"
+            className="inline-flex items-center justify-center px-10 py-4 text-base tracking-widest uppercase hover:text-[var(--green)] hover:border-[var(--green-dim)] transition-colors"
           >
             &gt; READ METHODOLOGY
           </Link>
         </div>
       </div>
 
-      {/* ASCII break */}
-      <div className="py-2 px-1">
-        <p className="text-xs" style={{ color: 'var(--text-dim)' }}>
-          /// LIVE SITUATION FEED /// SIPRI · ACLED · UNHCR · WATSON INSTITUTE · 2024 ///
-        </p>
-      </div>
+      {/* BOTTOM ROW — two hover-reveal panels side by side */}
+      <div className="grid grid-cols-2 gap-0" style={{ borderTop: '1px solid var(--border)' }}>
 
-      {/* LIVE SITUATION FEED */}
-      <div
-        className="grid grid-cols-2 md:grid-cols-5"
-        style={{ border: '1px solid var(--border)', background: 'var(--panel)' }}
-      >
-        {INTEL.map((item, i) => (
+        {/* Live situation feed — hover to reveal */}
+        <div className="reveal-group" style={{ borderRight: '1px solid var(--border)' }}>
+          {/* Trigger tab */}
           <div
-            key={item.label}
-            className="p-5 space-y-1"
-            style={{ borderRight: i < INTEL.length - 1 ? '1px solid var(--border)' : 'none' }}
+            className="px-5 py-3 flex items-center gap-2 cursor-default"
+            style={{ background: 'var(--panel)' }}
           >
-            <p className="text-xs tracking-wider uppercase" style={{ color: 'var(--text-dim)' }}>
-              {item.label}
-            </p>
-            <p className="text-3xl font-bold tabular-nums glow" style={{ color: 'var(--green)' }}>
-              {item.value}
-            </p>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-              {item.sub}
-            </p>
+            <span
+              style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--green)', display: 'inline-block', boxShadow: '0 0 5px var(--green)', flexShrink: 0 }}
+            />
+            <span className="text-sm tracking-widest uppercase" style={{ color: 'var(--text-dim)' }}>
+              LIVE SITUATION FEED
+            </span>
+            <span className="text-xs ml-auto" style={{ color: 'var(--text-muted)' }}>— HOVER —</span>
           </div>
-        ))}
-      </div>
-
-      {/* ASCII break */}
-      <div className="py-2 px-1">
-        <p className="text-xs" style={{ color: 'var(--text-dim)' }}>
-          /// DECLASSIFIED DATA FEEDS /// ALL SOURCES PUBLIC AND FREELY AVAILABLE ///
-        </p>
-      </div>
-
-      {/* DATA SOURCES + DISCLAIMER */}
-      <div className="grid grid-cols-1 md:grid-cols-2" style={{ border: '1px solid var(--border)' }}>
-        <div className="p-6 space-y-4" style={{ background: 'var(--panel)', borderRight: '1px solid var(--border)' }}>
-          <div className="flex flex-wrap gap-2">
-            {[
-              'World Bank WDI', 'SIPRI (CC BY-NC)', 'UNHCR POPSTATS',
-              'IMF DataMapper', 'UN Comtrade', 'Watson Institute',
-              'IEA', 'WHO', 'UNICEF', 'USGS', 'REST Countries',
-            ].map((source) => (
-              <span
-                key={source}
-                style={{ border: '1px solid var(--border)', color: 'var(--text-dim)' }}
-                className="px-2 py-1 text-xs tracking-wider uppercase"
+          {/* Panel */}
+          <div
+            className="reveal-panel absolute z-20"
+            style={{
+              left: 0, right: 0,
+              background: 'var(--panel)',
+              border: '1px solid var(--border)',
+              borderTop: 'none',
+            }}
+          >
+            {INTEL.map((item, i) => (
+              <div
+                key={item.label}
+                className="px-5 py-3 flex items-baseline justify-between gap-4"
+                style={{ borderBottom: i < INTEL.length - 1 ? '1px solid var(--border)' : 'none' }}
               >
-                {source}
-              </span>
+                <div>
+                  <p className="text-sm tracking-wider uppercase" style={{ color: 'var(--text-dim)' }}>{item.label}</p>
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{item.sub}</p>
+                </div>
+                <p className="text-xl font-bold tabular-nums glow shrink-0" style={{ color: 'var(--green)' }}>{item.value}</p>
+              </div>
             ))}
           </div>
-          <p className="text-xs leading-relaxed" style={{ color: 'var(--text-dim)' }}>
-            THE ANALYSIS IS THE PART THEY CHARGE FOR. WE DON&apos;T.
-          </p>
         </div>
 
-        <div style={{ borderLeft: '1px solid var(--amber)', background: 'rgba(255,176,0,0.03)' }} className="p-6 space-y-3">
-          <p className="text-xs font-bold tracking-widest uppercase glow-amber" style={{ color: 'var(--amber)' }}>
-            ⚠ NOTICE TO USER
+        {/* Notice / disclaimer — hover to reveal */}
+        <div className="reveal-group">
+          <div
+            className="px-5 py-3 flex items-center gap-2 cursor-default"
+            style={{ background: 'var(--panel)' }}
+          >
+            <span className="text-sm tracking-widest uppercase glow-amber" style={{ color: 'var(--amber)' }}>
+              ⚠ NOTICE
+            </span>
+            <span className="text-xs ml-auto" style={{ color: 'var(--text-muted)' }}>— HOVER —</span>
+          </div>
+          <div
+            className="reveal-panel absolute z-20"
+            style={{
+              left: 0, right: 0,
+              background: 'rgba(255,176,0,0.04)',
+              border: '1px solid var(--amber)',
+              borderTop: 'none',
+            }}
+          >
+            <div className="px-5 py-4 space-y-2">
+              <p className="text-xs leading-relaxed" style={{ color: 'var(--amber)', opacity: 0.85 }}>
+                FOR EDUCATIONAL AND POLICY ANALYSIS PURPOSES ONLY.
+                THE ACTUAL COST IS ALWAYS HIGHER THAN THE PROJECTION USED TO JUSTIFY THE DECISION.
+                DOES NOT MODEL NUCLEAR ESCALATION, CYBER WARFARE, OR ALLIANCE COSTS.
+              </p>
+              <p className="text-xs" style={{ color: 'var(--amber)', opacity: 0.45 }}>
+                IF THIS TOOL PREVENTS EVEN ONE SLIDE IN ONE BRIEFING FROM BEING OPTIMISTIC, IT HAS DONE ITS JOB.
+              </p>
+              <Link href="/methodology" className="text-xs underline" style={{ color: 'var(--amber)', opacity: 0.7, display: 'block' }}>
+                READ FULL METHODOLOGY
+              </Link>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* FOOTER */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-5 py-5 text-xs" style={{ borderTop: '1px solid var(--border)' }}>
+        <div className="space-y-1">
+          <p className="tracking-widest uppercase" style={{ color: 'var(--green-dim)' }}>DATA SOURCES</p>
+          <p className="leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+            World Bank WDI · SIPRI (CC BY-NC) · UNHCR · IMF WEO · UN Comtrade · Watson Institute · IEA · WHO · UNICEF · REST Countries
           </p>
-          <p className="text-xs leading-relaxed" style={{ color: 'var(--amber)', opacity: 0.8 }}>
-            FOR EDUCATIONAL AND POLICY ANALYSIS PURPOSES ONLY.
-            THE ACTUAL COST IS ALWAYS HIGHER THAN THE PROJECTION USED TO JUSTIFY THE DECISION.
-            DOES NOT MODEL NUCLEAR ESCALATION, CYBER WARFARE, OR ALLIANCE COSTS.{' '}
-            <Link href="/methodology" className="underline">READ FULL METHODOLOGY.</Link>
+        </div>
+        <div className="space-y-1">
+          <p className="tracking-widest uppercase" style={{ color: 'var(--green-dim)' }}>DISCLAIMER</p>
+          <p className="leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+            FOR EDUCATIONAL AND POLICY ANALYSIS PURPOSES ONLY.{' '}
+            <Link href="/methodology" className="underline" style={{ color: 'var(--text-dim)' }}>FULL METHODOLOGY</Link>.
           </p>
-          <p className="text-xs" style={{ color: 'var(--amber)', opacity: 0.45 }}>
-            IF THIS TOOL PREVENTS EVEN ONE SLIDE IN ONE BRIEFING FROM BEING OPTIMISTIC, IT HAS DONE ITS JOB.
-          </p>
+        </div>
+        <div className="space-y-1">
+          <p className="tracking-widest uppercase" style={{ color: 'var(--green-dim)' }}>SYSTEM</p>
+          <p style={{ color: 'var(--text-muted)' }}>&quot;THE ONLY WINNING MOVE IS NOT TO PLAY.&quot;</p>
+          <p style={{ color: 'var(--text-muted)' }}>— W.O.P.R., 1983</p>
         </div>
       </div>
 

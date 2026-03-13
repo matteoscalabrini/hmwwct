@@ -18,25 +18,22 @@ export function calculateWarCost(input: CalculationInput): WarCostResult {
   const { category: humanitarianCategory, humanToll } = calculateHumanitarianCost(input);
   const { category: reconstructionCategory, opportunityCosts } = calculateReconstructionCost(input);
 
-  const point =
+  const directPoint =
     militaryCategory.amount +
-    economicCategory.amount +
     humanitarianCategory.amount +
     reconstructionCategory.amount;
 
-  const min =
+  const directMin =
     militaryCategory.amountMin +
-    economicCategory.amountMin +
     humanitarianCategory.amountMin +
     reconstructionCategory.amountMin;
 
-  const max =
+  const directMax =
     militaryCategory.amountMax +
-    economicCategory.amountMax +
     humanitarianCategory.amountMax +
     reconstructionCategory.amountMax;
 
-  const revenue = calculateRevenue(input, point);
+  const revenue = calculateRevenue(input, directPoint);
 
   // Deduplicated source list
   const allSources: Source[] = deduplicateSources([
@@ -55,7 +52,12 @@ export function calculateWarCost(input: CalculationInput): WarCostResult {
   ];
 
   return {
-    total: { min, max, point },
+    total: { min: directMin, max: directMax, point: directPoint },
+    economicImpact: {
+      min: economicCategory.amountMin,
+      max: economicCategory.amountMax,
+      point: economicCategory.amount,
+    },
     revenue,
     breakdown: {
       military: militaryCategory,
@@ -76,10 +78,15 @@ export function calculateWarCost(input: CalculationInput): WarCostResult {
     calculatedAt: new Date().toISOString(),
     dataFreshness: {
       worldBank: aggressor.hasStaticFallback || target.hasStaticFallback
-        ? 'Some values from static fallback dataset'
-        : 'Live — World Bank API (data updated monthly)',
+        ? 'Some values from static fallback dataset; IMF DataMapper used as secondary source'
+        : 'Live — World Bank API (monthly); IMF DataMapper fallback for data-sparse countries',
       sipri: 'SIPRI Military Expenditure Database 2023',
       unhcr: 'UNHCR POPSTATS 2023',
+      ...(input.liveData?.commodityPrices?.oilUsdPerBarrel !== null ||
+        input.liveData?.commodityPrices?.gasUsdPerMmbtu !== null ||
+        input.liveData?.commodityPrices?.wheatUsdPerTon !== null
+        ? { fred: `Live commodity prices from FRED (fetched ${input.liveData?.commodityPrices?.fetchedAt?.slice(0, 10) ?? 'today'})` }
+        : {}),
     },
   };
 }

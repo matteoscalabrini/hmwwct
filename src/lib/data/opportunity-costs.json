@@ -50,6 +50,15 @@
       "sourceNote": "WHO/UNICEF JMP Programme, 2023"
     },
     {
+      "id": "sanitation_access",
+      "label": "People with basic sanitation access",
+      "iconName": "Toilet",
+      "unitCostUsd": 100,
+      "unit": "people",
+      "description": "Per-person infrastructure cost for sustainable basic sanitation access",
+      "sourceNote": "WHO/UNICEF JMP and WASH cost benchmarks, 2023"
+    },
+    {
       "id": "vaccines",
       "label": "Childhood vaccine courses",
       "iconName": "Syringe",
@@ -66,6 +75,15 @@
       "unit": "children",
       "description": "Annual cost of providing daily school meals to one child",
       "sourceNote": "World Food Programme school feeding programme data 2023"
+    },
+    {
+      "id": "food_support",
+      "label": "People with food support (1 year)",
+      "iconName": "Soup",
+      "unitCostUsd": 120,
+      "unit": "people",
+      "description": "Annualized emergency food support benchmark per person",
+      "sourceNote": "World Food Programme emergency food assistance benchmark, 2023"
     },
     {
       "id": "solar_homes",

@@ -1,0 +1,81 @@
+{
+  "metadata": {
+    "description": "Country-level sanctions regimes. additionalWarSanctionsPct is the incremental annual GDP contraction from war-escalation sanctions on top of any existing regime.",
+    "sources": [
+      "IMF World Economic Outlook (2023) — Russia sanctions impact",
+      "Neuenkirch & Neumeier (2015), 'The impact of UN and US economic sanctions on GDP growth' — Journal of Development Economics",
+      "Hufbauer et al. (2007), 'Economic Sanctions Reconsidered', PIIE Press",
+      "Dreyer & Popescu (2014), 'Do economic sanctions work?', Egmont Policy Brief",
+      "World Bank (2023) — Iran GDP contraction under JCPOA vs non-JCPOA sanctions",
+      "OpenSanctions (https://www.opensanctions.org) — dataset verification"
+    ],
+    "note": "Only countries with well-documented comprehensive or sectoral sanctions are listed. For unlisted aggressors, the sanctions module applies 0 (too speculative without geopolitical context).",
+    "schemaVersion": 1
+  },
+  "countries": {
+    "RUS": {
+      "regime": "US/EU/UK/G7 comprehensive sanctions (post-Ukraine invasion, Feb 2022)",
+      "status": "comprehensive",
+      "gdpImpactPctPerYear": 0.04,
+      "additionalWarSanctionsPct": 0.025,
+      "note": "IMF estimated 2022 Russia GDP fell ~2.1% vs a +3% baseline = ~5% net impact; 2023 partial recovery. Additional war sanctions (e.g., new conflict) would likely add ~2.5%/yr via tightened energy/finance restrictions.",
+      "opensanctionsDatasets": ["us_ofac_sdn", "eu_eeas_sanctions", "gb_hmt_sanctions"]
+    },
+    "IRN": {
+      "regime": "US OFAC, UN Security Council, EU comprehensive sanctions (1979–present; tightened 2012, 2018 JCPOA withdrawal)",
+      "status": "comprehensive",
+      "gdpImpactPctPerYear": 0.06,
+      "additionalWarSanctionsPct": 0.03,
+      "note": "World Bank/IMF: Iran real GDP fell 6–10%/yr during 2012–2015 and 2018–2020 peak sanctions. Strait of Hormuz context would add ~3%/yr additional pressure on oil sector.",
+      "opensanctionsDatasets": ["us_ofac_sdn", "un_sc_sanctions"]
+    },
+    "PRK": {
+      "regime": "UN Security Council, US OFAC, EU, South Korea comprehensive sanctions (2006–present)",
+      "status": "comprehensive",
+      "gdpImpactPctPerYear": 0.10,
+      "additionalWarSanctionsPct": 0.02,
+      "note": "One of the most sanctioned economies globally. GDP data is sparse; estimates based on UN Panel of Experts reports. Marginal additional impact from new war is limited (already near maximum isolation).",
+      "opensanctionsDatasets": ["un_sc_sanctions", "us_ofac_sdn"]
+    },
+    "SYR": {
+      "regime": "US, EU, Arab League comprehensive sanctions (2011–present)",
+      "status": "comprehensive",
+      "gdpImpactPctPerYear": 0.07,
+      "additionalWarSanctionsPct": 0.025,
+      "note": "Syria GDP fell >50% 2011–2020 due to combined conflict + sanctions. Additional war escalation would add ~2.5%/yr through tightened energy and banking restrictions.",
+      "opensanctionsDatasets": ["us_ofac_sdn", "eu_eeas_sanctions"]
+    },
+    "CUB": {
+      "regime": "US OFAC embargo (1962–present); EU and others do not participate",
+      "status": "partial",
+      "gdpImpactPctPerYear": 0.02,
+      "additionalWarSanctionsPct": 0.015,
+      "note": "US embargo limits ~15–20% of potential trade. Neuenkirch & Neumeier (2015): unilateral US sanctions reduce target GDP ~1.5–2.5%/yr. Multilateral escalation in a war scenario would add ~1.5%.",
+      "opensanctionsDatasets": ["us_ofac_sdn"]
+    },
+    "VEN": {
+      "regime": "US OFAC targeted + sectoral oil sanctions (2017–present)",
+      "status": "partial",
+      "gdpImpactPctPerYear": 0.04,
+      "additionalWarSanctionsPct": 0.025,
+      "note": "US oil sector sanctions cut export revenue ~$6–11B/yr on Venezuela's ~$80B GDP. IMF: structural + sanctions combined pushed GDP contraction. War escalation would likely add EU/UN sanctions.",
+      "opensanctionsDatasets": ["us_ofac_sdn"]
+    },
+    "BLR": {
+      "regime": "US, EU, UK sanctions (expanded post-2020 election crisis; expanded again 2022 after Russian invasion facilitation)",
+      "status": "partial",
+      "gdpImpactPctPerYear": 0.03,
+      "additionalWarSanctionsPct": 0.02,
+      "note": "Sectoral sanctions on finance, energy, transport. Closely intertwined with Russian economy; partial isolation from SWIFT. Additional war sanctions ~2%/yr.",
+      "opensanctionsDatasets": ["eu_eeas_sanctions", "us_ofac_sdn"]
+    },
+    "MMR": {
+      "regime": "US OFAC, EU, UK targeted sanctions on military junta (post-coup, Feb 2021)",
+      "status": "targeted",
+      "gdpImpactPctPerYear": 0.02,
+      "additionalWarSanctionsPct": 0.025,
+      "note": "Targeted arms embargo and financial sanctions on junta leadership. Current impact limited vs comprehensive sanctions. War would likely trigger EU/UN arms embargo escalation and broader sectoral sanctions.",
+      "opensanctionsDatasets": ["us_ofac_sdn", "eu_eeas_sanctions"]
+    }
+  }
+}

@@ -1,8 +1,15 @@
-import { CalculationInput, CostCategory, LineItem, Source } from '@/types';
-import { SCENARIOS, SANCTIONS_GDP_PCT, TRADE_DISRUPTION_FACTOR } from '@/constants/conflict-scenarios';
-// Note: SANCTIONS_GDP_PCT is used as fallback when militaryBudgetUsd is null
-import bilateralTrade from '@/lib/data/bilateral-trade-shares.json';
-import commodityData from '@/lib/data/commodity-producers.json';
+import { CalculationInput, CommodityPrices, CostCategory, LineItem, Source } from '@/types';
+import { SCENARIOS, TRADE_DISRUPTION_FACTOR } from '@/constants/conflict-scenarios';
+import { bilateralTradeData, canonicalPairKey, commodityProducersData } from '@/lib/data/validated';
+
+// ─── Baseline commodity prices (2023 annual averages) ─────────────────────────
+// globalGdpShockUsd in commodity-producers.json was calibrated at these levels.
+// FRED live prices are used to scale shocks proportionally.
+const PRICE_BASELINES = {
+  oil: 80,        // $/barrel  (WTI 2023 avg ~$77–82)
+  naturalGas: 2.5, // $/MMBtu  (Henry Hub 2023 avg ~$2.5)
+  wheat: 225,     // $/metric ton (CME CBOT wheat 2023 avg ~$220–230)
+};
 
 const SOURCES: Record<string, Source> = {
   worldbank_gdp: {
@@ -22,7 +29,7 @@ const SOURCES: Record<string, Source> = {
   comtrade: {
     name: 'UN Comtrade Database',
     url: 'https://comtradeplus.un.org/',
-    year: 2022,
+    year: bilateralTradeData.metadata.year,
     isStatic: true,
   },
   wto: {
@@ -30,12 +37,6 @@ const SOURCES: Record<string, Source> = {
     url: 'https://www.wto.org/english/res_e/reser_e/gtdw_e/wkshop08_e/martin_e.pdf',
     year: 2020,
     isStatic: true,
-  },
-  imf_gdp: {
-    name: 'IMF World Economic Outlook',
-    url: 'https://www.imf.org/en/Publications/WEO',
-    year: 2023,
-    isStatic: false,
   },
   worldbank_conflict: {
     name: 'World Bank — Conflict and Development',
@@ -49,14 +50,36 @@ const SOURCES: Record<string, Source> = {
     year: 2023,
     isStatic: true,
   },
+  fred: {
+    name: 'FRED — Federal Reserve Bank of St. Louis (live commodity prices)',
+    url: 'https://fred.stlouisfed.org',
+    year: new Date().getFullYear(),
+    isStatic: false,
+  },
+  opensanctions: {
+    name: 'OpenSanctions — International Sanctions Database',
+    url: 'https://www.opensanctions.org',
+    year: new Date().getFullYear(),
+    isStatic: false,
+  },
+  neuenkirch2015: {
+    name: 'Neuenkirch & Neumeier (2015) — Impact of UN and US sanctions on GDP growth',
+    url: 'https://doi.org/10.1016/j.jdeveco.2015.04.005',
+    year: 2015,
+    isStatic: true,
+  },
+  imf_capital_flight: {
+    name: 'IMF Working Paper WP/16/47 — Capital Flows in Conflict-Affected Countries',
+    url: 'https://www.imf.org/en/Publications/WP/Issues/2016/12/31/Capital-Flows-in-Conflict-Affected-Countries-43785',
+    year: 2016,
+    isStatic: true,
+  },
 };
 
 /** Look up bilateral trade volume (sorted alpha-3 key) */
 function getBilateralTrade(codeA: string, codeB: string): number | null {
-  const key1 = `${codeA}-${codeB}`;
-  const key2 = `${codeB}-${codeA}`;
-  const pairs = (bilateralTrade as { pairs: Record<string, { tradeVolumeUsd: number }> }).pairs;
-  return pairs[key1]?.tradeVolumeUsd ?? pairs[key2]?.tradeVolumeUsd ?? null;
+  const key = canonicalPairKey(codeA, codeB);
+  return bilateralTradeData.pairs[key]?.tradeVolumeUsd ?? null;
 }
 
 /**
@@ -68,31 +91,65 @@ function estimateBilateralTrade(gdpA: number, gdpB: number, distanceKm: number):
   return gravityConstant * Math.sqrt(gdpA * gdpB) / Math.max(distanceKm, 500);
 }
 
-/** Lookup commodity shock from target country */
-function getCommodityShock(targetCode: string, durationYears: number): { amount: number; note: string } | null {
-  const data = commodityData as {
-    oil: Record<string, { globalGdpShockUsd: number; note: string }>;
-    naturalGas: Record<string, { globalGdpShockUsd: number; note: string }>;
-    wheat: Record<string, { globalGdpShockUsd: number; note: string }>;
-    semiconductors: Record<string, { globalGdpShockUsd: number; note: string }>;
-    lithium: Record<string, { globalGdpShockUsd: number; note: string }>;
-  };
+/**
+ * Lookup commodity shock from target country's role as a global commodity producer.
+ *
+ * When live FRED prices are available, the shock is scaled proportionally to
+ * (currentPrice / 2023-baseline) for oil, gas, and wheat. Semiconductors and
+ * lithium are structural shocks (supply-chain, not price-sensitive) and are not scaled.
+ */
+function getCommodityShock(
+  targetCode: string,
+  durationYears: number,
+  commodityPrices?: CommodityPrices
+): { amount: number; note: string; priceScalar: number | null; category: string } | null {
+  const data = commodityProducersData;
 
-  let maxShock = 0;
-  let note = '';
+  let totalShock = 0;
+  const categories: string[] = [];
+  let dominantCategory = '';
+  let dominantShock = 0;
+  let combinedNote = '';
+  let dominantPriceScalar: number | null = null;
 
-  for (const category of ['oil', 'naturalGas', 'wheat', 'semiconductors'] as const) {
+  for (const category of ['oil', 'naturalGas', 'wheat', 'semiconductors', 'lithium'] as const) {
     const entry = data[category]?.[targetCode];
-    if (entry && entry.globalGdpShockUsd > maxShock) {
-      maxShock = entry.globalGdpShockUsd;
-      note = entry.note;
+    const shock = entry?.globalGdpShockUsd ?? 0;
+    if (!entry || shock === 0) continue;
+
+    // Per-category price scalar
+    let priceScalar = 1;
+    if (commodityPrices) {
+      if (category === 'oil' && commodityPrices.oilUsdPerBarrel !== null) {
+        priceScalar = commodityPrices.oilUsdPerBarrel / PRICE_BASELINES.oil;
+      } else if (category === 'naturalGas' && commodityPrices.gasUsdPerMmbtu !== null) {
+        priceScalar = commodityPrices.gasUsdPerMmbtu / PRICE_BASELINES.naturalGas;
+      } else if (category === 'wheat' && commodityPrices.wheatUsdPerTon !== null) {
+        priceScalar = commodityPrices.wheatUsdPerTon / PRICE_BASELINES.wheat;
+      }
+      // semiconductors / lithium: structural supply-chain shock — not price-scaled
+    }
+
+    // Duration scaling with diminishing returns (sqrt); price scalar applied per category
+    const scaled = shock * priceScalar * Math.sqrt(Math.max(durationYears, 1));
+    totalShock += scaled;
+    categories.push(category);
+    if (shock > dominantShock) {
+      dominantShock = shock;
+      dominantCategory = category;
+      combinedNote = entry.note;
+      dominantPriceScalar = priceScalar;
     }
   }
 
-  if (maxShock === 0) return null;
-  // Commodity shock is annual; scale by duration (diminishing returns after year 1)
-  const scaledShock = maxShock * (1 + Math.log(Math.max(durationYears, 1)) * 0.3);
-  return { amount: scaledShock, note };
+  if (totalShock === 0) return null;
+
+  return {
+    amount: totalShock,
+    note: combinedNote + (categories.length > 1 ? ` (+ ${categories.filter(c => c !== dominantCategory).join(', ')})` : ''),
+    priceScalar: categories.length === 1 ? dominantPriceScalar : null,
+    category: categories.length > 1 ? categories.join(' + ') : dominantCategory,
+  };
 }
 
 export function calculateEconomicImpact(
@@ -100,6 +157,9 @@ export function calculateEconomicImpact(
   distanceKm: number
 ): CostCategory {
   const { aggressor, target, scenario } = input;
+  const commodityPrices = input.liveData?.commodityPrices;
+  const aggressorSanctions = input.liveData?.aggressorSanctions;
+
   const def = SCENARIOS[scenario];
   const durationYears = def.durationYears.point;
 
@@ -113,30 +173,49 @@ export function calculateEconomicImpact(
     bilateralTradeVol = estimateBilateralTrade(aggressorGdp, targetGdp, distanceKm);
     tradeIsEstimated = true;
   }
-  const tradeLoss = bilateralTradeVol * TRADE_DISRUPTION_FACTOR * durationYears;
+  // Overlap discount: bilateral trade disruption is partially captured inside GDP contraction.
+  // We apply 50% to avoid double-counting the portion already reflected in GDP loss.
+  const TRADE_GDP_OVERLAP_DISCOUNT = 0.5;
+  const tradeLoss = bilateralTradeVol * TRADE_DISRUPTION_FACTOR * durationYears * TRADE_GDP_OVERLAP_DISCOUNT;
 
-  // --- Target GDP contraction (real economic damage to the targeted nation) ---
-  // Note: Aggressor GDP loss is NOT modeled here — direct war spending is already in the military module.
-  // Historical evidence: US/UK/France economies GREW during their foreign wars.
-  // The target economy, however, suffers severe contraction from physical destruction.
-  const targetGdpLoss = targetGdp * def.gdpImpactPct.target * durationYears;
+  // --- Target GDP contraction ---
+  // Aggressor GDP loss NOT modeled here — historical evidence shows large-economy aggressors
+  // (US/UK/France) grew during foreign wars. The military module captures direct spending.
+  const targetGdpLoss = targetGdp * (1 - Math.pow(1 - def.gdpImpactPct.target, durationYears));
 
-  // --- Sanctions received by aggressor ---
-  // Sanctions are highly context-specific and cannot be reliably modeled without knowing
-  // geopolitical context (UN authorization, aggressor's trade dependencies, etc.).
-  // We omit automatic sanctions calculation to avoid misleading estimates.
-  // Users who have specific sanction data should contact us to add it.
-  // Reference: Russia 2022 sanctions ≈ $150-300B/year impact (IMF); US in Afghan war ≈ $0
-  const sanctionsCost = 0;
-  void SANCTIONS_GDP_PCT; // retained for reference — not used in this calculation
+  // --- Sanctions cost (aggressor) ---
+  // Applied only for countries with well-documented sanctions regimes (see sanctions-regimes.json).
+  // For unlisted aggressors we apply 0 rather than speculate on geopolitical likelihood.
+  // Source: Neuenkirch & Neumeier (2015), IMF WEO, OpenSanctions database.
+  let sanctionsCost = 0;
+  if (aggressorSanctions) {
+    sanctionsCost = aggressorGdp * aggressorSanctions.additionalWarSanctionsPct * durationYears;
+  }
 
   // --- Commodity shock ---
-  const commodityShock = getCommodityShock(target.code, durationYears);
+  const commodityShock = getCommodityShock(target.code, durationYears, commodityPrices);
+  const useLivePrices = commodityPrices !== undefined &&
+    (commodityPrices.oilUsdPerBarrel !== null ||
+      commodityPrices.gasUsdPerMmbtu !== null ||
+      commodityPrices.wheatUsdPerTon !== null);
+
+  // --- Capital flight (target country) ---
+  // Sudden-stop capital flight is a robust cross-conflict finding (IMF WP/16/47).
+  // Capped at 2 years: the acute phase typically resolves or hardens within that window.
+  const CAPITAL_FLIGHT_PCT: Record<string, number> = {
+    skirmish: 0.02,      // ~2%/yr — investors reduce exposure during limited hostilities
+    conventional: 0.08,  // ~8%/yr — portfolio/FDI reversal (Kharas et al.; WB conflict database)
+    occupation: 0.06,    // ~6%/yr — partial stabilization as occupying power establishes control
+  };
+  const capitalFlightPct = CAPITAL_FLIGHT_PCT[scenario] ?? 0.04;
+  const capitalFlightYears = Math.min(durationYears, 2);
+  const capitalFlightCost = targetGdp * capitalFlightPct * capitalFlightYears;
 
   const total =
     tradeLoss +
     targetGdpLoss +
     sanctionsCost +
+    capitalFlightCost +
     (commodityShock?.amount ?? 0);
 
   const items: LineItem[] = [
@@ -148,8 +227,8 @@ export function calculateEconomicImpact(
       assumptions: [
         {
           id: 'trade-loss',
-          description: `${tradeIsEstimated ? 'Estimated' : 'Known'} bilateral trade: $${(bilateralTradeVol / 1e9).toFixed(0)}B/year × 70% disruption × ${durationYears} years`,
-          formula: `${formatUsd(bilateralTradeVol)}/yr × ${TRADE_DISRUPTION_FACTOR} × ${durationYears} = ${formatUsd(tradeLoss)}`,
+          description: `${tradeIsEstimated ? 'Estimated' : 'Known'} bilateral trade: $${(bilateralTradeVol / 1e9).toFixed(0)}B/year × 70% disruption × ${durationYears} years × 50% overlap discount (trade loss partially captured in GDP contraction)`,
+          formula: `${formatUsd(bilateralTradeVol)}/yr × ${TRADE_DISRUPTION_FACTOR} × ${durationYears} × ${TRADE_GDP_OVERLAP_DISCOUNT} = ${formatUsd(tradeLoss)}`,
           value: tradeLoss,
           unit: 'USD',
           sources: tradeIsEstimated ? [] : [SOURCES.comtrade],
@@ -165,8 +244,8 @@ export function calculateEconomicImpact(
       assumptions: [
         {
           id: 'target-gdp',
-          description: `Target nations in active conflict typically lose ${(def.gdpImpactPct.target * 100).toFixed(0)}%/year of GDP (World Bank conflict studies)`,
-          formula: `${formatUsd(targetGdp)} × ${def.gdpImpactPct.target} × ${durationYears} = ${formatUsd(targetGdpLoss)}`,
+          description: `Target nations in active conflict lose ~${(def.gdpImpactPct.target * 100).toFixed(0)}%/year of GDP (compounding — World Bank conflict studies). Cumulative loss over ${durationYears}yr: ${((1 - Math.pow(1 - def.gdpImpactPct.target, durationYears)) * 100).toFixed(1)}% of pre-war GDP.`,
+          formula: `${formatUsd(targetGdp)} × (1 − (1 − ${def.gdpImpactPct.target})^${durationYears}) = ${formatUsd(targetGdpLoss)}`,
           value: targetGdpLoss,
           unit: 'USD',
           sources: [SOURCES.worldbank_conflict],
@@ -175,9 +254,55 @@ export function calculateEconomicImpact(
       sources: [SOURCES.worldbank_gdp, SOURCES.worldbank_conflict],
     },
   ];
-  void sanctionsCost; // Sanctions not automatically modeled — too context-specific
+
+  // Capital flight line item
+  items.push({
+    label: `${target.name} capital flight`,
+    amount: capitalFlightCost,
+    isEstimate: true,
+    confidence: 'medium',
+    assumptions: [
+      {
+        id: 'capital-flight',
+        description: `Capital flight: ${(capitalFlightPct * 100).toFixed(0)}%/yr of target GDP for up to 2 years (IMF WP/16/47: conflict triggers portfolio/FDI reversal — capped at 2yr as acute phase typically resolves or stabilises)`,
+        formula: `${formatUsd(targetGdp)} × ${capitalFlightPct} × ${capitalFlightYears}yr = ${formatUsd(capitalFlightCost)}`,
+        value: capitalFlightCost,
+        unit: 'USD',
+        sources: [SOURCES.imf_capital_flight, SOURCES.worldbank_conflict],
+      },
+    ],
+    sources: [SOURCES.imf_capital_flight, SOURCES.worldbank_conflict],
+  });
+
+  // Sanctions line item — only included when we have empirical backing
+  if (sanctionsCost > 0 && aggressorSanctions) {
+    items.push({
+      label: `${aggressor.name} sanctions costs`,
+      amount: sanctionsCost,
+      isEstimate: true,
+      confidence: 'medium',
+      assumptions: [
+        {
+          id: 'sanctions',
+          description: aggressorSanctions.note,
+          formula: `${formatUsd(aggressorGdp)} GDP × ${(aggressorSanctions.additionalWarSanctionsPct * 100).toFixed(1)}%/yr × ${durationYears}yr = ${formatUsd(sanctionsCost)}`,
+          value: sanctionsCost,
+          unit: 'USD',
+          sources: [SOURCES.neuenkirch2015, SOURCES.opensanctions],
+        },
+      ],
+      sources: [SOURCES.neuenkirch2015, SOURCES.opensanctions],
+    });
+  }
 
   if (commodityShock) {
+    const priceNote = useLivePrices && commodityShock.priceScalar !== null && commodityShock.priceScalar !== 1
+      ? ` (price-scaled ${commodityShock.priceScalar > 1 ? '+' : ''}${((commodityShock.priceScalar - 1) * 100).toFixed(0)}% vs 2023 baseline via live FRED data)`
+      : '';
+    const commoditySources = useLivePrices
+      ? [SOURCES.iea, SOURCES.fred]
+      : [SOURCES.iea];
+
     items.push({
       label: 'Global commodity price shock',
       amount: commodityShock.amount,
@@ -186,16 +311,20 @@ export function calculateEconomicImpact(
       assumptions: [
         {
           id: 'commodity-shock',
-          description: commodityShock.note,
-          formula: `Global GDP shock from ${target.name} commodity disruption`,
+          description: commodityShock.note + priceNote,
+          formula: `Global GDP shock from ${target.name} ${commodityShock.category} disruption${priceNote}`,
           value: commodityShock.amount,
           unit: 'USD',
-          sources: [SOURCES.iea],
+          sources: commoditySources,
         },
       ],
-      sources: [SOURCES.iea],
+      sources: commoditySources,
     });
   }
+
+  const baseSources = [SOURCES.comtrade, SOURCES.wto, SOURCES.worldbank_gdp, SOURCES.worldbank_conflict, SOURCES.iea, SOURCES.imf_capital_flight];
+  if (sanctionsCost > 0) baseSources.push(SOURCES.neuenkirch2015, SOURCES.opensanctions);
+  if (useLivePrices) baseSources.push(SOURCES.fred);
 
   return {
     label: 'Economic Impact',
@@ -204,12 +333,17 @@ export function calculateEconomicImpact(
     amountMax: total * 1.6,
     color: '#c41230',
     items,
-    methodology: `Economic costs include: bilateral trade disruption (${(TRADE_DISRUPTION_FACTOR * 100).toFixed(0)}% of trade lost, WTO historical average), ` +
-      `${target.name} GDP contraction (${(def.gdpImpactPct.target * 100).toFixed(0)}%/year, World Bank conflict database), ` +
-      `international sanctions costs (IMF estimate)` +
-      (commodityShock ? `, and global commodity price shock from ${target.name}'s role as a major producer.` : '.') +
-      ` Note: Aggressor GDP loss is not separately modeled — evidence shows large-economy aggressors (US, Russia) did not experience GDP contraction during foreign wars; direct spending is captured in the Military module.`,
-    sources: Object.values(SOURCES),
+    methodology:
+      `Economic costs include: bilateral trade disruption (${(TRADE_DISRUPTION_FACTOR * 100).toFixed(0)}% of trade lost × 50% overlap discount, WTO historical average), ` +
+      `${target.name} GDP contraction (${(def.gdpImpactPct.target * 100).toFixed(0)}%/year compounding over ${durationYears}yr = ${((1 - Math.pow(1 - def.gdpImpactPct.target, durationYears)) * 100).toFixed(1)}% cumulative, World Bank conflict database), ` +
+      `${target.name} capital flight (${(capitalFlightPct * 100).toFixed(0)}%/yr for up to 2yr, IMF WP/16/47)` +
+      (sanctionsCost > 0 && aggressorSanctions
+        ? `, ${aggressor.name} sanctions costs (${(aggressorSanctions.additionalWarSanctionsPct * 100).toFixed(1)}%/yr GDP impact, ${aggressorSanctions.regime})`
+        : '') +
+      (commodityShock ? `, and global commodity price shock from ${target.name}'s role as a major ${commodityShock.category} producer` : '') +
+      (useLivePrices ? ` — commodity shocks scaled to live market prices (FRED).` : '.') +
+      ` Note: Aggressor GDP loss is not separately modeled — evidence shows large-economy aggressors did not experience GDP contraction during foreign wars; direct spending is captured in the Military module.`,
+    sources: baseSources,
   };
 }
 

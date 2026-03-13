@@ -9,14 +9,15 @@ export type IMFIndicatorMap = Map<string, number | null>;
 export async function fetchIMFIndicator(
   indicator: string,
   countryCodes: string[],
-  revalidate = 86400
+  revalidate = 86400,
+  signal?: AbortSignal
 ): Promise<IMFIndicatorMap> {
   const result: IMFIndicatorMap = new Map(countryCodes.map((c) => [c, null]));
 
   try {
     const codesParam = countryCodes.join(',');
     const url = `${IMF_BASE}/${indicator}/${codesParam}`;
-    const res = await fetch(url, { next: { revalidate } });
+    const res = await fetch(url, { next: { revalidate }, signal });
     if (!res.ok) return result;
 
     const data = await res.json();

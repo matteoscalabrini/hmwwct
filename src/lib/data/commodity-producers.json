@@ -8,7 +8,15 @@
       { "name": "World Bank Commodity Price Data", "url": "https://www.worldbank.org/en/research/commodity-markets" }
     ],
     "year": 2023,
-    "note": "globalGdpShockUsd is estimated additional cost to global economy from supply disruption (IMF commodity shock estimates)"
+    "note": "globalGdpShockUsd is estimated annual additional cost to global economy from supply disruption (model estimate).",
+    "schemaVersion": 2,
+    "fieldDefinitions": {
+      "pctWorldProduction": "Share of global production for the commodity category, in percent.",
+      "pctWorldExports": "Share of global exports for the commodity category, in percent (used for wheat).",
+      "globalGdpShockUsd": "Modeled annual global GDP shock in USD for severe disruption of this producer.",
+      "priceShockUsdPerBarrel": "Modeled spot-price increase in USD/bbl for oil disruption scenarios.",
+      "priceShockPctGlobal": "Modeled percent increase in global market price for gas disruption scenarios."
+    }
   },
   "oil": {
     "RUS": { "pctWorldProduction": 12.1, "priceShockUsdPerBarrel": 15, "globalGdpShockUsd": 200000000000, "note": "World's 2nd largest oil producer. Sanctions already partially priced in post-2022." },

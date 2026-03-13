@@ -1,6 +1,6 @@
 import { CalculationInput, CostCategory, LineItem, Source } from '@/types';
 import { SCENARIOS } from '@/constants/conflict-scenarios';
-import { haversineKm, logisticsMultiplier } from './haversine';
+import { haversineKm } from './haversine';
 
 const SOURCES: Record<string, Source> = {
   watson: {
@@ -60,8 +60,13 @@ export function calculateMilitaryCost(input: CalculationInput): CostCategory {
   // (Watson measured actual Afghanistan/Gulf War expenditure, logistics included)
   // We only apply a small logistics ADJUSTMENT for extreme distance differences from baseline
   // Baseline: Watson measured US conflicts in Middle East/Central Asia (~9,000-11,000 km from US)
-  const budgetScale = Math.min(militaryBudget / US_REFERENCE_BUDGET_USD, 3.0);
-  const watsonDaily = WATSON_DAILY_ANCHOR_USD[scenario] ?? WATSON_DAILY_ANCHOR_USD.occupation;
+  const rawBudgetScale = militaryBudget / US_REFERENCE_BUDGET_USD;
+  const budgetScale = Math.max(0.02, Math.min(rawBudgetScale, 3.0));
+  // Apply CPI inflation scalar (FRED CPIAUCSL current / 2023 average).
+  // Watson anchors are expressed in 2023 USD; the scalar keeps them current without manual updates.
+  // Defaults to 1.0 when FRED key is absent, preserving prior behaviour.
+  const cpiScalar = input.liveData?.cpiScalar ?? 1.0;
+  const watsonDaily = (WATSON_DAILY_ANCHOR_USD[scenario] ?? WATSON_DAILY_ANCHOR_USD.occupation) * cpiScalar;
   const scaledDailyRate = watsonDaily * budgetScale;
 
   // Compute distance for display and for a minor adjustment only at extreme ranges
@@ -73,37 +78,129 @@ export function calculateMilitaryCost(input: CalculationInput): CostCategory {
     : Math.max(0.7, distanceKm / WATSON_BASELINE_KM);           // discount for close conflicts
 
   const operationalCost = scaledDailyRate * durationYears * 365 * logAdjustment;
-  const total = operationalCost;
+  const attritionCost = operationalCost * def.equipmentAttritionPct;
+  const total = operationalCost + attritionCost;
   // Store logMult-compatible value for display
   const logMult = logAdjustment;
 
+  // Sub-component shares of operational cost (DoD historical spending allocation)
+  const personnelCost   = operationalCost * 0.35;
+  const oplogCost       = operationalCost * 0.40;
+  const munitionsCost   = operationalCost * 0.20;
+  const c3isrCost       = operationalCost * 0.05;
+
   const rangeFactor = scenario === 'occupation' ? 0.5 : 0.35;
+  const budgetConfidence: LineItem['confidence'] = aggressor.militaryBudgetUsd !== null ? 'high' : 'low';
+
+  const sharedAssumptions = [
+    {
+      id: 'watson-anchor',
+      description: `Daily cost anchored to Watson Institute: $${(watsonDaily / 1e6).toFixed(0)}M/day (${scenario} scenario, US reference${cpiScalar !== 1.0 ? `; CPI-adjusted ×${cpiScalar.toFixed(3)} from 2023 USD` : ', 2023 USD'}), scaled by ${aggressor.name} budget/US reference (${budgetScale.toFixed(2)}×${rawBudgetScale < 0.02 ? ' (floor: 0.02×)' : ''}) × ${logMult.toFixed(2)}× logistics`,
+      formula: `$${(watsonDaily / 1e6).toFixed(0)}M × ${budgetScale.toFixed(2)} × ${logMult.toFixed(2)} × ${durationYears}yr = ${formatUsd(operationalCost)}`,
+      value: scaledDailyRate,
+      unit: 'USD/day',
+      sources: [SOURCES.watson, SOURCES.sipri],
+    },
+    {
+      id: 'logistics',
+      description: `Distance ${Math.round(distanceKm).toLocaleString()} km → logistics multiplier ${logMult.toFixed(2)}×`,
+      formula: distanceKm > WATSON_BASELINE_KM
+        ? `1 + ((${Math.round(distanceKm).toLocaleString()} − 10,000) / 10,000) × 0.15 = ${logMult.toFixed(2)}`
+        : `max(0.70, ${Math.round(distanceKm).toLocaleString()} / 10,000) = ${logMult.toFixed(2)}`,
+      value: logMult,
+      unit: 'multiplier',
+      sources: [SOURCES.rand],
+    },
+  ];
 
   const items: LineItem[] = [
     {
-      label: 'Operational costs (personnel, fuel, munitions)',
-      amount: operationalCost,
+      label: 'Personnel (pay, allowances, benefits)',
+      amount: personnelCost,
       isEstimate: true,
-      confidence: aggressor.militaryBudgetUsd !== null ? 'high' : 'low',
+      confidence: budgetConfidence,
       assumptions: [
         {
-          id: 'watson-anchor',
-          description: `Daily cost anchored to Watson Institute: $${(watsonDaily / 1e6).toFixed(0)}M/day (${scenario} scenario, US reference), scaled by ${aggressor.name} budget/US reference (${budgetScale.toFixed(2)}×) × ${logMult.toFixed(2)}× logistics`,
-          formula: `$${(watsonDaily / 1e6).toFixed(0)}M × ${budgetScale.toFixed(2)} × ${logMult.toFixed(2)} × ${durationYears}yr = ${formatUsd(operationalCost)}`,
-          value: scaledDailyRate,
-          unit: 'USD/day',
+          id: 'personnel',
+          description: `Personnel costs = 35% of operational total (DoD historical allocation: salaries, combat pay, benefits, rotation costs)`,
+          formula: `${formatUsd(operationalCost)} × 35% = ${formatUsd(personnelCost)}`,
+          value: personnelCost,
+          unit: 'USD',
           sources: [SOURCES.watson, SOURCES.sipri],
         },
+        ...sharedAssumptions,
+      ],
+      sources: [SOURCES.watson, SOURCES.sipri],
+    },
+    {
+      label: 'Operations & logistics (fuel, transport, sustainment)',
+      amount: oplogCost,
+      isEstimate: true,
+      confidence: budgetConfidence,
+      assumptions: [
         {
-          id: 'logistics',
-          description: `Distance ${Math.round(distanceKm).toLocaleString()} km → logistics multiplier ${logMult.toFixed(2)}×`,
-          formula: `1 + (${Math.round(distanceKm).toLocaleString()} / 1,000) × 0.03 = ${logMult.toFixed(2)}`,
-          value: logMult,
-          unit: 'multiplier',
+          id: 'oplog',
+          description: `Operations & logistics = 40% of operational total (fuel, forward base sustainment, airlift, supply chain — RAND analysis of Gulf War and OEF data)`,
+          formula: `${formatUsd(operationalCost)} × 40% = ${formatUsd(oplogCost)}`,
+          value: oplogCost,
+          unit: 'USD',
+          sources: [SOURCES.rand, SOURCES.watson],
+        },
+        ...sharedAssumptions,
+      ],
+      sources: [SOURCES.rand, SOURCES.watson],
+    },
+    {
+      label: 'Munitions & direct combat expenditure',
+      amount: munitionsCost,
+      isEstimate: true,
+      confidence: budgetConfidence,
+      assumptions: [
+        {
+          id: 'munitions',
+          description: `Munitions = 20% of operational total (precision-guided munitions, artillery, air ordnance — Watson Institute breakdown)`,
+          formula: `${formatUsd(operationalCost)} × 20% = ${formatUsd(munitionsCost)}`,
+          value: munitionsCost,
+          unit: 'USD',
+          sources: [SOURCES.watson],
+        },
+        ...sharedAssumptions,
+      ],
+      sources: [SOURCES.watson, SOURCES.sipri],
+    },
+    {
+      label: 'Intelligence, surveillance & communications (C3ISR)',
+      amount: c3isrCost,
+      isEstimate: true,
+      confidence: 'medium',
+      assumptions: [
+        {
+          id: 'c3isr',
+          description: `C3ISR = 5% of operational total (reconnaissance, satellite comms, cyber ops, signals intelligence)`,
+          formula: `${formatUsd(operationalCost)} × 5% = ${formatUsd(c3isrCost)}`,
+          value: c3isrCost,
+          unit: 'USD',
           sources: [SOURCES.rand],
         },
       ],
-      sources: [SOURCES.watson, SOURCES.sipri, SOURCES.rand],
+      sources: [SOURCES.rand],
+    },
+    {
+      label: 'Equipment attrition & replacement',
+      amount: attritionCost,
+      isEstimate: true,
+      confidence: 'medium',
+      assumptions: [
+        {
+          id: 'equipment-attrition',
+          description: `Equipment attrition at ${(def.equipmentAttritionPct * 100).toFixed(0)}% of operational costs per ${scenario} scenario — covers combat losses, accelerated wear-out, and major maintenance (SIPRI and RAND attrition estimates for comparable conflicts)`,
+          formula: `${formatUsd(operationalCost)} × ${(def.equipmentAttritionPct * 100).toFixed(0)}% = ${formatUsd(attritionCost)}`,
+          value: attritionCost,
+          unit: 'USD',
+          sources: [SOURCES.sipri, SOURCES.rand],
+        },
+      ],
+      sources: [SOURCES.sipri, SOURCES.rand],
     },
   ];
 
@@ -114,10 +211,12 @@ export function calculateMilitaryCost(input: CalculationInput): CostCategory {
     amountMax: total * (1 + rangeFactor),
     color: '#1e3a5f',
     items,
-    methodology: `Military operational costs scaled from Watson Institute historical benchmarks: ` +
+    methodology: `Military costs scaled from Watson Institute benchmarks: ` +
       `$${(watsonDaily / 1e6).toFixed(0)}M/day (${scenario} scenario, US reference) × ` +
-      `${budgetScale.toFixed(2)} budget scale × ${logMult.toFixed(2)} logistics premium for ${Math.round(distanceKm).toLocaleString()} km. ` +
-      `Validation: USA→Afghanistan occupation ≈ $2.3T (Watson, 20yr); this calculator at 20yr = ${formatUsd(watsonDaily * (916e9 / 700e9) * 1.6 * 365 * 20)}.`,
+      `${budgetScale.toFixed(2)} budget scale × ${logMult.toFixed(2)} logistics factor for ${Math.round(distanceKm).toLocaleString()} km. ` +
+      `Operational costs split by DoD historical allocation: personnel 35%, operations & logistics 40%, munitions 20%, C3ISR 5%. ` +
+      `Equipment attrition (${(def.equipmentAttritionPct * 100).toFixed(0)}%) added separately per scenario intensity. ` +
+      `These anchors are calibrated to direct operational spending rather than full life-cycle war costs; long-run veterans care, interest on war debt, and homeland-security spillovers are intentionally excluded.`,
     sources: [SOURCES.watson, SOURCES.sipri, SOURCES.rand],
   };
 }

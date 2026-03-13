@@ -22,13 +22,21 @@ interface FallbackEntry {
 interface LiveIndicators {
   gdp: number | null;
   militaryPctGdp: number | null;
+  /** Live WB MS.MIL.XPND.CD — military expenditure in current USD (SIPRI-sourced, more recent than static JSON). */
+  militaryBudgetUsd: number | null;
   population: number | null;
   tradeGdpPct: number | null;
+  goldReservesUsd: number | null;
 }
 
 /**
  * Merge REST Countries metadata with live World Bank indicators and static fallbacks.
- * Priority: World Bank API → SIPRI static → static fallback → null
+ *
+ * Military budget priority chain (most → least preferred):
+ *   1. Live WB MS.MIL.XPND.CD  — current USD, most recent WB/SIPRI data
+ *   2. Static SIPRI JSON        — verified annual figure, may be 1-2 years old
+ *   3. Derived: live GDP × live militaryPctGdp
+ *   4. Static fallback JSON     — last-resort for data-sparse countries
  */
 export function enrichCountry(
   raw: RestCountryRaw,
@@ -42,8 +50,10 @@ export function enrichCountry(
   const militaryPctGdp = live.militaryPctGdp ?? sipri?.pctGdp ?? fallback?.militaryPctGdp ?? null;
   const population = live.population ?? raw.population ?? fallback?.population ?? null;
   const tradeGdpPct = live.tradeGdpPct ?? fallback?.tradeGdpPct ?? null;
+  const goldReservesUsd = live.goldReservesUsd ?? null;
 
   const militaryBudgetUsd =
+    live.militaryBudgetUsd ??
     sipri?.expenditureUsd ??
     (gdp && militaryPctGdp ? gdp * (militaryPctGdp / 100) : fallback?.militaryBudgetUsd ?? null);
 
@@ -68,6 +78,7 @@ export function enrichCountry(
     militaryPctGdp,
     militaryPersonnel: sipri?.personnel ?? null,
     tradeGdpPct,
+    goldReservesUsd,
     dataYear: sipri?.year ?? fallback?.dataYear ?? 2023,
     hasStaticFallback,
   };
