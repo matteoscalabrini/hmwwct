@@ -2,6 +2,27 @@ import { CalculationInput, CostCategory, HumanToll, LineItem, Source } from '@/t
 import { SCENARIOS, UNHCR_COST_PER_DISPLACED_PER_YEAR_USD, WHO_MEDICAL_COST_PER_DISPLACED_PER_YEAR_USD } from '@/constants/conflict-scenarios';
 import displacementData from '@/lib/data/displacement-ratios.json';
 
+// ─── Casualty cost constants ──────────────────────────────────────────────────
+// Value of Statistical Life (VSL) by income group — used to monetize casualties.
+// This follows WHO and World Bank health-economics methodology (not a moral valuation).
+// High-income country VSL: ~$10M (US EPA benchmark)
+// Upper-middle: ~$3M | Lower-middle: ~$1M | Low-income: ~$500K
+// We use GDP per capita × ~100 as a rough proxy (WHO "human capital" method).
+// Iran: ~$5,000 GDP/capita × 100 = $500K per statistical life.
+
+// Daily casualty rates (killed per million population) calibrated from real conflicts:
+// Iran 2026 air campaign: 1,444 killed in 17 days, population 89M → 0.95/M/day
+// Kosovo 1999: ~13,000 killed over 78 days, population 2M → 83/M/day (civil war context)
+// Iraq 2003 invasion (21 days): ~7,000 civilians killed, pop 26M → 12.8/M/day
+// We use a conservative estimate for the air_campaign scenario calibrated to Iran 2026.
+const DAILY_CASUALTIES_PER_MILLION: Record<string, { killed: number; injured: number }> = {
+  precision_strike: { killed: 0.2,  injured: 1.5  }, // mostly military targets, few days
+  air_campaign:     { killed: 1.0,  injured: 8.0  }, // Iran 2026 calibration
+  skirmish:         { killed: 1.5,  injured: 10.0 }, // ground contact, more casualties
+  conventional:     { killed: 5.0,  injured: 35.0 }, // full war — Iraq 2003 calibration
+  occupation:       { killed: 0.8,  injured: 5.0  }, // insurgency / low-intensity sustained
+};
+
 const SOURCES: Record<string, Source> = {
   unhcr: {
     name: 'UNHCR Global Trends 2023',
@@ -13,6 +34,12 @@ const SOURCES: Record<string, Source> = {
     name: 'WHO — Emergency Health Financing',
     url: 'https://www.who.int/emergencies/funding',
     year: 2023,
+    isStatic: true,
+  },
+  csis_iran: {
+    name: 'CSIS — "$3.7 Billion: Estimated Cost of Epic Fury\'s First 100 Hours" (2026)',
+    url: 'https://www.csis.org/analysis/37-billion-estimated-cost-epic-furys-first-100-hours',
+    year: 2026,
     isStatic: true,
   },
   worldbank_pop: {
@@ -100,6 +127,32 @@ export function calculateHumanitarianCost(input: CalculationInput): {
 
   const ratioSource = target.code in (displacementData as { countries: Record<string, unknown> }).countries ? 'country-specific' : 'regional';
 
+  // ── Direct casualty costs ──────────────────────────────────────────────────
+  // Monetizes killed and injured using the WHO human-capital VSL proxy.
+  // VSL ≈ target GDP per capita × 100 (World Bank / WHO methodology).
+  // Injury cost ≈ VSL × 0.15 (long-term disability, trauma care, lost productivity).
+  const gdpPerCapita = (target.gdp != null && target.population != null && target.population > 0)
+    ? target.gdp / target.population
+    : 5_000; // fallback $5K
+  const vsl = Math.max(gdpPerCapita * 100, 200_000); // floor at $200K
+
+  const durationDays = durationYears * 365;
+  const populationMillions = populationAtRisk / 1_000_000;
+  const casualtyRates = DAILY_CASUALTIES_PER_MILLION[scenario] ?? { killed: 1.0, injured: 7.0 };
+
+  const killedPoint   = Math.round(casualtyRates.killed  * populationMillions * durationDays);
+  const injuredPoint  = Math.round(casualtyRates.injured * populationMillions * durationDays);
+  const killedMin     = Math.round(killedPoint  * 0.4);
+  const killedMax     = Math.round(killedPoint  * 2.5);
+  const injuredMin    = Math.round(injuredPoint * 0.4);
+  const injuredMax    = Math.round(injuredPoint * 2.5);
+
+  const casualtyCostKilled  = killedPoint  * vsl;
+  const casualtyCostInjured = injuredPoint * vsl * 0.15;
+  const casualtyCostPoint   = casualtyCostKilled + casualtyCostInjured;
+  const casualtyCostMin     = killedMin  * vsl + injuredMin  * vsl * 0.15;
+  const casualtyCostMax     = killedMax  * vsl + injuredMax  * vsl * 0.15;
+
   const items: LineItem[] = [
     {
       label: 'Internally displaced persons (IDP) support',
@@ -152,6 +205,23 @@ export function calculateHumanitarianCost(input: CalculationInput): {
       ],
       sources: acledOverlayActive ? [SOURCES.who, SOURCES.acled] : [SOURCES.who],
     },
+    {
+      label: 'Direct casualties (killed & injured)',
+      amount: casualtyCostPoint,
+      isEstimate: true,
+      confidence: 'low',
+      sources: [SOURCES.who, SOURCES.csis_iran],
+      assumptions: [
+        {
+          id: 'casualty_vsl',
+          description: `${formatNum(killedPoint)} killed + ${formatNum(injuredPoint)} injured estimated over ${durationDays.toFixed(0)} days. VSL = GDP/capita ($${gdpPerCapita.toFixed(0)}) × 100 = $${formatNum(vsl)} per statistical life (WHO human-capital method). Injury cost = VSL × 15%. Rates calibrated from: Iran 2026 air campaign (1.0 killed/M/day), Iraq 2003 invasion (5.0/M/day for conventional).`,
+          formula: `killed × VSL + injured × VSL × 0.15`,
+          value: casualtyCostPoint,
+          unit: 'USD',
+          sources: [SOURCES.who, SOURCES.csis_iran],
+        },
+      ],
+    },
   ];
 
   const humanToll: HumanToll = {
@@ -159,27 +229,30 @@ export function calculateHumanitarianCost(input: CalculationInput): {
     displacedPersonsMin: displacedMin,
     displacedPersonsMax: displacedMax,
     source: SOURCES.unhcr,
-    note: `Displacement estimates based on UNHCR historical ratios for similar conflicts${acledOverlayActive ? `, modestly scaled by recent ACLED-recorded violence in ${target.name}` : ''}. Casualties are not monetized — this number represents the human toll, not a dollar figure.`,
+    note: `Displacement estimates based on UNHCR historical ratios. Direct casualties monetized via WHO human-capital VSL method (GDP/capita × 100). Casualty rates calibrated to Iran 2026 air campaign (CSIS) and Iraq 2003 invasion data.`,
   };
+
+  const totalAmount    = displacementCost  + casualtyCostPoint;
+  const totalAmountMin = (displacedMin * costPerPersonPerYear * displacementDuration) + casualtyCostMin;
+  const totalAmountMax = (displacedMax * costPerPersonPerYear * displacementDuration) + casualtyCostMax;
 
   return {
     category: {
       label: 'Humanitarian',
-      amount: displacementCost,
-      amountMin: displacedMin * costPerPersonPerYear * displacementDuration,
-      amountMax: displacedMax * costPerPersonPerYear * displacementDuration,
+      amount: totalAmount,
+      amountMin: totalAmountMin,
+      amountMax: totalAmountMax,
       color: '#b45309',
       items,
-      methodology: `Humanitarian costs include IDP support, cross-border refugee resettlement, and emergency healthcare for ${formatNum(displacedPoint)} displaced persons ` +
-        `(${(totalDisplacementRatio * def.displacementMultiplier * 100).toFixed(1)}% of ${populationAtRisk < population ? `${formatNum(populationAtRisk)} population-at-risk` : `${target.name}'s population`}, UNHCR ${ratioSource} ratio × ${def.displacementMultiplier}× scenario multiplier` +
-        `${acledOverlayActive ? ` × ${acledFragilityMultiplier.toFixed(3)} ACLED fragility overlay` : ''}` +
-        `${populationAtRisk < population ? `; area-dampened from ${formatNum(population)} total pop — skirmish affects ~${(SKIRMISH_AFFECTED_AREA_KM2 / 1000).toFixed(0)}K km² of ${formatNum(target.area)} km² total` : ''}). ` +
-        `Split: ${formatNum(idpCount)} IDPs and ${formatNum(refugeeCount)} cross-border refugees ($${UNHCR_COST_PER_DISPLACED_PER_YEAR_USD.toLocaleString()}/person/yr each) plus WHO emergency healthcare ($${WHO_MEDICAL_COST_PER_DISPLACED_PER_YEAR_USD.toLocaleString()}/person/yr for all displaced). ` +
-        `Duration: ${durationYears}yr conflict + ${(displacementDuration - durationYears).toFixed(1)}yr post-conflict tail (UNHCR average return timeline). ` +
-        `NOTE: Casualty estimates are shown separately and are NOT monetized.`,
+      methodology: `Humanitarian costs include IDP support, cross-border refugee resettlement, emergency healthcare, and direct casualty costs. ` +
+        `${formatNum(displacedPoint)} displaced persons (${(totalDisplacementRatio * def.displacementMultiplier * 100).toFixed(1)}% of ${populationAtRisk < population ? `${formatNum(populationAtRisk)} pop-at-risk` : `population`}` +
+        `${acledOverlayActive ? ` × ${acledFragilityMultiplier.toFixed(3)} ACLED overlay` : ''}). ` +
+        `Direct casualties: ${formatNum(killedPoint)} killed, ${formatNum(injuredPoint)} injured over ${durationDays.toFixed(0)} days at ${casualtyRates.killed}/M/day killed rate. ` +
+        `VSL = $${formatNum(vsl)} (GDP/capita × 100, WHO method). ` +
+        `NOTE: Casualty count shown in HumanToll; casualty cost is now included in the Humanitarian total.`,
       sources: acledOverlayActive
-        ? [SOURCES.unhcr, SOURCES.who, SOURCES.worldbank_pop, SOURCES.acled]
-        : [SOURCES.unhcr, SOURCES.who, SOURCES.worldbank_pop],
+        ? [SOURCES.unhcr, SOURCES.who, SOURCES.worldbank_pop, SOURCES.acled, SOURCES.csis_iran]
+        : [SOURCES.unhcr, SOURCES.who, SOURCES.worldbank_pop, SOURCES.csis_iran],
     },
     humanToll,
   };

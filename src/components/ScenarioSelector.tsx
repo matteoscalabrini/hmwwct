@@ -11,6 +11,7 @@ interface ScenarioSelectorProps {
 
 const SEVERITY: Record<string, { color: string; level: number }> = {
   precision_strike: { color: 'var(--accent-blue)',    level: 1 },
+  air_campaign:     { color: 'var(--accent-blue)',    level: 2 },
   skirmish:         { color: 'var(--accent-amber)',   level: 2 },
   conventional:     { color: 'var(--accent-amber)',   level: 3 },
   occupation:       { color: 'var(--accent-red)',     level: 4 },

@@ -223,9 +223,11 @@ export function calculateEconomicImpact(
   // Sudden-stop capital flight is a robust cross-conflict finding (IMF WP/16/47).
   // Capped at 2 years: the acute phase typically resolves or hardens within that window.
   const CAPITAL_FLIGHT_PCT: Record<string, number> = {
-    skirmish: 0.02,      // ~2%/yr — investors reduce exposure during limited hostilities
-    conventional: 0.08,  // ~8%/yr — portfolio/FDI reversal (Kharas et al.; WB conflict database)
-    occupation: 0.06,    // ~6%/yr — partial stabilization as occupying power establishes control
+    precision_strike: 0.03, // ~3%/yr — short duration limits flight; some investor panic
+    air_campaign:     0.07, // ~7%/yr — sustained bombing drives significant capital exit (Iran 2026: banking system frozen, oil exports halted)
+    skirmish:         0.02, // ~2%/yr — investors reduce exposure during limited hostilities
+    conventional:     0.08, // ~8%/yr — portfolio/FDI reversal (Kharas et al.; WB conflict database)
+    occupation:       0.06, // ~6%/yr — partial stabilization as occupying power establishes control
   };
   const capitalFlightPct = CAPITAL_FLIGHT_PCT[scenario] ?? 0.04;
   const capitalFlightYears = Math.min(durationYears, 2);

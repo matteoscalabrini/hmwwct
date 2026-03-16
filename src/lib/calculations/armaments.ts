@@ -52,12 +52,36 @@ const US_DEFENCE_BUDGET_USD = 858_000_000_000;
 // Global median equipment % of defence spending (SIPRI/IISS estimate for non-NATO)
 const GLOBAL_MEDIAN_EQUIPMENT_PCT = 0.20;
 
-// Scenario key mapping: existing ConflictScenario → force-package keys
+// Scenario key mapping: ConflictScenario → force-package keys
 const SCENARIO_PKG_MAP: Record<string, string> = {
   precision_strike: 'precision_strike',
-  skirmish: 'border_skirmish',
-  conventional: 'conventional_war',
-  occupation: 'occupation',
+  air_campaign:     'air_campaign',
+  skirmish:         'border_skirmish',
+  conventional:     'conventional_war',
+  occupation:       'occupation',
+};
+
+// ─── Defensive intercept calibration ─────────────────────────────────────────
+// Iran 2026 calibration: 700 ballistic missiles + 3,600 drones in 17 days.
+// Intercept cost: ~$1.7B (first 100 hrs) out of $3.7B total.
+// Avg cost/intercept ≈ $395K (mix of SM-3 $10M, Patriot PAC-3 $4M, SM-2 $2M, Iron Dome $80K).
+// We model incoming threat volume as a function of:
+//   a) target's SIPRI military budget (bigger military = more incoming capable)
+//   b) scenario type (air campaigns and conventional wars attract more counter-fire)
+//   c) conflict duration
+// Source: CSIS "$3.7B: Estimated Cost of Epic Fury's First 100 Hours" (2026)
+
+const INTERCEPT_COST_PER_THREAT_USD = 395_000; // calibrated from Iran 2026
+
+// Daily incoming threat rates (ballistic missiles + drones combined) per $100B target budget
+// Calibrated: Iran ($10B budget) fired ~25 BMs/day + 210 drones/day ≈ 235 threats/day
+// Per $100B: 235 / 0.1 = 2,350 threats/day per $100B → but capped at realistic limits
+const DAILY_THREATS_PER_100B_BUDGET: Record<string, number> = {
+  precision_strike: 150,   // target fights back but limited launch volume (short duration)
+  air_campaign:     300,   // sustained barrage over weeks — Iran pattern
+  skirmish:         50,    // border clashes: artillery + short-range missiles, fewer ballistic
+  conventional:     200,   // full war: ballistic missiles, cruise missiles, artillery rockets
+  occupation:       30,    // insurgency: IEDs, mortars, sporadic rockets — no ballistic missiles
 };
 
 // ─── Sources ─────────────────────────────────────────────────────────────────
@@ -210,7 +234,31 @@ export function calculateArmamentCost(input: CalculationInput): CostCategory {
     }
   }
 
-  // ── 5. Attrition replacement (GAO calibration) ───────────────────────────────
+  // ── 5. Defensive intercept costs ────────────────────────────────────────────
+  // Cost to shoot down incoming ballistic missiles, cruise missiles, and drones.
+  // Calibrated from Iran 2026: $1.7B intercept cost in first 100 hours.
+  // Scales with target's military budget (proxy for launch capability) and duration.
+  const targetBudgetLive = input.target.militaryBudgetUsd;
+  const targetSipriBudget = getSipriMilex(input.target.code);
+  const targetMilBudget =
+    targetBudgetLive != null && targetBudgetLive > 0
+      ? targetBudgetLive
+      : targetSipriBudget != null
+        ? targetSipriBudget
+        : 10_000_000_000; // $10B fallback
+
+  const threatsPerDay =
+    (DAILY_THREATS_PER_100B_BUDGET[scenario] ?? 100) *
+    (targetMilBudget / 100_000_000_000);
+
+  const totalThreats = threatsPerDay * durationDays;
+  // Intercept rate: not every threat is intercepted; assume 85% intercept rate
+  const interceptedThreats = totalThreats * 0.85;
+  const interceptCostPoint = interceptedThreats * INTERCEPT_COST_PER_THREAT_USD * scalar;
+  const interceptCostLow   = interceptCostPoint * 0.4; // fewer threats / cheaper interceptors
+  const interceptCostHigh  = interceptCostPoint * 2.5; // more threats / SM-3 heavy mix
+
+  // ── 6. Attrition replacement (GAO calibration) ───────────────────────────────
   // GAO Ukraine study: ~$25.9B replacement for ~$47B initial draw-down (~55% replacement rate)
   // We apply equipmentAttritionPct from scenario definition to the force package cost
   const attritionRate = def.equipmentAttritionPct ?? 0.15;
@@ -218,12 +266,12 @@ export function calculateArmamentCost(input: CalculationInput): CostCategory {
   const attritionCostLow   = forcePackageCostLow   * attritionRate * 0.7;
   const attritionCostHigh  = forcePackageCostHigh  * attritionRate * 1.4;
 
-  // ── 6. Total ─────────────────────────────────────────────────────────────────
-  const totalPoint = forcePackageCostPoint + munitionsCostPoint + attritionCostPoint;
-  const totalLow   = forcePackageCostLow   + munitionsCostLow   + attritionCostLow;
-  const totalHigh  = forcePackageCostHigh  + munitionsCostHigh  + attritionCostHigh;
+  // ── 7. Total ─────────────────────────────────────────────────────────────────
+  const totalPoint = forcePackageCostPoint + munitionsCostPoint + attritionCostPoint + interceptCostPoint;
+  const totalLow   = forcePackageCostLow   + munitionsCostLow   + attritionCostLow   + interceptCostLow;
+  const totalHigh  = forcePackageCostHigh  + munitionsCostHigh  + attritionCostHigh  + interceptCostHigh;
 
-  // ── 7. Line items ─────────────────────────────────────────────────────────────
+  // ── 8. Line items ─────────────────────────────────────────────────────────────
   const items: LineItem[] = [
     {
       label: 'Initial Force Package Procurement',
@@ -284,6 +332,23 @@ export function calculateArmamentCost(input: CalculationInput): CostCategory {
         },
       ],
     },
+    {
+      label: 'Defensive Intercepts (Ballistic Missiles & Drones)',
+      amount: interceptCostPoint,
+      isEstimate: true,
+      confidence: 'medium',
+      sources: [SOURCES.dod],
+      assumptions: [
+        {
+          id: 'arm_intercept_threats',
+          description: `~${Math.round(threatsPerDay).toLocaleString()} incoming threats/day (scaled from target military budget $${(targetMilBudget / 1e9).toFixed(0)}B). 85% intercept rate × avg $${(INTERCEPT_COST_PER_THREAT_USD / 1000).toFixed(0)}K/intercept (mix of Patriot PAC-3 $4M, SM-2 $2M, SM-3 $10M, Iron Dome $80K). Calibrated to CSIS Iran 2026 analysis: $1.7B intercept cost in first 100 hours for 700 BMs + 3,600 drones.`,
+          formula: `threatsPerDay × durationDays × 0.85 × $${(INTERCEPT_COST_PER_THREAT_USD / 1000).toFixed(0)}K × budgetScalar`,
+          value: interceptCostPoint,
+          unit: 'USD',
+          sources: [SOURCES.dod],
+        },
+      ],
+    },
   ];
 
   // ── 8. Data freshness note ────────────────────────────────────────────────────
@@ -299,10 +364,11 @@ export function calculateArmamentCost(input: CalculationInput): CostCategory {
     color: '#ff6b35',
     items,
     methodology: `
-Armament costs calculated in three buckets:
+Armament costs calculated in four buckets:
 1. **Force Package**: ${pkg ? `${Object.keys(pkg.forcePackage).length} weapon categories` : 'N/A'} scaled by aggressor budget relative to US reference ($858B FY2023).
 2. **Munitions Consumption**: daily expenditure rates × conflict duration, calibrated to RAND Ukraine analysis.
 3. **Attrition Replacement**: ${(attritionRate * 100).toFixed(0)}% of initial force package replaced (GAO-24-106649 Ukraine benchmark).
+4. **Defensive Intercepts**: ~${Math.round(threatsPerDay).toLocaleString()} incoming threats/day × ${durationDays.toFixed(0)} days × $${(INTERCEPT_COST_PER_THREAT_USD / 1000).toFixed(0)}K avg intercept cost (calibrated to CSIS Iran 2026: $1.7B in 100hrs).
 Budget scalar: ${(scalar * 100).toFixed(1)}% of US reference (power-law 0.75).
 ${dataNote}
     `.trim(),

@@ -21,6 +21,30 @@ export const SCENARIOS: Record<string, ScenarioDefinition> = {
     // High attrition: expensive munitions (Tomahawk $1.5M+, JASSM $1M+), possible drone/aircraft losses.
     equipmentAttritionPct: 0.12,
   },
+  air_campaign: {
+    id: 'air_campaign',
+    label: 'Sustained Air Campaign',
+    description:
+      'Prolonged aerial bombardment and naval strikes. No ground invasion. Includes suppression of enemy air defences and strategic bombing. Weeks to months.',
+    examples: 'e.g. 1999 Kosovo/Allied Force (78 days, $4.2B), 2011 Libya/Odyssey Dawn, 2026 Operation Epic Fury vs Iran',
+    durationYears: { min: 0.05, max: 0.5, point: 0.15 }, // ~18 days to 6 months, point ~55 days
+    intensityMultiplier: 0.9,
+    // Air campaigns cause significant civilian casualties and infrastructure destruction
+    // but less population displacement than ground wars. Kosovo: ~850K displaced of 1.8M (47%)
+    // but Iran-scale: ~3.2M of 89M in 17 days (3.6%) due to size and limited ground presence.
+    // Use 0.04 (4%) as the point estimate for large-country air campaigns.
+    displacementMultiplier: 0.04,
+    // Infrastructure heavily targeted (power grid, bridges, military sites, oil facilities).
+    // Kosovo: ~$2B reconstruction over 2yr for $10B GDP → ~10%/yr. Libya: ~15%/yr.
+    reconstructionRate: { min: 0.05, max: 0.20, point: 0.10 },
+    // Aggressor: small GDP impact (US unaffected by Kosovo, small by Libya).
+    // Target: severe disruption — power grid down, oil exports halted, capital flight.
+    // Iran 2026: GDP expected -10% (Chatham House). Use 0.15 as point estimate.
+    gdpImpactPct: { aggressor: 0.002, target: 0.15 },
+    // High munitions attrition — missiles, bombs — but fewer large platforms lost vs ground war.
+    // Calibrated to: Kosovo 14 aircraft lost, Iran 2026: 3 F-15EX ($103M each).
+    equipmentAttritionPct: 0.08,
+  },
   skirmish: {
     id: 'skirmish',
     label: 'Limited Ground War',
@@ -84,6 +108,10 @@ export const SCENARIOS: Record<string, ScenarioDefinition> = {
 // Source: https://watson.brown.edu/costsofwar/
 export const WATSON_DAILY_COST_USD = {
   precision_strike: { low: 50_000_000, high: 500_000_000 },
+  // Air campaign: CSIS Iran 2026 $891M/day (100hrs), but includes heavy defensive intercepts.
+  // Pure operational (sorties, fuel, maintenance): ~$196M/day. With munitions: ~$700M/day.
+  // Calibrated midpoint from Kosovo ($54M/day) and Iran 2026 ($891M/day).
+  air_campaign: { low: 100_000_000, high: 1_200_000_000 },
   skirmish: { low: 50_000_000, high: 500_000_000 },
   conventional: { low: 500_000_000, high: 2_000_000_000 },
   occupation: { low: 200_000_000, high: 800_000_000 },

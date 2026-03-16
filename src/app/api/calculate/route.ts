@@ -9,7 +9,7 @@ import { fetchComtradeBilateralTrade } from '@/lib/api/comtrade';
 import { fetchAcledConflictSignal } from '@/lib/api/acled';
 import sanctionsData from '@/lib/data/sanctions-regimes.json';
 
-const VALID_SCENARIOS = new Set<ConflictScenario>(['precision_strike', 'skirmish', 'conventional', 'occupation']);
+const VALID_SCENARIOS = new Set<ConflictScenario>(['precision_strike', 'air_campaign', 'skirmish', 'conventional', 'occupation']);
 
 /** Resolve sanctions data for the aggressor from our static literature-based dataset. */
 function resolveSanctions(aggressorCode: string): SanctionsInfo | null {
