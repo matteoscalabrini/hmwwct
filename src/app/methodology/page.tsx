@@ -156,9 +156,29 @@ const LIVE_APIS = [
 
 const STATIC_DATASETS = [
   {
-    name: 'SIPRI Military Expenditure Database',
-    count: '84 countries',
-    note: 'Static military expenditure and personnel benchmark dataset, used as the first offline fallback for defense budgets and force size.',
+    name: 'SIPRI Military Expenditure Database 2024',
+    count: '135 countries, 2010–2024',
+    note: 'Military expenditure in current USD, used as offline fallback for defense budgets in the armaments module when World Bank data is unavailable.',
+  },
+  {
+    name: 'NATO Defence Expenditure 2025',
+    count: '30 NATO members',
+    note: 'Equipment spending as % of total defence budget (Table 8a), used to derive per-country procurement fraction in the armaments module. Global median 20% used for non-NATO states.',
+  },
+  {
+    name: 'Bruegel US Foreign Military Sales 2008–2025',
+    count: '79 recipient countries',
+    note: 'US arms sales by recipient, equipment category, and year in 2024 constant USD. Reference dataset for arms transfer patterns and equipment category weights.',
+  },
+  {
+    name: 'Armaments unit cost table',
+    count: '22 weapon categories',
+    note: 'DoD-sourced unit procurement costs with low/high ranges: from 155mm artillery shells ($800–$80K) to aircraft carriers ($3–14B). Updated from DoD Program Acquisition Costs FY2024.',
+  },
+  {
+    name: 'Scenario force-package table',
+    count: '6 scenarios',
+    note: 'Typical weapons quantities deployed per scenario type (precision_strike, air_campaign, border_skirmish, conventional_war, occupation, naval_blockade), calibrated to historical conflicts.',
   },
   {
     name: 'UNHCR-derived displacement ratios',
@@ -272,6 +292,23 @@ const MODEL_SECTIONS = [
   },
   {
     id: '05',
+    title: 'Armaments Model',
+    body:
+      'The armaments module prices weapons procurement, munitions consumption, equipment attrition, and defensive intercept costs — four buckets that were absent from the original model. It uses live military expenditure from the World Bank API with SIPRI Milex as offline fallback, NATO equipment-percentage data to derive a procurement fraction, a static unit-cost table sourced from DoD annual budget documents, and scenario-based force-package tables calibrated to real conflicts.',
+    equations: [
+      'budgetScalar = (aggressorMilBudget / $858B_US_ref) ^ 0.75',
+      'forcePackageCost = Σ (qty_i × unitCost_i × budgetScalar)',
+      'munitionsCost = Σ (perDayRate_i × durationDays × unitCost_i × budgetScalar)',
+      'attritionCost = forcePackageCost × equipmentAttritionPct',
+      'interceptThreats = (threatsPerDay_scenario × targetMilBudget / $100B) × durationDays × 0.85',
+      'interceptCost = interceptThreats × $395K_avg × budgetScalar',
+      'armamentsTotal = forcePackageCost + munitionsCost + attritionCost + interceptCost',
+    ],
+    notes:
+      'budgetScalar uses a power-law exponent of 0.75 (diminishing returns — larger budgets buy more but not linearly). Equipment fraction defaults to 20% of military spend for non-NATO states; NATO Table 8a values used when available. Unit costs cover 22 weapon categories from cruise missiles ($2M) to aircraft carriers ($13B). Intercept costs calibrated from CSIS Iran 2026: $1.7B to intercept 700 ballistic missiles + 3,600 drones in 100 hours ($395K average per intercept). Data sources: SIPRI Milex 2024 (135 countries), NATO Defence Expenditure 2025, Bruegel US Foreign Military Sales 2008–2025, DoD Program Acquisition Costs FY2024, GAO-24-106649 Ukraine Weapon Replacement Study.',
+  },
+  {
+    id: '07',
     title: 'Revenue Counterfactual',
     body:
       'Revenue is not subtracted from the headline projected cost. It is shown as a deliberately optimistic counterfactual: what an aggressor might hope to extract if it wins, holds territory, and manages to keep production online despite sabotage, sanctions, and infrastructure damage.',
@@ -285,18 +322,18 @@ const MODEL_SECTIONS = [
       'Capture rates are scenario-specific: 0% for skirmish, 15% for conventional war, and 50% for occupation. The code treats this section as best-case and low-confidence by design.',
   },
   {
-    id: '06',
+    id: '08',
     title: 'Aggregation and Uncertainty',
     body:
       'The app does not run a Monte Carlo engine. Instead, each module defines its own conservative range. Headline cost and economic impact are aggregated separately, which keeps the accounting explicit and avoids folding macroeconomic spillovers into the top-line war bill.',
     equations: [
-      'headlinePoint = military + humanitarian + reconstruction',
-      'headlineMin = militaryMin + humanitarianMin + reconstructionMin',
-      'headlineMax = militaryMax + humanitarianMax + reconstructionMax',
-      'economicImpactPoint = economic',
+      'headlinePoint = military + humanitarian + reconstruction + armaments',
+      'headlineMin = militaryMin + humanitarianMin + reconstructionMin + armamentsMin',
+      'headlineMax = militaryMax + humanitarianMax + reconstructionMax + armamentsMax',
+      'economicImpactPoint = economic (reported separately)',
     ],
     notes:
-      'Scenario durations are normalized archetypes rather than event-specific backtests: 0.2 years for skirmish, 1.5 years for conventional war, and 10 years for occupation at the point estimate.',
+      'Scenario durations are normalized archetypes rather than event-specific backtests: 0.15 years for air_campaign, 0.2 years for skirmish, 1.5 years for conventional war, and 10 years for occupation at point estimate. Armaments ranges are wider than other modules due to force-package composition uncertainty.',
   },
 ];
 
@@ -430,7 +467,7 @@ export default function MethodologyPage() {
         </div>
         <div className="grid gap-4 sm:grid-cols-3 max-w-lg">
           <StatBadge value="6" label="Live APIs" />
-          <StatBadge value="8" label="Static Datasets" />
+          <StatBadge value="12" label="Static Datasets" />
           <StatBadge value="5" label="Cost Modules" />
         </div>
       </header>
