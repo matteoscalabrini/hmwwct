@@ -95,7 +95,7 @@ export default function Home() {
                   className="h-full rounded-full transition-all duration-150"
                   style={{
                     width: `${progress}%`,
-                    background: 'linear-gradient(90deg, var(--accent-cyan), var(--accent-blue))',
+                    background: 'var(--accent-cyan)',
                   }}
                 />
               </div>

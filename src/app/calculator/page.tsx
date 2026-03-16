@@ -348,10 +348,10 @@ function CalculatorContent() {
       {/* ================================================================== */}
       {/* TOP SECTION: Map + Side Panel                                      */}
       {/* ================================================================== */}
-      <div className="flex min-h-[calc(100vh-5.5rem)] flex-col gap-4 px-3 py-3 sm:px-4 lg:flex-row lg:px-6 lg:py-5">
+      <div className="flex flex-col gap-4 px-3 py-3 sm:px-4 lg:flex-row lg:px-6 lg:py-5 lg:h-[calc(100vh-5.5rem)] lg:overflow-hidden">
 
         {/* --- MAP AREA --- */}
-        <div className="terminal-panel-strong relative min-h-[52vh] sm:min-h-[55vh] lg:min-h-0 flex-1 overflow-hidden scanlines">
+        <div className="relative min-h-[52vh] sm:min-h-[55vh] lg:min-h-0 flex-1 overflow-hidden scanlines" style={{ paddingTop: '30px' }}>
           <WorldMap
             aggressorCode={aggressorCode}
             targetCode={targetCode}
@@ -362,13 +362,11 @@ function CalculatorContent() {
 
           <div className="absolute top-2 left-2 sm:top-3 sm:left-3 pointer-events-none" style={{ zIndex: 2 }}>
             <div
-              className="terminal-panel-muted flex items-center px-2 py-1.5 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.18em]"
-              style={{
-                color: selectionMode === 'aggressor' ? 'var(--accent-indigo)' : 'var(--accent-amber)',
-              }}
+              className="flex items-center text-[10px] sm:text-xs font-semibold uppercase tracking-[0.18em]"
+              style={{ color: selectionMode === 'aggressor' ? 'var(--aggressor)' : 'var(--target)' }}
             >
               <span className="inline-block w-1 h-1 sm:w-1.5 sm:h-1.5 mr-1.5 sm:mr-2 animate-pulse-dot" style={{
-                background: selectionMode === 'aggressor' ? 'var(--accent-indigo)' : 'var(--accent-amber)',
+                background: selectionMode === 'aggressor' ? 'var(--aggressor)' : 'var(--target)',
               }} />
               <span className="hidden sm:block">
                 {selectionMode === 'aggressor' ? 'SELECT AGGRESSOR' : 'SELECT TARGET'}
@@ -386,16 +384,13 @@ function CalculatorContent() {
           )}
         </div>
 
-        <div
-          className="terminal-panel lg:w-[360px] xl:w-[400px] shrink-0 overflow-y-auto lg:self-stretch"
-        >
+        <div className="lg:w-[360px] xl:w-[400px] shrink-0 overflow-y-auto lg:self-stretch">
           <div className="space-y-4 sm:space-y-5 px-3 py-3 sm:px-4 sm:py-4">
 
             <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '16px' }}>
               <div className="flex items-center gap-2 mb-2">
                 <span
                   className="classification-label"
-                  style={{ color: 'var(--accent-cyan)', borderColor: 'var(--accent-cyan)' }}
                 >
                   CONTROL PANEL
                 </span>
@@ -555,7 +550,7 @@ function CalculatorContent() {
           <div className="mx-auto max-w-screen-2xl space-y-5">
 
             <div className="flex items-center gap-3 mb-2">
-              <span className="classification-label" style={{ color: 'var(--accent-red)', borderColor: 'var(--accent-red)' }}>
+              <span className="classification-label">
                 ANALYSIS COMPLETE
               </span>
               <div className="terminal-divider flex-1" />
@@ -563,7 +558,7 @@ function CalculatorContent() {
 
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
 
-              <div className="terminal-stat px-4 py-4" style={{ borderTop: '2px solid var(--accent-cyan)' }}>
+              <div className="terminal-stat px-4 py-4" style={{ borderTop: '3px solid var(--accent-cyan)' }}>
                 <p className="text-xs uppercase tracking-[0.18em] mb-2" style={{ color: 'var(--text-muted)' }}>TOTAL COST</p>
                 <p className="fs-number font-bold tabular-nums text-glow-cyan" style={{ color: 'var(--accent-cyan)' }}>
                   {formatCurrency(displayedPoint)}
@@ -573,7 +568,7 @@ function CalculatorContent() {
                 </p>
               </div>
 
-              <div className="terminal-stat px-4 py-4" style={{ borderTop: '2px solid var(--accent-amber)' }}>
+              <div className="terminal-stat px-4 py-4" style={{ borderTop: '3px solid var(--accent-amber)' }}>
                 <p className="text-xs uppercase tracking-[0.18em] mb-2" style={{ color: 'var(--text-muted)' }}>ECON IMPACT</p>
                 <p className="fs-number font-bold tabular-nums text-glow-amber" style={{ color: 'var(--accent-amber)' }}>
                   {formatCurrency(result.economicImpact.point)}
@@ -583,7 +578,7 @@ function CalculatorContent() {
                 </p>
               </div>
 
-              <div className="terminal-stat px-4 py-4" style={{ borderTop: '2px solid var(--accent-red)' }}>
+              <div className="terminal-stat px-4 py-4" style={{ borderTop: '3px solid var(--accent-red)' }}>
                 <p className="text-xs uppercase tracking-[0.18em] mb-2" style={{ color: 'var(--text-muted)' }}>DISPLACED</p>
                 <p className="fs-number font-bold tabular-nums text-glow-red" style={{ color: 'var(--accent-red)' }}>
                   {formatNumber(result.humanToll.displacedPersonsPoint)}
@@ -594,7 +589,7 @@ function CalculatorContent() {
               </div>
             </div>
 
-            <div className="terminal-panel p-4 sm:p-5">
+            <div className="p-4 sm:p-5">
               <div className="mb-5 flex flex-wrap gap-1 border-b" style={{ borderColor: 'var(--border)' }}>
                 {TABS.map((tab) => (
                   <button

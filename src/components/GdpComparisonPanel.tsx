@@ -126,9 +126,7 @@ export function GdpComparisonPanel({ totalCost, targetName }: GdpComparisonPanel
 
       <div
         className="terminal-panel-muted px-4 py-4 space-y-2"
-        style={{
-          background: 'linear-gradient(180deg, rgba(18, 33, 27, 0.9), rgba(11, 20, 16, 0.98))',
-        }}
+        style={{ background: 'var(--surface-muted)' }}
       >
         <div className="flex items-center justify-between text-xs">
           <span style={{ color: 'var(--text-secondary)' }}>

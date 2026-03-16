@@ -17,7 +17,7 @@ export function DataFreshnessIndicator({ dataFreshness, hasStaticFallback }: Dat
   ].filter(Boolean) as string[];
 
   return (
-    <div className="terminal-panel-muted flex flex-wrap items-center gap-2 px-3 py-2 text-xs" style={{ color: 'var(--text-muted)' }}>
+    <div className="flex flex-wrap items-center gap-2 px-1 py-1 text-xs" style={{ color: 'var(--text-muted)' }}>
       <span className="terminal-kicker">Data</span>
       <Badge variant={hasStaticFallback ? 'static' : 'live'}>
         {hasStaticFallback ? 'Partial Static' : 'Live API'}

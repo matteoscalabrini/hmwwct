@@ -42,36 +42,36 @@ const FlagSingleValue = (props: SingleValueProps<CountryOption>) => (
 const selectStyles: StylesConfig<CountryOption> = {
   control: (base, state) => ({
     ...base,
-    background: 'linear-gradient(180deg, rgba(18, 33, 27, 0.96), rgba(9, 17, 13, 0.98))',
-    border: `1px solid ${state.isFocused ? 'var(--accent-cyan)' : 'var(--border)'}`,
-    borderRadius: '0.4rem',
-    boxShadow: state.isFocused ? '0 0 0 1px rgba(84, 245, 214, 0.25), 0 0 24px rgba(84, 245, 214, 0.08)' : 'none',
+    background: '#0a0a0a',
+    border: `1px solid ${state.isFocused ? '#ffffff' : '#ffffff'}`,
+    borderRadius: 0,
+    boxShadow: 'none',
     color: 'var(--text)',
     fontSize: '12px',
     fontFamily: 'JetBrains Mono, monospace',
     letterSpacing: '0.05em',
     padding: '4px 6px',
     minHeight: '46px',
-    '&:hover': { borderColor: 'var(--border-bright)' },
+    '&:hover': { borderColor: '#ffffff' },
   }),
   menu: (base) => ({
     ...base,
-    background: 'linear-gradient(180deg, rgba(18, 33, 27, 0.98), rgba(9, 17, 13, 1))',
-    border: '1px solid var(--border-bright)',
-    borderRadius: '0.4rem',
+    background: '#0a0a0a',
+    border: '1px solid #ffffff',
+    borderRadius: 0,
     zIndex: 100,
     overflow: 'hidden',
-    boxShadow: '0 24px 60px rgba(0, 0, 0, 0.4)',
+    boxShadow: '0 16px 40px rgba(0, 0, 0, 0.8)',
   }),
   menuList: (base) => ({ ...base, padding: '4px' }),
   option: (base, state) => ({
     ...base,
-    background: state.isFocused ? 'rgba(84, 245, 214, 0.09)' : 'transparent',
-    color: state.isFocused ? 'var(--text)' : 'var(--text-secondary)',
+    background: state.isFocused ? '#ffffff' : 'transparent',
+    color: state.isFocused ? '#000000' : '#ffffff',
     fontSize: '12px',
     fontFamily: 'JetBrains Mono, monospace',
     cursor: 'pointer',
-    borderRadius: '0.35rem',
+    borderRadius: 0,
     margin: '0',
   }),
   singleValue: (base) => ({ ...base, color: 'var(--text)' }),
@@ -79,7 +79,7 @@ const selectStyles: StylesConfig<CountryOption> = {
   input: (base) => ({ ...base, color: 'var(--text)', fontSize: '12px' }),
   indicatorSeparator: () => ({ display: 'none' }),
   dropdownIndicator: (base) => ({ ...base, color: 'var(--text-muted)', padding: '4px 8px' }),
-  loadingIndicator: (base) => ({ ...base, color: 'var(--accent-cyan)' }),
+  loadingIndicator: (base) => ({ ...base, color: '#ffffff' }),
   noOptionsMessage: (base) => ({ ...base, color: 'var(--text-muted)', fontSize: '12px' }),
 };
 
@@ -107,7 +107,7 @@ export function CountrySelector({ aggressorCode, targetCode, onAggressorChange, 
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <label className="block text-xs font-semibold uppercase tracking-[0.22em]" style={{ color: 'var(--accent-indigo)' }}>
+        <label className="block text-xs font-semibold uppercase tracking-[0.22em]" style={{ color: 'var(--aggressor)' }}>
           AGGRESSOR
         </label>
         <Select
@@ -126,7 +126,7 @@ export function CountrySelector({ aggressorCode, targetCode, onAggressorChange, 
       </div>
 
       <div className="space-y-2">
-        <label className="block text-xs font-semibold uppercase tracking-[0.22em]" style={{ color: 'var(--accent-red)' }}>
+        <label className="block text-xs font-semibold uppercase tracking-[0.22em]" style={{ color: 'var(--target)' }}>
           TARGET
         </label>
         <Select

@@ -105,38 +105,38 @@ export function BudgetReallocation({
             <XAxis
               type="number"
               tickFormatter={(v: number) => formatCurrency(v)}
-              tick={{ fill: '#73917f', fontSize: 11, fontFamily: 'JetBrains Mono, monospace' }}
-              axisLine={{ stroke: '#1b352b' }}
+              tick={{ fill: '#ffffff', fontSize: 11, fontFamily: 'JetBrains Mono, monospace' }}
+              axisLine={{ stroke: '#ffffff' }}
               tickLine={false}
             />
             <YAxis
               type="category"
               dataKey="name"
               width={120}
-              tick={{ fill: '#b4d6c4', fontSize: 11, fontFamily: 'JetBrains Mono, monospace' }}
+              tick={{ fill: '#ffffff', fontSize: 11, fontFamily: 'JetBrains Mono, monospace' }}
               axisLine={false}
               tickLine={false}
             />
             <Tooltip
               contentStyle={{
-                background: '#0c1512',
-                border: '1px solid #2d5d49',
-                borderRadius: 6,
+                background: '#000',
+                border: '1px solid #ffffff',
+                borderRadius: 0,
                 fontSize: 12,
                 fontFamily: 'JetBrains Mono, monospace',
               }}
-              labelStyle={{ color: '#effaf4', fontFamily: 'JetBrains Mono, monospace' }}
-              itemStyle={{ color: '#effaf4' }}
+              labelStyle={{ color: '#ffffff', fontFamily: 'JetBrains Mono, monospace' }}
+              itemStyle={{ color: '#ffffff' }}
               formatter={(value: number | undefined) => formatCurrency(value ?? 0)}
             />
             <Legend
               iconType="square"
               iconSize={10}
-              wrapperStyle={{ fontSize: 11, color: '#73917f', paddingTop: 8 }}
+              wrapperStyle={{ fontSize: 11, color: '#ffffff', paddingTop: 8 }}
             />
             <Bar dataKey="Remaining" stackId="a" radius={[0, 0, 0, 0]}>
               {chartData.map((_, i) => (
-                <Cell key={i} fill="#1f3b30" />
+                <Cell key={i} fill="#1a1a1a" />
               ))}
             </Bar>
             <Bar dataKey="War Cost" stackId="a" radius={[0, 4, 4, 0]}>

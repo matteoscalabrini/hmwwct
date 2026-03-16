@@ -218,12 +218,13 @@ function IconSignalField({
       </div>
       <div
         className="grid grid-cols-6 sm:grid-cols-9 gap-2 p-3"
-        style={{ border: '1px solid var(--border)', background: 'rgba(255,255,255,0.02)' }}
+        style={{ border: '1px solid var(--border)', background: 'var(--surface)' }}
       >
         {Array.from({ length: ICON_SLOTS }, (_, index) => {
           const isFilled = index < filledCount;
-          const color = tone === 'bright' ? 'var(--green)' : 'rgba(232,232,232,0.7)';
-          const opacity = isFilled ? 1 : tone === 'bright' ? 0.12 : 0.1;
+          const color = isFilled
+            ? (tone === 'bright' ? 'var(--green)' : '#ffffff')
+            : '#333333';
 
           return (
             <div
@@ -231,7 +232,6 @@ function IconSignalField({
               className="flex items-center justify-center"
               style={{
                 minHeight: '18px',
-                opacity,
                 filter: isFilled && tone === 'bright' ? 'drop-shadow(0 0 8px rgba(74,222,128,0.35))' : 'none',
               }}
             >

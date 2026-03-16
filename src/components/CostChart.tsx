@@ -23,29 +23,29 @@ export function CostChart({ result }: CostChartProps) {
   }));
 
   const tooltipStyle = {
-    background: '#0c1512',
-    border: '1px solid #2d5d49',
-    borderRadius: 6,
+    background: '#000',
+    border: '1px solid #ffffff',
+    borderRadius: 0,
     fontSize: 12,
-    color: '#effaf4',
-    fontFamily: 'JetBrains Mono, monospace',
+    color: '#ffffff',
+    fontFamily: 'IBM Plex Mono, JetBrains Mono, monospace',
   };
 
   return (
-    <div className="terminal-panel space-y-4 px-5 py-5">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
         <p className="terminal-kicker" style={{ color: 'var(--accent-cyan)' }}>
           Cost Distribution
         </p>
-        <div className="flex overflow-hidden rounded-full border" style={{ borderColor: 'var(--border)' }}>
+        <div className="flex border" style={{ borderColor: 'var(--border)' }}>
           {(['bar', 'pie'] as ChartView[]).map((v) => (
             <button
               key={v}
               onClick={() => setView(v)}
               className="px-3 py-1.5 text-xs font-medium uppercase tracking-[0.18em] transition-colors"
               style={{
-                background: view === v ? 'rgba(84, 245, 214, 0.12)' : 'transparent',
-                color: view === v ? 'var(--accent-cyan)' : 'var(--text-secondary)',
+                background: view === v ? '#ffffff' : 'transparent',
+                color: view === v ? '#000000' : '#ffffff',
               }}
             >
               {v}
@@ -60,14 +60,14 @@ export function CostChart({ result }: CostChartProps) {
             <XAxis
               type="number"
               tickFormatter={(v) => formatCurrency(v)}
-              tick={{ fontSize: 10, fill: '#73917f', fontFamily: 'JetBrains Mono, monospace' }}
+              tick={{ fontSize: 10, fill: '#ffffff', fontFamily: 'IBM Plex Mono, JetBrains Mono, monospace' }}
               axisLine={false}
               tickLine={false}
             />
             <YAxis
               type="category"
               dataKey="name"
-              tick={{ fontSize: 10, fill: '#b4d6c4', fontFamily: 'JetBrains Mono, monospace' }}
+              tick={{ fontSize: 10, fill: '#ffffff', fontFamily: 'IBM Plex Mono, JetBrains Mono, monospace' }}
               axisLine={false}
               tickLine={false}
               width={100}
@@ -75,10 +75,10 @@ export function CostChart({ result }: CostChartProps) {
             <Tooltip
               formatter={(v) => [formatCurrency(Number(v)), 'Point est.']}
               contentStyle={tooltipStyle}
-              itemStyle={{ color: '#effaf4' }}
-              labelStyle={{ color: '#73917f' }}
+              itemStyle={{ color: '#ffffff' }}
+              labelStyle={{ color: '#ffffff' }}
               wrapperStyle={{ zIndex: 10000 }}
-              cursor={{ fill: 'rgba(84, 245, 214, 0.05)' }}
+              cursor={{ fill: 'rgba(255,255,255,0.06)' }}
             />
             <Bar dataKey="value" isAnimationActive radius={[0, 4, 4, 0]}>
               {data.map((entry, i) => <Cell key={i} fill={entry.color} />)}
@@ -105,7 +105,7 @@ export function CostChart({ result }: CostChartProps) {
             </Pie>
             <Legend
               formatter={(value) => (
-                <span style={{ fontSize: 10, color: '#73917f' }}>
+                <span style={{ fontSize: 10, color: '#ffffff' }}>
                   {value}
                 </span>
               )}
@@ -113,8 +113,8 @@ export function CostChart({ result }: CostChartProps) {
             <Tooltip
               formatter={(v) => [formatCurrency(Number(v)), 'Point est.']}
               contentStyle={tooltipStyle}
-              itemStyle={{ color: '#effaf4' }}
-              labelStyle={{ color: '#73917f' }}
+              itemStyle={{ color: '#ffffff' }}
+              labelStyle={{ color: '#ffffff' }}
               wrapperStyle={{ zIndex: 10000 }}
             />
           </PieChart>

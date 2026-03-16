@@ -12,7 +12,7 @@ interface ScenarioSelectorProps {
 const SEVERITY: Record<string, { color: string; level: number }> = {
   precision_strike: { color: 'var(--accent-blue)',    level: 1 },
   skirmish:         { color: 'var(--accent-amber)',   level: 2 },
-  conventional:     { color: '#f97316',               level: 3 },
+  conventional:     { color: 'var(--accent-amber)',   level: 3 },
   occupation:       { color: 'var(--accent-red)',     level: 4 },
 };
 
@@ -26,7 +26,7 @@ function ThreatBars({ level, color, active }: { level: number; color: string; ac
             width: 4,
             height: `${(i / 4) * 100}%`,
             background: i <= level ? color : 'var(--border)',
-            opacity: active ? 1 : 0.4,
+            opacity: 1,
             transition: 'all 0.15s',
             borderRadius: 999,
           }}
@@ -59,13 +59,13 @@ export function ScenarioSelector({ value, onChange }: ScenarioSelectorProps) {
             style={{
               padding: '14px',
               borderColor: selected ? sev.color : 'var(--border)',
-              background: selected ? 'linear-gradient(180deg, rgba(18, 33, 27, 0.95), rgba(14, 26, 21, 1))' : undefined,
+              background: selected ? '#111111' : undefined,
               boxShadow: selected ? `0 0 0 1px ${sev.color}, 0 0 24px color-mix(in srgb, ${sev.color} 18%, transparent)` : undefined,
             }}
             onMouseEnter={(e) => {
               if (!selected) {
                 e.currentTarget.style.borderColor = sev.color;
-                e.currentTarget.style.background = 'rgba(84, 245, 214, 0.04)';
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
               }
             }}
             onMouseLeave={(e) => {
