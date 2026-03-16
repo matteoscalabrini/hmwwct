@@ -33,7 +33,7 @@
 
 html,
 body {
-  height: 100%;
+  min-height: 100%;
   margin: 0;
   padding: 0;
 }
@@ -47,6 +47,7 @@ body {
     radial-gradient(circle at top left, rgba(84, 245, 214, 0.08), transparent 30%),
     radial-gradient(circle at top right, rgba(214, 255, 107, 0.08), transparent 24%),
     linear-gradient(180deg, #08110d 0%, var(--bg) 45%, #030705 100%);
+  background-attachment: fixed;
   color: var(--text);
   font-family: var(--font-jetbrains), monospace;
   font-size: var(--fs-body);
@@ -438,14 +439,155 @@ main {
   animation: blink 1s step-end infinite;
 }
 
+/* ------------------------------------------------------------------ */
+/*  Mobile-first responsive design                                    */
+/* ------------------------------------------------------------------ */
+
+:root {
+  /* Spacing scale */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+
+  /* Touch target sizing */
+  --touch-min-height: 44px;
+  --touch-min-width: 44px;
+
+  /* Mobile typography */
+  --fs-body-mobile: 0.95rem;
+  --fs-ui-mobile: 0.82rem;
+  --fs-kicker-mobile: 0.65rem;
+
+  /* Breakpoints */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+}
+
+/* Touch-friendly interactive elements */
+button, a, input, select, textarea, [role="button"] {
+  touch-action: manipulation;
+}
+
+/* Mobile-first responsive typography */
 @media (max-width: 768px) {
   :root {
-    --fs-body: 0.91rem;
-    --fs-ui: 0.76rem;
-    --fs-number: clamp(2rem, 12vw, 3.2rem);
+    --fs-body: var(--fs-body-mobile);
+    --fs-ui: var(--fs-ui-mobile);
+    --fs-kicker: var(--fs-kicker-mobile);
+    --fs-number: clamp(1.75rem, 8vw, 2.5rem);
+    --fs-title: clamp(1.25rem, 6vw, 1.8rem);
+    --fs-display: clamp(2rem, 10vw, 3.5rem);
   }
 
   .grid-bg {
     background-size: 24px 24px;
+  }
+
+  /* Touch-friendly button sizing */
+  .terminal-button {
+    min-height: var(--touch-min-height);
+    padding: 0.65rem 1rem;
+    font-size: var(--fs-ui-mobile);
+  }
+
+  /* Compact tabs so they don't wrap on small phones */
+  .terminal-tab {
+    padding: 0.6rem 0.6rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+  }
+
+  /* Stack layout on mobile */
+  .flex-col-mobile {
+    flex-direction: column !important;
+  }
+
+  /* Full width on mobile */
+  .w-full-mobile {
+    width: 100% !important;
+  }
+
+  /* Responsive spacing utilities */
+  .px-4-mobile {
+    padding-left: var(--space-md) !important;
+    padding-right: var(--space-md) !important;
+  }
+
+  .py-3-mobile {
+    padding-top: var(--space-sm) !important;
+    padding-bottom: var(--space-sm) !important;
+  }
+
+  /* Scrollable containers for wide content */
+  .overflow-x-auto-mobile {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* Responsive map height on mobile */
+  .min-h-map-mobile {
+    min-height: 300px !important;
+  }
+
+  /* Adjust card/grid spacing on mobile */
+  .space-y-3-mobile > * + * {
+    margin-top: var(--space-md) !important;
+  }
+
+  /* Responsive font sizes for numbers */
+  .fs-number {
+    font-size: clamp(1.5rem, 7vw, 2.2rem) !important;
+  }
+}
+
+/* Phone-only display utilities — max-width: 639px stays below Tailwind's sm: (640px)
+   so sm: overrides are never clobbered by !important here */
+@media (max-width: 639px) {
+  .hidden-mobile {
+    display: none !important;
+  }
+
+  .visible-mobile {
+    display: block !important;
+  }
+}
+
+/* Tablet and up */
+@media (min-width: 769px) {
+  .hidden-tablet-up {
+    display: none !important;
+  }
+}
+
+/* Desktop and up */
+@media (min-width: 1025px) {
+  .hidden-desktop-up {
+    display: none !important;
+  }
+}
+
+/* Large desktop */
+@media (min-width: 1281px) {
+  .hidden-large-up {
+    display: none !important;
+  }
+}
+
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
   }
 }

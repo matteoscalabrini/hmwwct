@@ -348,10 +348,10 @@ function CalculatorContent() {
       {/* ================================================================== */}
       {/* TOP SECTION: Map + Side Panel                                      */}
       {/* ================================================================== */}
-      <div className="flex min-h-[calc(100vh-5.5rem)] flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:px-8 lg:py-6">
+      <div className="flex min-h-[calc(100vh-5.5rem)] flex-col gap-4 px-3 py-3 sm:px-4 lg:flex-row lg:px-6 lg:py-5">
 
         {/* --- MAP AREA --- */}
-        <div className="terminal-panel-strong relative min-h-[58vh] flex-1 overflow-hidden scanlines lg:min-h-0">
+        <div className="terminal-panel-strong relative min-h-[52vh] sm:min-h-[55vh] lg:min-h-0 flex-1 overflow-hidden scanlines">
           <WorldMap
             aggressorCode={aggressorCode}
             targetCode={targetCode}
@@ -360,22 +360,24 @@ function CalculatorContent() {
             totalCost={result?.total.point}
           />
 
-          <div className="absolute top-3 left-3 pointer-events-none" style={{ zIndex: 2 }}>
+          <div className="absolute top-2 left-2 sm:top-3 sm:left-3 pointer-events-none" style={{ zIndex: 2 }}>
             <div
-              className="terminal-panel-muted flex items-center px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em]"
+              className="terminal-panel-muted flex items-center px-2 py-1.5 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.18em]"
               style={{
                 color: selectionMode === 'aggressor' ? 'var(--accent-indigo)' : 'var(--accent-amber)',
               }}
             >
-              <span className="inline-block w-1.5 h-1.5 mr-2 animate-pulse-dot" style={{
+              <span className="inline-block w-1 h-1 sm:w-1.5 sm:h-1.5 mr-1.5 sm:mr-2 animate-pulse-dot" style={{
                 background: selectionMode === 'aggressor' ? 'var(--accent-indigo)' : 'var(--accent-amber)',
               }} />
-              {selectionMode === 'aggressor' ? 'SELECT AGGRESSOR' : 'SELECT TARGET'}
+              <span className="hidden sm:block">
+                {selectionMode === 'aggressor' ? 'SELECT AGGRESSOR' : 'SELECT TARGET'}
+              </span>
             </div>
           </div>
 
           {result && (
-            <div className="absolute bottom-3 left-3" style={{ zIndex: 2 }}>
+            <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3" style={{ zIndex: 2 }}>
               <DataFreshnessIndicator
                 dataFreshness={result.dataFreshness}
                 hasStaticFallback={result.dataFreshness.worldBank.toLowerCase().includes('static fallback')}
@@ -385,12 +387,9 @@ function CalculatorContent() {
         </div>
 
         <div
-          className="terminal-panel lg:w-[360px] xl:w-[400px] shrink-0 overflow-y-auto"
-          style={{
-            minHeight: '100%',
-          }}
+          className="terminal-panel lg:w-[360px] xl:w-[400px] shrink-0 overflow-y-auto lg:self-stretch"
         >
-          <div className="space-y-6 p-4 sm:p-5">
+          <div className="space-y-4 sm:space-y-5 px-3 py-3 sm:px-4 sm:py-4">
 
             <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '16px' }}>
               <div className="flex items-center gap-2 mb-2">
@@ -535,7 +534,7 @@ function CalculatorContent() {
         >
           <span
             className="font-display uppercase tracking-[0.22em]"
-            style={{ color: 'var(--accent-cyan)', fontSize: '2rem' }}
+            style={{ color: 'var(--accent-cyan)', fontSize: 'clamp(1rem, 4vw, 2rem)' }}
           >
             COST ANALYSIS
           </span>

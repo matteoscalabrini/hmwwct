@@ -330,12 +330,12 @@ const WorldMap: React.FC<WorldMapProps> = ({
     <div
       ref={containerRef}
       className="relative w-full h-full select-none"
-      style={{ background: 'var(--bg)' }}
+      style={{ background: '#07100d' }}
     >
       <svg
         ref={svgRef}
         viewBox="0 0 960 500"
-        preserveAspectRatio="xMidYMid slice"
+        preserveAspectRatio="xMidYMid meet"
         className="w-full h-full"
         style={{ display: 'block' }}
       >
