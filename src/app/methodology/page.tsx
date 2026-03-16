@@ -300,6 +300,42 @@ const MODEL_SECTIONS = [
   },
 ];
 
+const CALIBRATION_GAPS = [
+  {
+    id: '01',
+    title: 'Defensive intercept costs — absent from model',
+    finding: 'CSIS reported $1.7B in intercept costs in the first 100 hours — 46% of total direct spending. Shooting down 700 ballistic missiles and 3,600 drones costs as much as the offensive strike itself. This cost category did not exist anywhere in the calculator.',
+    fix: 'Added a Defensive Intercepts line item to the armaments module. Incoming threat volume scales with target military budget × scenario threat rate. Average intercept cost $395K calibrated from CSIS Iran 2026 data (mix of SM-3 at $10M, Patriot PAC-3 at $4M, SM-2 at $2M, Iron Dome at $80K).',
+    color: 'var(--accent-red)',
+  },
+  {
+    id: '02',
+    title: 'No air_campaign scenario — conflict fell in a gap',
+    finding: 'The four existing scenarios were precision_strike (days), skirmish (weeks), conventional (months with ground forces), occupation (years). Iran 2026 was none of these: a sustained air campaign lasting weeks to months with no ground component.',
+    fix: 'Added air_campaign as a fifth scenario. Duration 18 days – 6 months (point 55 days). Watson anchor $100M–$1.2B/day (Kosovo–Iran 2026 range). Displacement multiplier 4%, GDP impact 15%/year, capital flight 7%/year. Force package: 80 fighters, 400 cruise missiles, 5,000 precision bombs, no ground forces.',
+    color: 'var(--accent-amber)',
+  },
+  {
+    id: '03',
+    title: 'Humanitarian model built for slow conflicts — not air campaigns',
+    finding: 'The displacement-based model produced $14M for USA→Iran precision_strike. The real humanitarian cost by Day 17 was in the billions: 1,444 killed, 18,551 injured, 3.2 million displaced. No direct casualty cost existed in the model at all.',
+    fix: 'Added a Direct Casualties line item using the WHO human-capital VSL method (GDP per capita × 100). Daily casualty rates by scenario calibrated to Iran 2026 (1.0 killed/M/day for air_campaign) and Iraq 2003 (5.0/M/day for conventional). Casualties now included in the humanitarian total.',
+    color: 'var(--accent-amber)',
+  },
+  {
+    id: '04',
+    title: 'Capital flight rates not calibrated for short air campaigns',
+    finding: 'CAPITAL_FLIGHT_PCT had entries for skirmish, conventional, and occupation but defaulted to 4% for precision_strike and the missing air_campaign. Iran\'s banking system was frozen and oil exports halted within days — a 7%+ flight rate, not 4%.',
+    fix: 'Added explicit entries: air_campaign = 7%/year (banking freeze, oil export halt), precision_strike = 3%/year (short duration limits flight but investor panic is real).',
+    color: 'var(--accent-cyan)',
+  },
+];
+
+const CALIBRATION_RESULTS = [
+  { scenario: 'precision_strike (18d)', before: '$13.30B', after: '$13.75B', real: '$14–16.5B (Day 13–17)', match: true },
+  { scenario: 'air_campaign (55d)', before: '—', after: '$58.17B', real: '$65B projection (Penn Wharton)', match: true },
+];
+
 const AUDIT_NOTES = [
   'Import-time JSON validation is enforced in validated.ts for bilateral trade pairs and commodity producer datasets, including schema shape, ISO alpha-3 keys, numeric bounds, and duplicate-pair normalization.',
   'The repository currently ships 75 bilateral trade pairs, 25 country displacement cases, 8 regional displacement defaults, 84 SIPRI entries, 13 static fallback countries, 8 sanctions regimes, and 32 commodity shock records.',
@@ -395,7 +431,7 @@ export default function MethodologyPage() {
         <div className="grid gap-4 sm:grid-cols-3 max-w-lg">
           <StatBadge value="6" label="Live APIs" />
           <StatBadge value="8" label="Static Datasets" />
-          <StatBadge value="4" label="Cost Modules" />
+          <StatBadge value="5" label="Cost Modules" />
         </div>
       </header>
 
@@ -659,6 +695,104 @@ export default function MethodologyPage() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="space-y-6">
+        <SectionHeader
+          title="Real-World Calibration — Operation Epic Fury (Iran, 2026)"
+          summary="On February 28, 2026, the United States and Israel launched a sustained air campaign against Iran. By Day 17, partial cost breakdowns from the Pentagon and CSIS were publicly available — a rare opportunity to validate the model against a live conflict and identify structural gaps."
+          accentColor="var(--accent-red)"
+        />
+
+        <div className="terminal-panel grid gap-0 overflow-hidden lg:grid-cols-[1fr_1fr]">
+          <div className="space-y-4 p-6 sm:p-8" style={{ borderRight: '1px solid var(--border)' }}>
+            <p className="terminal-kicker" style={{ color: 'var(--accent-red)' }}>
+              Conflict Profile
+            </p>
+            <div className="space-y-2 text-sm leading-7" style={{ color: 'var(--text-secondary)' }}>
+              <p>1,600+ sorties. 5,500+ targets struck. 160+ Tomahawk cruise missiles in the opening salvo. Iran responded with ~700 ballistic missiles and ~3,600 drones fired at US and Israeli targets in 17 days.</p>
+              <p>Nature: sustained air + naval campaign. No US or Israeli ground forces inside Iran. Duration at calibration point: 17 days ongoing.</p>
+            </div>
+            <div className="mt-4 space-y-1 font-mono text-xs" style={{ color: 'var(--text-muted)' }}>
+              <p>Day 1–6 direct cost: $11.3B (Pentagon, Senate briefing)</p>
+              <p>Day 1–13 direct cost: ~$14–16.5B (CSIS / Foreign Policy)</p>
+              <p>&lt;2 month projection: $65B (Penn Wharton Budget Model)</p>
+              <p>Intercept costs: $1.7B in first 100 hrs (CSIS)</p>
+            </div>
+          </div>
+          <div className="space-y-4 p-6 sm:p-8">
+            <p className="terminal-kicker" style={{ color: 'var(--accent-red)' }}>
+              Key Discovery: Cost Is Two-Sided
+            </p>
+            <p className="text-sm leading-7" style={{ color: 'var(--text-secondary)' }}>
+              The CSIS breakdown of the first 100 hours revealed that <span style={{ color: 'var(--text)' }}>defensive intercept costs ($1.7B, 46%) exceeded offensive strike munitions ($1.5B, 40%)</span> in the opening phase. The original model only priced what the aggressor spends attacking. The cost of neutralizing the counter-attack was entirely absent.
+            </p>
+            <div className="mt-2 font-mono text-xs space-y-1" style={{ color: 'var(--accent-cyan)' }}>
+              <p>offensive munitions: $1.5B (40%)</p>
+              <p>defensive intercepts: $1.7B (46%)</p>
+              <p>equipment losses: $359M (10%)</p>
+              <p>operations & sustainment: $196M (5%)</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <p className="terminal-kicker" style={{ color: 'var(--accent-red)' }}>
+            Four Gaps Found — Four Fixes Applied
+          </p>
+          <div className="grid gap-4 lg:grid-cols-2">
+            {CALIBRATION_GAPS.map((gap) => (
+              <div key={gap.id} className="terminal-panel space-y-3 p-6">
+                <div className="flex items-center gap-3">
+                  <span
+                    className="font-mono text-xs font-bold px-2 py-0.5 border"
+                    style={{ color: gap.color, borderColor: gap.color }}
+                  >
+                    GAP {gap.id}
+                  </span>
+                  <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
+                    {gap.title}
+                  </p>
+                </div>
+                <p className="text-xs leading-6" style={{ color: 'var(--text-secondary)' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>Found: </span>{gap.finding}
+                </p>
+                <p className="text-xs leading-6" style={{ color: 'var(--text-secondary)' }}>
+                  <span style={{ color: gap.color }}>Fix: </span>{gap.fix}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="terminal-panel overflow-hidden">
+          <div className="px-6 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
+            <p className="terminal-kicker" style={{ color: 'var(--accent-red)' }}>
+              Pre / Post Results vs Real Data
+            </p>
+          </div>
+          <div className="grid grid-cols-4 px-6 py-3 text-xs font-semibold uppercase tracking-[0.12em]" style={{ color: 'var(--text-muted)', borderBottom: '1px solid var(--border)' }}>
+            <span>Scenario</span>
+            <span>Before</span>
+            <span>After</span>
+            <span>Real</span>
+          </div>
+          {CALIBRATION_RESULTS.map((row, i) => (
+            <div
+              key={row.scenario}
+              className="grid grid-cols-4 px-6 py-4 text-sm items-center"
+              style={{ borderBottom: i < CALIBRATION_RESULTS.length - 1 ? '1px solid var(--border)' : 'none' }}
+            >
+              <span className="font-mono text-xs" style={{ color: 'var(--accent-cyan)' }}>{row.scenario}</span>
+              <span style={{ color: 'var(--text-muted)' }}>{row.before}</span>
+              <span style={{ color: 'var(--text)' }}>{row.after}</span>
+              <span style={{ color: 'var(--accent-emerald)' }}>{row.real}</span>
+            </div>
+          ))}
+          <div className="px-6 py-4 text-xs leading-6" style={{ color: 'var(--text-muted)', borderTop: '1px solid var(--border)' }}>
+            Lesson: the pre-fix model reached a close headline figure for the wrong reasons — humanitarian was 200× too low while force-package procurement was likely too high. Sub-category composition matters as much as headline totals. A model that gets the right answer for wrong reasons will fail on the next conflict with a different error profile.
+          </div>
         </div>
       </section>
 
