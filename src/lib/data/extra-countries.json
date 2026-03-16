@@ -17,6 +17,21 @@
       "population": 23600000
     },
     {
+      "cca2": "PS",
+      "cca3": "PSE",
+      "name": { "common": "Palestine", "official": "State of Palestine" },
+      "flags": {
+        "png": "https://flagcdn.com/w320/ps.png",
+        "svg": "https://flagcdn.com/ps.svg"
+      },
+      "region": "Asia",
+      "subregion": "Western Asia",
+      "latlng": [31.9, 35.2],
+      "area": 6220,
+      "unMember": false,
+      "population": 5483450
+    },
+    {
       "cca2": "XK",
       "cca3": "XKX",
       "name": { "common": "Kosovo", "official": "Republic of Kosovo" },

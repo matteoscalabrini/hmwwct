@@ -30,7 +30,8 @@
     "CHN": { "idpRatio": 0.01, "refugeeRatio": 0.001, "note": "Estimated — no major cross-border displacement in recent decades." },
     "TWN": { "idpRatio": 0.08, "refugeeRatio": 0.15, "note": "Island — heavy refugee outflow expected; IDP limited by geography." },
     "KOR": { "idpRatio": 0.05, "refugeeRatio": 0.10, "note": "Peninsula geography, significant south-to-north and civilian movement." },
-    "ISR": { "idpRatio": 0.10, "refugeeRatio": 0.15, "note": "2023-2024 Gaza conflict data informing estimate." }
+    "ISR": { "idpRatio": 0.10, "refugeeRatio": 0.15, "note": "2023-2024 Gaza conflict data informing estimate." },
+    "PSE": { "idpRatio": 0.62, "refugeeRatio": 0.18, "note": "Gaza 2023-2024: ~1.9M of 2.3M Gaza population internally displaced (83% IDP rate in Gaza strip); ~90K fled to Egypt/Jordan. West Bank figures lower. Blended ratio across Gaza+WB: OCHA 2024." }
   },
   "regionalDefaults": {
     "Middle East & North Africa": { "idpRatio": 0.15, "refugeeRatio": 0.08 },

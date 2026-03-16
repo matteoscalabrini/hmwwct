@@ -126,6 +126,15 @@
       "tradeGdpPct": 100.0,
       "dataYear": 2023,
       "source": "Taiwan DGBAS (Directorate-General of Budget, Accounting and Statistics) — not in World Bank as independent state"
+    },
+    "PSE": {
+      "gdp": null,
+      "population": 5483450,
+      "militaryPctGdp": 2.8,
+      "militaryBudgetUsd": 500000000,
+      "tradeGdpPct": 65.0,
+      "dataYear": 2022,
+      "source": "World Bank GDP available live. Military: Palestinian Authority Security Forces (PASF) annual budget ~$500M (PA Ministry of Finance 2022); excludes non-state armed groups. Trade: World Bank NE.TRD.GNFS.ZS."
     }
   }
 }
