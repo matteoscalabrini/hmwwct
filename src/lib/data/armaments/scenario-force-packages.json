@@ -1,0 +1,145 @@
+{
+  "description": "Typical force package compositions by conflict scenario type. Units = number of systems deployed/expended over the conflict duration. Calibrated against: Iraq 2003 (precision_strike phase), Ukraine 2022-present (conventional_war), Gulf War 1991, Nagorno-Karabakh 2020 (skirmish), Kosovo 1999 (air_campaign).",
+  "source": "DoD After-Action Reports; GAO-24-106649; RAND conflict modelling; IISS armed conflict database",
+  "scenarios": {
+    "precision_strike": {
+      "label": "Precision Strike",
+      "description": "Standoff attack, no sustained ground engagement. Air and naval platforms.",
+      "durationDaysTypical": 3,
+      "forcePackage": {
+        "cruise_missile": 120,
+        "short_range_missile": 40,
+        "precision_bomb": 300,
+        "stealth_fighter": 6,
+        "fighter_aircraft": 20,
+        "tactical_drone": 15,
+        "frigate": 2
+      },
+      "munitionsConsumptionPerDay": {
+        "cruise_missile": 15,
+        "precision_bomb": 80,
+        "short_range_missile": 8
+      }
+    },
+    "border_skirmish": {
+      "label": "Border Skirmish",
+      "description": "Short, localised ground and air engagement. Brigade-level. Days to weeks.",
+      "durationDaysTypical": 14,
+      "forcePackage": {
+        "main_battle_tank": 80,
+        "infantry_fighting_vehicle": 200,
+        "armoured_personnel_carrier": 150,
+        "self_propelled_artillery": 40,
+        "fighter_aircraft": 24,
+        "attack_helicopter": 12,
+        "tactical_drone": 30,
+        "atgm": 400,
+        "man_portable_sam": 200,
+        "shell_155mm": 50000,
+        "precision_bomb": 200
+      },
+      "munitionsConsumptionPerDay": {
+        "shell_155mm": 2000,
+        "atgm": 20,
+        "precision_bomb": 12
+      }
+    },
+    "conventional_war": {
+      "label": "Conventional War",
+      "description": "Full-scale combined-arms campaign. Division-to-corps level. Months to years.",
+      "durationDaysTypical": 180,
+      "forcePackage": {
+        "main_battle_tank": 500,
+        "infantry_fighting_vehicle": 1200,
+        "armoured_personnel_carrier": 800,
+        "self_propelled_artillery": 200,
+        "multiple_rocket_launcher": 80,
+        "fighter_aircraft": 120,
+        "stealth_fighter": 24,
+        "attack_helicopter": 60,
+        "transport_helicopter": 80,
+        "strategic_bomber": 4,
+        "tactical_drone": 200,
+        "cruise_missile": 600,
+        "air_defense_battery": 8,
+        "man_portable_sam": 2000,
+        "atgm": 3000,
+        "shell_155mm": 3000000,
+        "precision_bomb": 8000,
+        "frigate": 4,
+        "corvette_patrol": 4,
+        "submarine_ssn": 1
+      },
+      "munitionsConsumptionPerDay": {
+        "shell_155mm": 10000,
+        "atgm": 80,
+        "precision_bomb": 40,
+        "cruise_missile": 5,
+        "tactical_drone": 3
+      }
+    },
+    "occupation": {
+      "label": "Occupation / Garrison",
+      "description": "Low-intensity sustained presence after initial hostilities. Counterinsurgency.",
+      "durationDaysTypical": 365,
+      "forcePackage": {
+        "main_battle_tank": 150,
+        "armoured_personnel_carrier": 600,
+        "infantry_fighting_vehicle": 300,
+        "attack_helicopter": 30,
+        "transport_helicopter": 60,
+        "tactical_drone": 150,
+        "self_propelled_artillery": 40,
+        "atgm": 800,
+        "man_portable_sam": 500,
+        "shell_155mm": 200000,
+        "precision_bomb": 1200
+      },
+      "munitionsConsumptionPerDay": {
+        "shell_155mm": 500,
+        "atgm": 5,
+        "precision_bomb": 3
+      }
+    },
+    "air_campaign": {
+      "label": "Air Campaign",
+      "description": "Sustained aerial bombardment with limited or no ground forces. Weeks to months.",
+      "durationDaysTypical": 45,
+      "forcePackage": {
+        "fighter_aircraft": 80,
+        "stealth_fighter": 20,
+        "strategic_bomber": 6,
+        "attack_helicopter": 20,
+        "tactical_drone": 60,
+        "cruise_missile": 400,
+        "short_range_missile": 200,
+        "precision_bomb": 5000,
+        "air_defense_battery": 4,
+        "frigate": 3
+      },
+      "munitionsConsumptionPerDay": {
+        "precision_bomb": 100,
+        "cruise_missile": 8,
+        "short_range_missile": 4
+      }
+    },
+    "naval_blockade": {
+      "label": "Naval Blockade",
+      "description": "Maritime interdiction and sea control. Minimal land component.",
+      "durationDaysTypical": 60,
+      "forcePackage": {
+        "frigate": 6,
+        "corvette_patrol": 6,
+        "submarine_ssn": 2,
+        "fighter_aircraft": 30,
+        "tactical_drone": 20,
+        "cruise_missile": 80,
+        "aircraft_carrier": 1
+      },
+      "munitionsConsumptionPerDay": {
+        "cruise_missile": 1,
+        "short_range_missile": 2
+      }
+    }
+  }
+}

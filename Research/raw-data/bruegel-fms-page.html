@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" prefix="content: http://purl.org/rss/1.0/modules/content/  dc: http://purl.org/dc/terms/  foaf: http://xmlns.com/foaf/0.1/  og: http://ogp.me/ns#  rdfs: http://www.w3.org/2000/01/rdf-schema#  schema: http://schema.org/  sioc: http://rdfs.org/sioc/ns#  sioct: http://rdfs.org/sioc/types#  skos: http://www.w3.org/2004/02/skos/core#  xsd: http://www.w3.org/2001/XMLSchema# ">
+<head>
+    <meta charset="utf-8" />
+<meta name="description" content="This dataset offers detailed information on FMS notifications of transfers of military equipment from the US to foreign governments." />
+<link rel="canonical" href="https://www.bruegel.org/dataset/us-foreign-military-sales" />
+<meta property="og:site_name" content="Bruegel | The Brussels-based economic think tank" />
+<meta property="og:url" content="https://www.bruegel.org/dataset/us-foreign-military-sales" />
+<meta property="og:title" content="US Foreign Military Sales" />
+<meta property="og:description" content="This dataset offers detailed information on FMS notifications of transfers of military equipment from the US to foreign governments." />
+<meta property="og:image" content="https://www.bruegel.org/sites/default/files/styles/og_image/public/2025-11/GettyImages-504167302.jpg?itok=ZLXXQPWV" />
+<meta property="og:image:width" content="1024" />
+<meta property="og:image:height" content="662" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:description" content="This dataset offers detailed information on FMS notifications of transfers of military equipment from the US to foreign governments." />
+<meta name="twitter:title" content="US Foreign Military Sales" />
+<meta name="twitter:image" content="https://www.bruegel.org/sites/default/files/styles/og_image/public/2025-11/GettyImages-504167302.jpg?itok=ZLXXQPWV" />
+<meta name="Generator" content="Drupal 10 (https://www.drupal.org)" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>div#sliding-popup, div#sliding-popup .eu-cookie-withdraw-banner, .eu-cookie-withdraw-tab {background: #0779bf} div#sliding-popup.eu-cookie-withdraw-wrapper { background: transparent; } #sliding-popup h1, #sliding-popup h2, #sliding-popup h3, #sliding-popup p, #sliding-popup label, #sliding-popup div, .eu-cookie-compliance-more-button, .eu-cookie-compliance-secondary-button, .eu-cookie-withdraw-tab { color: #ffffff;} .eu-cookie-withdraw-tab { border-color: #ffffff;}</style>
+<link rel="alternate" hreflang="en" href="https://www.bruegel.org/dataset/us-foreign-military-sales" />
+
+
+    <link rel="apple-touch-icon" sizes="57x57" href="/themes/custom/bruegel/assets/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/themes/custom/bruegel/assets/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/themes/custom/bruegel/assets/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/themes/custom/bruegel/assets/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/themes/custom/bruegel/assets/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/themes/custom/bruegel/assets/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/themes/custom/bruegel/assets/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/themes/custom/bruegel/assets/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/themes/custom/bruegel/assets/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/themes/custom/bruegel/assets/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/themes/custom/bruegel/assets/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/themes/custom/bruegel/assets/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/themes/custom/bruegel/assets/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/themes/custom/bruegel/assets/favicon/manifest.json">
+    <meta name="msapplication-TileImage" content="/themes/custom/bruegel/assets/favicon/ms-icon-144x144.png">
+
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+    <link rel="stylesheet" media="all" href="/sites/default/files/css/css_czLVgew03oOYWdOWpWXr8oqcswDafNLw0Yim6H-mP5c.css?delta=0&amp;language=en&amp;theme=bruegel&amp;include=eJxtjl0KwzAMgy_kNUcqTqKmps4PcQLrTr8yVvayJ0kfAsn3iQR1Satnfdg4VUqioGx2Os-G22eYcYJRqB2u1J5Z5QXCXEOth-CS3FS4BLh_cI3YeOogPMc1crjYZ2NdvpEyorDbRAf6ErgNqYUad06d2253_UeWWdr0KrYjkp02kD-P341QUy4" />
+<link rel="stylesheet" media="all" href="/sites/default/files/css/css_GViGbHVnEj_OaxSeFnLDzZvzmgAIthCFBXQEm6NGqGs.css?delta=1&amp;language=en&amp;theme=bruegel&amp;include=eJxtjl0KwzAMgy_kNUcqTqKmps4PcQLrTr8yVvayJ0kfAsn3iQR1Satnfdg4VUqioGx2Os-G22eYcYJRqB2u1J5Z5QXCXEOth-CS3FS4BLh_cI3YeOogPMc1crjYZ2NdvpEyorDbRAf6ErgNqYUad06d2253_UeWWdr0KrYjkp02kD-P341QUy4" />
+<link rel="stylesheet" media="all" href="https://use.typekit.net/zcx4dqn.css" />
+<link rel="stylesheet" media="all" href="/sites/default/files/css/css_uiXM4E-vz4dgLCWAhKv4cMQOKXpZIBytCVKe7nMImJI.css?delta=3&amp;language=en&amp;theme=bruegel&amp;include=eJxtjl0KwzAMgy_kNUcqTqKmps4PcQLrTr8yVvayJ0kfAsn3iQR1Satnfdg4VUqioGx2Os-G22eYcYJRqB2u1J5Z5QXCXEOth-CS3FS4BLh_cI3YeOogPMc1crjYZ2NdvpEyorDbRAf6ErgNqYUad06d2253_UeWWdr0KrYjkp02kD-P341QUy4" />
+
+    <script type="application/json" data-drupal-selector="drupal-settings-json">{"path":{"baseUrl":"\/","pathPrefix":"","currentPath":"node\/11420","currentPathIsAdmin":false,"isFront":false,"currentLanguage":"en"},"pluralDelimiter":"\u0003","suppressDeprecationErrors":true,"bugherd":{"bugherdconfig":{"feedback":{"tab_position":"bottom-right"},"reporter":{"required":"true"}},"project_key":"pezokobyhrwoebstdkanhq"},"data":{"extlink":{"extTarget":true,"extTargetAppendNewWindowDisplay":true,"extTargetAppendNewWindowLabel":"(opens in a new window)","extTargetNoOverride":false,"extNofollow":false,"extTitleNoOverride":false,"extNoreferrer":false,"extFollowNoOverride":false,"extClass":"0","extLabel":"(link is external)","extImgClass":false,"extSubdomains":false,"extExclude":"","extInclude":"","extCssExclude":"","extCssInclude":"","extCssExplicit":"","extAlert":false,"extAlertText":"This link will take you to an external web site. We are not responsible for their content.","extHideIcons":false,"mailtoClass":"0","telClass":"0","mailtoLabel":"(link sends email)","telLabel":"(link is a phone number)","extUseFontAwesome":false,"extIconPlacement":"append","extPreventOrphan":false,"extFaLinkClasses":"fa fa-external-link","extFaMailtoClasses":"fa fa-envelope-o","extAdditionalLinkClasses":"","extAdditionalMailtoClasses":"","extAdditionalTelClasses":"","extFaTelClasses":"fa fa-phone","allowedDomains":[],"extExcludeNoreferrer":""}},"eu_cookie_compliance":{"cookie_policy_version":"1.0.0","popup_enabled":true,"popup_agreed_enabled":false,"popup_hide_agreed":false,"popup_clicking_confirmation":false,"popup_scrolling_confirmation":false,"popup_html_info":"\u003Cdiv aria-labelledby=\u0022popup-text\u0022  class=\u0022eu-cookie-compliance-banner eu-cookie-compliance-banner-info eu-cookie-compliance-banner--opt-in\u0022\u003E\n  \u003Cdiv class=\u0022popup-content info eu-cookie-compliance-content\u0022\u003E\n        \u003Cdiv id=\u0022popup-text\u0022 class=\u0022eu-cookie-compliance-message\u0022 role=\u0022document\u0022\u003E\n      \u003Ch2\u003EWe use cookies on this site to enhance your user experience\u003C\/h2\u003E\n\u003Cp\u003EBy clicking the Accept button, you agree to us doing so.\u003C\/p\u003E\n\n              \u003Cbutton type=\u0022button\u0022 class=\u0022find-more-button eu-cookie-compliance-more-button\u0022\u003EMore info\u003C\/button\u003E\n          \u003C\/div\u003E\n\n    \n    \u003Cdiv id=\u0022popup-buttons\u0022 class=\u0022eu-cookie-compliance-buttons\u0022\u003E\n            \u003Cbutton type=\u0022button\u0022 class=\u0022agree-button eu-cookie-compliance-secondary-button\u0022\u003EAccept\u003C\/button\u003E\n              \u003Cbutton type=\u0022button\u0022 class=\u0022decline-button eu-cookie-compliance-default-button\u0022\u003ENo, thanks\u003C\/button\u003E\n          \u003C\/div\u003E\n  \u003C\/div\u003E\n\u003C\/div\u003E","use_mobile_message":false,"mobile_popup_html_info":"\u003Cdiv aria-labelledby=\u0022popup-text\u0022  class=\u0022eu-cookie-compliance-banner eu-cookie-compliance-banner-info eu-cookie-compliance-banner--opt-in\u0022\u003E\n  \u003Cdiv class=\u0022popup-content info eu-cookie-compliance-content\u0022\u003E\n        \u003Cdiv id=\u0022popup-text\u0022 class=\u0022eu-cookie-compliance-message\u0022 role=\u0022document\u0022\u003E\n      \n              \u003Cbutton type=\u0022button\u0022 class=\u0022find-more-button eu-cookie-compliance-more-button\u0022\u003EMore info\u003C\/button\u003E\n          \u003C\/div\u003E\n\n    \n    \u003Cdiv id=\u0022popup-buttons\u0022 class=\u0022eu-cookie-compliance-buttons\u0022\u003E\n            \u003Cbutton type=\u0022button\u0022 class=\u0022agree-button eu-cookie-compliance-secondary-button\u0022\u003EAccept\u003C\/button\u003E\n              \u003Cbutton type=\u0022button\u0022 class=\u0022decline-button eu-cookie-compliance-default-button\u0022\u003ENo, thanks\u003C\/button\u003E\n          \u003C\/div\u003E\n  \u003C\/div\u003E\n\u003C\/div\u003E","mobile_breakpoint":768,"popup_html_agreed":false,"popup_use_bare_css":false,"popup_height":"auto","popup_width":"100%","popup_delay":1000,"popup_link":"\/","popup_link_new_window":true,"popup_position":false,"fixed_top_position":true,"popup_language":"en","store_consent":false,"better_support_for_screen_readers":false,"cookie_name":"","reload_page":false,"domain":"","domain_all_sites":false,"popup_eu_only":false,"popup_eu_only_js":false,"cookie_lifetime":100,"cookie_session":0,"set_cookie_session_zero_on_disagree":0,"disagree_do_not_show_popup":false,"method":"opt_in","automatic_cookies_removal":true,"allowed_cookies":"","withdraw_markup":"\u003Cbutton type=\u0022button\u0022 class=\u0022eu-cookie-withdraw-tab\u0022\u003EPrivacy settings\u003C\/button\u003E\n\u003Cdiv aria-labelledby=\u0022popup-text\u0022 class=\u0022eu-cookie-withdraw-banner\u0022\u003E\n  \u003Cdiv class=\u0022popup-content info eu-cookie-compliance-content\u0022\u003E\n    \u003Cdiv id=\u0022popup-text\u0022 class=\u0022eu-cookie-compliance-message\u0022 role=\u0022document\u0022\u003E\n      \u003Ch2\u003EWe use cookies on this site to enhance your user experience\u003C\/h2\u003E\n\u003Cp\u003EYou have given your consent for us to set cookies.\u003C\/p\u003E\n\n    \u003C\/div\u003E\n    \u003Cdiv id=\u0022popup-buttons\u0022 class=\u0022eu-cookie-compliance-buttons\u0022\u003E\n      \u003Cbutton type=\u0022button\u0022 class=\u0022eu-cookie-withdraw-button \u0022\u003EWithdraw consent\u003C\/button\u003E\n    \u003C\/div\u003E\n  \u003C\/div\u003E\n\u003C\/div\u003E","withdraw_enabled":false,"reload_options":0,"reload_routes_list":"","withdraw_button_on_info_popup":false,"cookie_categories":[],"cookie_categories_details":[],"enable_save_preferences_button":true,"cookie_value_disagreed":"0","cookie_value_agreed_show_thank_you":"1","cookie_value_agreed":"2","containing_element":"body","settings_tab_enabled":false,"olivero_primary_button_classes":"","olivero_secondary_button_classes":"","close_button_action":"close_banner","open_by_default":true,"modules_allow_popup":true,"hide_the_banner":false,"geoip_match":true,"unverified_scripts":[]},"user":{"uid":0,"permissionsHash":"a78536b68f02d6d1b04d7770b816dc583d4a88c151e0bf2c939ba0b296db6d0e"}}</script>
+<script src="/sites/default/files/js/js_HwfRa58kGNxB_X5vvlsB439xxbTSUczZf1PLynWtUbw.js?scope=header&amp;delta=0&amp;language=en&amp;theme=bruegel&amp;include=eJxtyEEKwCAMAMEP2fokiTFoMDUSK_T57UE89bTMRpuUSTyCJRcXsmgEOQYa93vsfWkC2RqKDBJGAeOWXZy5kCW_6mgGVK1MX64uDA3J_01Hzy3cqk82O8i5-ALWwzvN"></script>
+
+
+    <title>US Foreign Military Sales</title>
+
+    <script type="text/javascript">
+      
+    </script>
+
+    <!-- Google Tag Manager -->
+    <script>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+          j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+          'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-P9F9XGP');
+    </script>
+    <!-- End Google Tag Manager -->
+
+        <script src="https://www.youtube.com/iframe_api"></script>
+
+          <script src="https://player.vimeo.com/api/player.js"></script>
+</head>
+
+<body class="path-node page-node-type-article">
+
+<!-- Google Tag Manager (noscript) -->
+<noscript>
+  <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P9F9XGP"
+          height="0" width="0" style="display:none;visibility:hidden"></iframe>
+</noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<a href="#main-content" class="c-skip-button">
+  Skip to main content
+</a>
+
+
+  
+
+
+ 
+<header class="c-header  js-header">
+  <div class="o-container">
+    <div class="c-header__inner">
+      <a class="c-header__logo" href="/" title="Return to the homepage">
+                  <svg width="70" height="88" viewBox="0 0 70 88" xmlns="http://www.w3.org/2000/svg">
+              <title>Bruegel logo</title>
+              <g fill="currentColor" fill-rule="evenodd">
+                  <path d="M60.496 18.617h-30.21V35.88c0 .714-.579 1.293-1.292 1.293H11.645v30.55c0 1.21.982 2.19 2.19 2.19h44.106l-.016-5.146 4.76.015V20.805c0-1.208-.98-2.188-2.19-2.188M1.29 37.172h10.355V20.805a2.19 2.19 0 0 1 2.19-2.188h16.451v-4.715h-6.14a.594.594 0 0 1-.595-.596v-6.27L0 7.045V35.88a1.29 1.29 0 0 0 1.29 1.293"/>
+                  <path d="M30.286 8.328v5.574h6.643a.595.595 0 0 0 .595-.596V.002L24.147 0a.595.595 0 0 0-.596.596v6.441l5.443-.002c.713 0 1.292.58 1.292 1.293M5.635 82.257c-.488 0-.891-.116-1.313-.407v-5.347c.742-.484 1.101-.618 1.712-.618.782 0 1.185.23 1.524.887.273.561.38 1.179.38 2.125 0 2.2-.783 3.36-2.303 3.36m1.309-8.324c-.95 0-1.606.213-2.622.85v-4.556c0-.212-.063-.27-.294-.27H.476c-.232 0-.294.058-.294.27v1.254c0 .233.041.272.294.272H1.64v9.538c0 1.005-.086 1.371-.426 2.028a.4.4 0 0 0-.061.174c0 .076.085.135.21.153l1.712.387c.214.039.214.039.296.039.211 0 .38-.212.614-.792.759.656 1.29.849 2.26.849 1.332 0 2.392-.462 3.17-1.39.847-.965 1.207-2.162 1.207-3.958 0-3.206-1.247-4.848-3.678-4.848M17.976 73.934c-.994 0-1.5.29-2.622 1.506-.297-1.023-.402-1.177-.781-1.177h-2.749c-.231 0-.295.057-.295.27v1.255c0 .213.128.347.275.27h1.036c.168.56.21.889.21 1.623v4.325h-1.078c-.232 0-.296.057-.296.27v1.255c0 .212.064.27.296.27h4.903c.234 0 .296-.058.296-.27v-1.256c0-.212-.062-.269-.296-.269h-1.14v-4.963c.655-.638 1.164-.927 1.586-.927.253 0 .571.058.867.154a.48.48 0 0 0 .125.04c.086 0 .148-.058.19-.175l.636-1.563a.724.724 0 0 0 .041-.193c0-.233-.57-.445-1.204-.445M30.826 82.006h-.953c-.168-.54-.21-.908-.21-1.622v-5.812c0-.27-.044-.31-.337-.31h-3.447c-.211 0-.275.058-.275.27v1.256c0 .213.064.27.275.27h1.1v5.407c-.593.501-1.122.714-1.692.714-.464 0-.866-.213-1.035-.521-.149-.25-.192-.56-.192-1.409v-5.677c0-.27-.042-.31-.336-.31h-3.425c-.232 0-.296.058-.296.27v1.256c0 .213.064.27.296.27h1.079v4.306c0 1.236.062 1.796.231 2.24.403.985 1.395 1.525 2.79 1.525 1.226 0 1.924-.29 2.96-1.177.211.772.274.849.633.849h2.834c.232 0 .294-.058.294-.27v-1.255c0-.213-.062-.27-.294-.27M35.03 77.893c.19-1.583.675-2.202 1.754-2.202 1.076 0 1.5.599 1.54 2.202H35.03zm1.922-3.96c-2.79 0-4.63 2.048-4.63 5.176 0 1.758.573 3.225 1.586 4.075.742.617 1.797.945 3.15.945a7.793 7.793 0 0 0 2.917-.54c.697-.27.867-.385.867-.599 0-.077 0-.096-.066-.212l-.526-1.159c-.064-.115-.127-.173-.233-.173a.606.606 0 0 0-.273.077c-.805.385-1.63.599-2.411.599-1.564 0-2.303-.773-2.346-2.434h5.685c.357 0 .465-.095.465-.464 0-3.513-1.416-5.29-4.185-5.29zM48.618 81.078c-.464.445-1.036.657-1.754.657-.634 0-.972-.193-1.247-.676-.294-.502-.443-1.236-.443-2.162 0-1.969.612-2.935 1.86-2.935.591 0 .97.134 1.584.558v4.558zm3.002-6.622-1.67-.54a.562.562 0 0 0-.212-.04c-.19 0-.463.367-.74.947-.866-.676-1.458-.89-2.515-.89-2.492 0-3.994 1.894-3.994 5.06 0 2.973 1.332 4.694 3.613 4.694.973 0 1.754-.214 2.579-.716.022.675.043 1.08.043 1.216 0 1.236-.422 1.642-1.713 1.642-1.055 0-2.028-.211-3.232-.715a.513.513 0 0 0-.211-.058c-.106 0-.191.078-.213.193l-.443 1.334a.587.587 0 0 0-.042.192c0 .464 2.493 1.061 4.376 1.061 2.662 0 4.077-1.196 4.077-3.456 0-.231-.018-.693-.042-1.197a74.418 74.418 0 0 1-.063-3.147v-2.858c0-.868.105-1.39.466-2.181.125-.272.125-.29.125-.348 0-.077-.064-.135-.19-.193zM55.952 77.893c.188-1.583.677-2.202 1.753-2.202 1.079 0 1.501.599 1.543 2.202h-3.296zm1.924-3.96c-2.791 0-4.632 2.048-4.632 5.176 0 1.758.573 3.225 1.587 4.075.74.617 1.798.945 3.15.945a7.807 7.807 0 0 0 2.916-.54c.699-.27.868-.385.868-.599 0-.077 0-.096-.065-.212l-.529-1.159c-.062-.115-.126-.173-.231-.173a.607.607 0 0 0-.276.077c-.803.385-1.626.599-2.409.599-1.564 0-2.303-.773-2.346-2.434h5.687c.357 0 .463-.095.463-.464 0-3.513-1.415-5.29-4.183-5.29zM68.99 83.511l-.02-.076-.422-1.585a.181.181 0 0 0-.169-.115c-.043 0-.085 0-.148.02a2.433 2.433 0 0 1-.7.116c-.295 0-.464-.116-.527-.425-.043-.154-.043-.154-.043-1.217V70.227c0-.212-.062-.27-.294-.27h-3.552c-.232 0-.296.058-.296.27v1.254c0 .233.042.272.296.272h1.162v8.65c0 1.642.065 2.104.296 2.587.382.734 1.204 1.139 2.326 1.139.993 0 2.114-.29 2.114-.54 0-.02 0-.039-.023-.078"/>
+              </g>
+          </svg>
+      </a>
+
+      <div class="c-header__right">
+        <div class="c-header__top">
+                                <nav role="navigation" aria-labelledby="block-secondarynavigation-menu" id="block-secondarynavigation" class="block block-menu navigation menu--secondary-navigation">
+            
+  <h2 class="visually-hidden" id="block-secondarynavigation-menu">Secondary navigation</h2>
+  
+
+        
+        <ul class="c-secondary-menu">
+                  <li class="c-secondary-menu__item">
+        <a href="/membership" data-drupal-link-system-path="node/101">Membership</a>
+              </li>
+                <li class="c-secondary-menu__item">
+        <a href="/partnerships" data-drupal-link-system-path="node/102">Partnerships</a>
+              </li>
+                <li class="c-secondary-menu__item">
+        <a href="/contact-us" data-drupal-link-system-path="node/43">Contact</a>
+              </li>
+                <li class="c-secondary-menu__item c-secondary-menu__item--collapsed">
+        <a href="/bruegel-european-think-tank-specialises-economics" data-drupal-link-system-path="node/34">About</a>
+              </li>
+                <li class="c-secondary-menu__item c-secondary-menu__item--collapsed">
+        <a href="/careers" data-drupal-link-system-path="node/42">Careers</a>
+              </li>
+      </ul>
+    
+
+
+  </nav>
+
+          
+                    <button class="c-header__search-toggle js-search-overlay-open" aria-label="Open search" type="button">
+                        <svg width="32" height="33" viewBox="0 0 32 33" xmlns="http://www.w3.org/2000/svg">
+              <path
+                  d="M16 .836c8.837 0 16 7.164 16 16 0 8.837-7.163 16-16 16s-16-7.163-16-16C0 8 7.163.836 16 .836zm-2 7a7 7 0 1 0 4.192 12.606L23.95 26.2l1.414-1.414-5.758-5.758A7 7 0 0 0 14 7.836zm0 1.867a5.133 5.133 0 1 1 0 10.266 5.133 5.133 0 0 1 0-10.266z"
+                  fill="currentColor" fill-rule="evenodd"/>
+            </svg>
+          </button>
+        </div>
+
+                          
+
+
+
+<nav role="navigation" aria-labelledby="block-mainnavigation-menu" class="c-header__menu block block-menu navigation menu--main">
+          
+  
+
+  <h2 class="visually-hidden" id="block-mainnavigation-menu">Main navigation</h2>
+
+  
+
+        
+              <ul class="c-main-menu">
+                    <li class="c-main-menu__item c-main-menu__item--collapsed">
+        <a href="/topics" title="Topics" data-drupal-link-system-path="node/27">Topics</a>
+              </li>
+                <li class="c-main-menu__item c-main-menu__item--collapsed">
+        <a href="/publications" data-drupal-link-system-path="node/89">Publications</a>
+              </li>
+                <li class="c-main-menu__item c-main-menu__item--collapsed">
+        <a href="/commentary" data-drupal-link-system-path="node/8788">Commentary</a>
+              </li>
+                <li class="c-main-menu__item c-main-menu__item--expanded c-main-menu__item--active-trail">
+        <a href="/datasets" data-drupal-link-system-path="node/90">Datasets</a>
+                                <ul class="c-main-menu">
+                    <li class="c-main-menu__item">
+        <a href="/datasets/no-longer-updated-datasets" data-drupal-link-system-path="node/10823">Inactive Datasets</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="c-main-menu__item c-main-menu__item--collapsed">
+        <a href="/sound-economics" data-drupal-link-system-path="node/31">Podcasts</a>
+              </li>
+                <li class="c-main-menu__item c-main-menu__item--collapsed">
+        <a href="/events" data-drupal-link-system-path="node/32">Events</a>
+              </li>
+                <li class="c-main-menu__item">
+        <a href="/our-researchers" data-drupal-link-system-path="node/33">Our Researchers</a>
+              </li>
+        </ul>
+  
+
+
+  </nav>
+
+              </div>
+    </div>
+  </div>
+</header>
+
+<header class="c-sticky-header js-sticky-header">
+  <div class="c-sticky-header__container o-container">
+    <a class="c-sticky-header__logo" href="/" title="Return to the homepage">
+      <svg class="o-svg o-svg--logo-text">
+  <use class="o-svg__use" xlink:href="/themes/custom/bruegel/assets/img/symbol/svg/sprite.symbol.svg?v=12#logo-text"/>
+</svg>
+    </a>
+
+          <p class="c-sticky-header__strapline">
+        Improving economic policy
+      </p>
+    
+    <button class="c-sticky-header__menu-toggle js-menu-drawer-open" aria-label="Open menu" type="button">
+      <svg class="o-svg o-svg--circle-burger c-header__menu-icon">
+  <use class="o-svg__use" xlink:href="/themes/custom/bruegel/assets/img/symbol/svg/sprite.symbol.svg?v=12#circle-burger"/>
+</svg>
+    </button>
+
+    <button class="c-sticky-header__search-toggle js-search-overlay-open" aria-label="Open search" type="button">
+      <svg class="o-svg o-svg--circle-search c-header__search-icon">
+  <use class="o-svg__use" xlink:href="/themes/custom/bruegel/assets/img/symbol/svg/sprite.symbol.svg?v=12#circle-search"/>
+</svg>
+    </button>
+  </div>
+</header>
+
+<div class="c-menu-drawer js-menu-drawer">
+  <div class="c-menu-drawer__inner">
+              <div class="c-menu-drawer__main-menu">
+        
+
+
+
+<nav role="navigation" aria-labelledby="block-mainnavigation-menu" class="c-header__menu block block-menu navigation menu--main">
+          
+  
+
+  <h2 class="visually-hidden" id="block-mainnavigation-menu">Main navigation</h2>
+
+  
+
+        
+              <ul class="c-main-menu">
+                    <li class="c-main-menu__item c-main-menu__item--collapsed">
+        <a href="/topics" title="Topics" data-drupal-link-system-path="node/27">Topics</a>
+              </li>
+                <li class="c-main-menu__item c-main-menu__item--collapsed">
+        <a href="/publications" data-drupal-link-system-path="node/89">Publications</a>
+              </li>
+                <li class="c-main-menu__item c-main-menu__item--collapsed">
+        <a href="/commentary" data-drupal-link-system-path="node/8788">Commentary</a>
+              </li>
+                <li class="c-main-menu__item c-main-menu__item--expanded c-main-menu__item--active-trail">
+        <a href="/datasets" data-drupal-link-system-path="node/90">Datasets</a>
+                                <ul class="c-main-menu">
+                    <li class="c-main-menu__item">
+        <a href="/datasets/no-longer-updated-datasets" data-drupal-link-system-path="node/10823">Inactive Datasets</a>
+              </li>
+        </ul>
+  
+              </li>
+                <li class="c-main-menu__item c-main-menu__item--collapsed">
+        <a href="/sound-economics" data-drupal-link-system-path="node/31">Podcasts</a>
+              </li>
+                <li class="c-main-menu__item c-main-menu__item--collapsed">
+        <a href="/events" data-drupal-link-system-path="node/32">Events</a>
+              </li>
+                <li class="c-main-menu__item">
+        <a href="/our-researchers" data-drupal-link-system-path="node/33">Our Researchers</a>
+              </li>
+        </ul>
+  
+
+
+  </nav>
+
+      </div>
+    
+              <div class="c-menu-drawer__secondary-menu">
+        <nav role="navigation" aria-labelledby="block-secondarynavigation-menu" id="block-secondarynavigation" class="block block-menu navigation menu--secondary-navigation">
+            
+  <h2 class="visually-hidden" id="block-secondarynavigation-menu">Secondary navigation</h2>
+  
+
+        
+        <ul class="c-secondary-menu">
+                  <li class="c-secondary-menu__item">
+        <a href="/membership" data-drupal-link-system-path="node/101">Membership</a>
+              </li>
+                <li class="c-secondary-menu__item">
+        <a href="/partnerships" data-drupal-link-system-path="node/102">Partnerships</a>
+              </li>
+                <li class="c-secondary-menu__item">
+        <a href="/contact-us" data-drupal-link-system-path="node/43">Contact</a>
+              </li>
+                <li class="c-secondary-menu__item c-secondary-menu__item--collapsed">
+        <a href="/bruegel-european-think-tank-specialises-economics" data-drupal-link-system-path="node/34">About</a>
+              </li>
+                <li class="c-secondary-menu__item c-secondary-menu__item--collapsed">
+        <a href="/careers" data-drupal-link-system-path="node/42">Careers</a>
+              </li>
+      </ul>
+    
+
+
+  </nav>
+
+      </div>
+    
+    <div class="c-menu-drawer__social-links">
+            
+              <a href="https://bsky.app/profile/bruegel.org"
+         title="Bluesky&#x20;page"
+         class="c-footer__social-icon c-footer__social-icon--bluesky"
+         target="_blank">
+        <svg class="o-svg o-svg--bluesky">
+  <use class="o-svg__use" xlink:href="/themes/custom/bruegel/assets/img/symbol/svg/sprite.symbol.svg?v=12#bluesky"/>
+</svg>
+      </a>
+    
+              <a href="https://www.linkedin.com/company/bruegel"
+         title="Linkedin&#x20;page"
+         class="c-footer__social-icon c-footer__social-icon--linkedin"
+         target="_blank">
+        <svg class="o-svg o-svg--linkedin">
+  <use class="o-svg__use" xlink:href="/themes/custom/bruegel/assets/img/symbol/svg/sprite.symbol.svg?v=12#linkedin"/>
+</svg>
+      </a>
+    
+              <a href="https://www.youtube.com/user/BruegelTV"
+         title="Youtube&#x20;channel"
+         class="c-footer__social-icon c-footer__social-icon--youtube"
+         target="_blank">
+        <svg class="o-svg o-svg--youtube">
+  <use class="o-svg__use" xlink:href="/themes/custom/bruegel/assets/img/symbol/svg/sprite.symbol.svg?v=12#youtube"/>
+</svg>
+      </a>
+    
+              <a href="https://www.instagram.com/bruegel_thinktank/"
+         title="Instagram&#x20;page"
+         class="c-footer__social-icon c-footer__social-icon--instagram"
+         target="_blank">
+        <svg class="o-svg o-svg--instagram">
+  <use class="o-svg__use" xlink:href="/themes/custom/bruegel/assets/img/symbol/svg/sprite.symbol.svg?v=12#instagram"/>
+</svg>
+      </a>
+          </div>
+
+    <button class="c-menu-drawer__close js-menu-drawer-close" type="button" aria-label="Close">
+      <svg class="o-svg o-svg--circle-cross c-search-overlay__close-icon">
+  <use class="o-svg__use" xlink:href="/themes/custom/bruegel/assets/img/symbol/svg/sprite.symbol.svg?v=12#circle-cross"/>
+</svg>
+    </button>
+  </div>
+</div>
+
+<div class="c-search-overlay js-search-overlay">
+  <div class="c-search-overlay__container o-container">
+    <div class="c-search-overlay__inner">
+            <label class="c-search-overlay__label" for="header-search-input">Search:</label>
+
+      <form class="c-search-overlay__form" action="/search" method="get" role="search" aria-label="Sitewide search" id="search-block-form">
+        <input class="c-search-overlay__input" title="Enter the terms you wish to search for." type="search" id="header-search-input" placeholder="Type here…" name="search_term" value="" size="15" maxlength="128">
+
+        <button class="c-search-overlay__submit-button o-button o-button--with-icon">
+          <span>Search</span>
+          <svg class="o-svg o-svg--circle-search c-search-overlay__search-icon">
+  <use class="o-svg__use" xlink:href="/themes/custom/bruegel/assets/img/symbol/svg/sprite.symbol.svg?v=12#circle-search"/>
+</svg>
+        </button>
+      </form>
+
+            
+              <div class="c-search-overlay__suggestions-wrapper">
+          <p class="c-search-overlay__suggestions-title">
+            Suggested keywords:
+          </p>
+          <ul class="c-search-overlay__suggestions">
+                          <li class="c-search-overlay__suggestion">
+                <a class="c-search-overlay__suggestion-link" href="/search?search_term=decarbonisation">
+                  decarbonisation
+                </a>
+              </li>
+                          <li class="c-search-overlay__suggestion">
+                <a class="c-search-overlay__suggestion-link" href="/search?search_term=energy">
+                  energy
+                </a>
+              </li>
+                          <li class="c-search-overlay__suggestion">
+                <a class="c-search-overlay__suggestion-link" href="/search?search_term=climate%20change">
+                  climate change
+                </a>
+              </li>
+                          <li class="c-search-overlay__suggestion">
+                <a class="c-search-overlay__suggestion-link" href="/search?search_term=monetary%20policy">
+                  monetary policy
+                </a>
+              </li>
+                      </ul>
+        </div>
+          </div>
+
+    <button class="c-search-overlay__close js-search-overlay-close" type="button" aria-label="Close">
+      <svg class="o-svg o-svg--circle-cross c-search-overlay__close-icon">
+  <use class="o-svg__use" xlink:href="/themes/custom/bruegel/assets/img/symbol/svg/sprite.symbol.svg?v=12#circle-cross"/>
+</svg>
+    </button>
+  </div>
+</div>
+
+
+<main class="c-page" role="main" id="main-content">
+      <div data-drupal-messages-fallback class="hidden"></div>  
+<article about="/dataset/us-foreign-military-sales" typeof="schema:Article" class="article template-download">
+  <header class="c-single-header c-single-header--download type--article">
+    <div class="c-breadcrumbs">
+    <div class="o-container">
+        
+  <ol class="c-breadcrumbs__list">
+                  <li class="c-breadcrumbs__item">
+          <span class="c-breadcrumbs__divider"> / </span>
+                      <a href="/" class="c-breadcrumbs__link">Home</a>
+                  </li>
+                        <li class="c-breadcrumbs__item">
+          <span class="c-breadcrumbs__divider"> / </span>
+                      <a href="/datasets" class="c-breadcrumbs__link">Datasets</a>
+                  </li>
+            </ol>
+
+    </div>
+  </div>
+
+
+
+  <div class="c-single-header__container o-container">
+    <div class="c-single-header__content">
+      <small
+          class="c-single-header__label">  Dataset
+</small>
+
+              <h1 class="c-single-header__title js-single-header-title"><span property="schema:name" class="field field--name-title field--type-string field--label-hidden">US Foreign Military Sales</span>
+</h1>
+      
+              <p class="c-single-header__description">  This dataset offers detailed information on FMS notifications of transfers of military equipment from the US to foreign governments. 
+</p>
+      
+      <dl class="c-single-header__meta-wrapper">
+
+                  <div class="c-single-header__meta-row">
+            <dt class="c-single-header__meta-label">Publishing date</dt>
+            <dd class="c-single-header__meta-term">12 March 2026</dd>
+          </div>
+
+                      <div class="c-single-header__meta-row">
+              <dt class="c-single-header__meta-label">Authors</dt>
+              <dd class="c-single-header__meta-term">
+                                                      <a href="/people/juan-mejino-lopez">
+                      Juan Mejino-López
+                    </a>
+                                                                        <a href="/people/javier-ospital">
+                      Javier Ospital
+                    </a>
+                                                                        <a href="/people/guntram-b-wolff">
+                      Guntram B. Wolff
+                    </a>
+                                                </dd>
+            </div>
+          
+              </dl>
+
+                    <div class="c-single-header__action-bar">
+                      <div class="c-single-header__action-bar-links">
+              
+                                                
+                                      
+                                                              
+                                                              
+                    <a class="o-button o-button--has-icon"
+                       href="/sites/default/files/2026-03/fms_database_second_release_for_editorial.xlsx"
+                       title="Download">
+                      Download
+
+                      <svg class="o-svg o-svg--download">
+  <use class="o-svg__use" xlink:href="/themes/custom/bruegel/assets/img/symbol/svg/sprite.symbol.svg?v=12#download"/>
+</svg>
+                    </a>
+                                                
+              
+                          </div>
+          
+          <div class="c-single-header__action-bar-share">
+                            <div class="c-cite">
+    <button class="o-button o-button--has-icon js-show-modal js-show-modal--cite">Cite</button>
+
+    <div class="c-cite__overlay js-modal-overlay"></div>
+
+    <div class="c-cite__modal-container" role="dialog" aria-labelledby="citation-modal-title">
+      <h2 class="c-cite__modal-title" id="citation-modal-title">Recommended citation:</h2>
+
+      <button class="c-cite__modal-close-button js-close-modal" aria-label="Close citation modal">
+        <svg class="o-svg o-svg--circle-cross c-cite__modal-close-svg">
+  <use class="o-svg__use" xlink:href="/themes/custom/bruegel/assets/img/symbol/svg/sprite.symbol.svg?v=12#circle-cross"/>
+</svg>
+      </button>
+
+      <div class="c-cite__modal-text js-modal-text">  Bruegel (2025) &#039;US Foreign Military Sales (FMS)&#039;, Bruegel Dataset, version of 17 October, available at https://doi.org/10.64153/KBPT2220
+</div>
+
+      <button class="c-cite__clipboard js-copy-modal-text">Copy to clipboard</button>
+    </div>
+  </div>
+            
+                        
+
+
+
+<div class="c-share ">
+  <button class="o-button o-button--has-icon js-show-modal js-show-modal--share" data-share-title="US%20Foreign%20Military%20Sales" data-share-url="https://www.bruegel.org/dataset/us-foreign-military-sales">Share</button>
+
+  <div class="c-share__overlay js-modal-overlay"></div>
+
+  <div class="c-share__popup-container" role="dialog" aria-labelledby="share-modal-title">
+    <h2 class="c-share__popup-title" id="share-modal-title">Share this page:</h2>
+
+    <button class="c-share__popup-close-button js-close-modal" aria-label="Close sharing modal">
+      <svg class="o-svg o-svg--circle-cross c-share__popup-close-svg">
+  <use class="o-svg__use" xlink:href="/themes/custom/bruegel/assets/img/symbol/svg/sprite.symbol.svg?v=12#circle-cross"/>
+</svg>
+    </button>
+
+        <a class="c-share__link js-social-sharing"
+       href="https://bsky.app/intent/compose?text=US%20Foreign%20Military%20Sales https://www.bruegel.org/dataset/us-foreign-military-sales"
+       target="_blank"
+       title="Bluesky share">
+
+      <div class="c-share__link-icon c-share__link-icon--bluesky">
+        <svg class="o-svg o-svg--bluesky">
+  <use class="o-svg__use" xlink:href="/themes/custom/bruegel/assets/img/symbol/svg/sprite.symbol.svg?v=12#bluesky"/>
+</svg>
+      </div>
+
+      <div class="c-share__link-text">
+        Bluesky
+      </div>
+    </a>
+
+        <a class="c-share__link js-social-sharing"
+       href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.bruegel.org/dataset/us-foreign-military-sales&title=US%20Foreign%20Military%20Sales"
+       target="_blank"
+       title="LinkedIn share">
+
+      <div class="c-share__link-icon">
+        <svg class="o-svg o-svg--linkedin">
+  <use class="o-svg__use" xlink:href="/themes/custom/bruegel/assets/img/symbol/svg/sprite.symbol.svg?v=12#linkedin"/>
+</svg>
+      </div>
+
+      <div class="c-share__link-text">
+        Linkedin
+      </div>
+    </a>
+
+        <a class="c-share__link js-social-sharing" href="/cdn-cgi/l/email-protection#d7e8f1a4a2b5bdb2b4a3ea8284f2e5e791b8a5b2beb0b9f2e5e79abebbbea3b6a5aef2e5e784b6bbb2a4f1b5b8b3aeeabfa3a3a7a4edf8f8a0a0a0f9b5a5a2b2b0b2bbf9b8a5b0f8b3b6a3b6a4b2a3f8a2a4fab1b8a5b2beb0b9fababebbbea3b6a5aefaa4b6bbb2a4" target="_blank" title="Email share">
+
+      <div class="c-share__link-icon">
+        <svg class="o-svg o-svg--email">
+  <use class="o-svg__use" xlink:href="/themes/custom/bruegel/assets/img/symbol/svg/sprite.symbol.svg?v=12#email"/>
+</svg>
+      </div>
+
+      <div class="c-share__link-text">
+        Email
+      </div>
+    </a>
+  </div>
+</div>
+          </div>
+        </div>
+          </div>
+
+        
+              <figure class="c-single-header__media c-single-header__media--download">
+                        <div class="c-media c-media--image c-media--header-image-">
+  
+            <picture>
+                  <source srcset="/sites/default/files/styles/16_9_medium_with_focal/public/2025-11/GettyImages-504167302.jpg.webp?h=21017897&amp;itok=zQrreBra 1x, /sites/default/files/styles/16_9_medium_with_focal/public/2025-11/GettyImages-504167302.jpg.webp?h=21017897&amp;itok=zQrreBra 2x" media="only screen and (max-width: 480px)" type="image/webp" width="896" height="504"/>
+              <source srcset="/sites/default/files/styles/16_9_medium_with_focal/public/2025-11/GettyImages-504167302.jpg.webp?h=21017897&amp;itok=zQrreBra 1x" media="only screen and (max-width: 767px)" type="image/webp" width="896" height="504"/>
+              <source srcset="/sites/default/files/styles/16_9_large_with_focalk/public/2025-11/GettyImages-504167302.jpg.webp?h=21017897&amp;itok=jzNX-kcM 1x, /sites/default/files/styles/16_9_large_with_focalk/public/2025-11/GettyImages-504167302.jpg.webp?h=21017897&amp;itok=jzNX-kcM 2x" media="only screen and (max-width: 1017px)" type="image/webp" width="1200" height="675"/>
+              <source srcset="/sites/default/files/styles/16_9_extra_large/public/2025-11/GettyImages-504167302.jpg.webp?itok=I3RJkmwh 1x" media="only screen and (max-width: 1275px)" type="image/webp" width="2100" height="1181"/>
+              <source srcset="/sites/default/files/styles/16_9_extra_large/public/2025-11/GettyImages-504167302.jpg.webp?itok=I3RJkmwh 1x, /sites/default/files/styles/16_9_extra_large/public/2025-11/GettyImages-504167302.jpg.webp?itok=I3RJkmwh 2x" media="only screen and (min-width: 1276px)" type="image/webp" width="2100" height="1181"/>
+              <source srcset="/sites/default/files/styles/16_9_medium_with_focal/public/2025-11/GettyImages-504167302.jpg?h=21017897&amp;itok=zQrreBra 1x, /sites/default/files/styles/16_9_medium_with_focal/public/2025-11/GettyImages-504167302.jpg?h=21017897&amp;itok=zQrreBra 2x" media="only screen and (max-width: 480px)" type="image/jpeg" width="896" height="504"/>
+              <source srcset="/sites/default/files/styles/16_9_medium_with_focal/public/2025-11/GettyImages-504167302.jpg?h=21017897&amp;itok=zQrreBra 1x" media="only screen and (max-width: 767px)" type="image/jpeg" width="896" height="504"/>
+              <source srcset="/sites/default/files/styles/16_9_large_with_focalk/public/2025-11/GettyImages-504167302.jpg?h=21017897&amp;itok=jzNX-kcM 1x, /sites/default/files/styles/16_9_large_with_focalk/public/2025-11/GettyImages-504167302.jpg?h=21017897&amp;itok=jzNX-kcM 2x" media="only screen and (max-width: 1017px)" type="image/jpeg" width="1200" height="675"/>
+              <source srcset="/sites/default/files/styles/16_9_extra_large/public/2025-11/GettyImages-504167302.jpg?itok=I3RJkmwh 1x" media="only screen and (max-width: 1275px)" type="image/jpeg" width="2100" height="1181"/>
+              <source srcset="/sites/default/files/styles/16_9_extra_large/public/2025-11/GettyImages-504167302.jpg?itok=I3RJkmwh 1x, /sites/default/files/styles/16_9_extra_large/public/2025-11/GettyImages-504167302.jpg?itok=I3RJkmwh 2x" media="only screen and (min-width: 1276px)" type="image/jpeg" width="2100" height="1181"/>
+                  <img loading="eager" width="1200" height="675" class="c-media__image" src="/sites/default/files/styles/16_9_large_with_focalk/public/2025-11/GettyImages-504167302.jpg?h=21017897&amp;itok=jzNX-kcM" alt="W" typeof="foaf:Image" />
+
+  </picture>
+
+
+
+  </div>
+
+
+          
+                  </figure>
+            </div>
+</header>
+
+    
+          <section class="c-key-takeaways c-key-takeaways--download o-section o-section--small">
+  <div class="o-container o-container--grid">
+    <div class="c-key-takeaways__inner">
+      
+          </div>
+  </div>
+</section>
+
+
+
+  
+          
+
+
+        
+
+  <div class="c-wysiwyg o-section o-section--wysiwyg c-wysiwyg--boxed">
+    <div class="c-wysiwyg__container o-container">
+      <div class="c-wysiwyg__inner">
+        <div class="o-content-from-editor">
+            <p >First published: 07 November 2025</p>
+<p >Latest update: 12 March 2026</p>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+
+
+
+
+  <div class="c-wysiwyg o-section o-section--wysiwyg">
+    <div class="c-wysiwyg__container o-container">
+      <div class="c-wysiwyg__inner">
+        <div class="o-content-from-editor">
+            <p>The Foreign Military Sales (FMS) Database</p>
+<p>This dataset offers detailed information on FMS notifications of transfers<span lang="EN-GB"> of military equipment from the US to foreign governments.&nbsp;</span></p>
+<p>It includes data on purchasing countries, main and additional equipment, quantities (when available), the contractors involved and their locations, and the overall value of the sale in current and 2024 prices. The dataset <span lang="EN-US">expands</span> from April <span lang="EN-GB">2008 to February 2026.</span></p>
+<p><span lang="EN-US">We collect this data from the publicly available website of the US Department of Defence, and include year, geographical and political regions, as well as a classification of the military domain and the type of equipment being sold.&nbsp;</span></p>
+<p><strong>Summary</strong></p>
+<ul >
+<li  data-list-item-id="e8d90e9f2b22bae4fd924a3689afe6857"><span lang="EN-US">A worsening security situation around the world is increasing defence spending, and also the demand of military equipment from the US defence industrial base, main global exporter of military equipment.</span></li>
+<li  data-list-item-id="e422d6158a75ae401a30c986c495634e8"><span lang="EN-GB">The FMS is the main US instrument used to transfer major military equipment to foreign governments, with the US Government playing an intermediary role between the foreign government and the US contractors.</span></li>
+<li  data-list-item-id="ee049934698dbeba69690426fc9b075fb"><span lang="EN-US">By compiling FMS notifications and extracting relevant information, this dataset offers insights into the US sales of major military equipment. Including the geographical location of the sales, the type of equipment and the defence companies involved.</span></li>
+</ul>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  
+      
+
+
+
+
+  <div class="c-wysiwyg o-section o-section--wysiwyg">
+    <div class="c-wysiwyg__container o-container">
+      <div class="c-wysiwyg__inner">
+        <div class="o-content-from-editor">
+            <div class="c-media c-media--infogram c-media--wysiwyg-full-width">
+  
+        
+<html><head>
+    <link rel="stylesheet" media="all" href="/sites/default/files/css/css_czLVgew03oOYWdOWpWXr8oqcswDafNLw0Yim6H-mP5c.css?delta=0&amp;language=en&amp;theme=bruegel&amp;include=eJxtjl0KwzAMgy_kNUcqTqKmps4PcQLrTr8yVvayJ0kfAsn3iQR1Satnfdg4VUqioGx2Os-G22eYcYJRqB2u1J5Z5QXCXEOth-CS3FS4BLh_cI3YeOogPMc1crjYZ2NdvpEyorDbRAf6ErgNqYUad06d2253_UeWWdr0KrYjkp02kD-P341QUy4" />
+<link rel="stylesheet" media="all" href="/sites/default/files/css/css_GViGbHVnEj_OaxSeFnLDzZvzmgAIthCFBXQEm6NGqGs.css?delta=1&amp;language=en&amp;theme=bruegel&amp;include=eJxtjl0KwzAMgy_kNUcqTqKmps4PcQLrTr8yVvayJ0kfAsn3iQR1Satnfdg4VUqioGx2Os-G22eYcYJRqB2u1J5Z5QXCXEOth-CS3FS4BLh_cI3YeOogPMc1crjYZ2NdvpEyorDbRAf6ErgNqYUad06d2253_UeWWdr0KrYjkp02kD-P341QUy4" />
+<link rel="stylesheet" media="all" href="https://use.typekit.net/zcx4dqn.css" />
+<link rel="stylesheet" media="all" href="/sites/default/files/css/css_uiXM4E-vz4dgLCWAhKv4cMQOKXpZIBytCVKe7nMImJI.css?delta=3&amp;language=en&amp;theme=bruegel&amp;include=eJxtjl0KwzAMgy_kNUcqTqKmps4PcQLrTr8yVvayJ0kfAsn3iQR1Satnfdg4VUqioGx2Os-G22eYcYJRqB2u1J5Z5QXCXEOth-CS3FS4BLh_cI3YeOogPMc1crjYZ2NdvpEyorDbRAf6ErgNqYUad06d2253_UeWWdr0KrYjkp02kD-P341QUy4" />
+
+  </css-placeholder></head>
+  <body >
+    <div class="infogram-embed" data-id="_/PmAgo6pPAVoYSuoIEFUH" data-type="interactive" data-title="FMS_Database_Figure_1"></div><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>!function(e,n,i,s){var d="InfogramEmbeds";var o=e.getElementsByTagName(n)[0];if(window[d]&&window[d].initialized)window[d].process&&window[d].process();else if(!e.getElementById(i)){var r=e.createElement(n);r.async=1,r.id=i,r.src=s,o.parentNode.insertBefore(r,o)}}(document,"script","infogram-async","https://e.infogram.com/js/dist/embed-loader-min.js");</script>
+  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9dd457481f4197e8',t:'MTc3MzY3MDIyMg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+
+
+
+  </html></div>
+<p><span lang="EN-US">Figure 1 shows FMS notifications at the regional level. Until 2017, the fraction of notifications toward Europe was rather low in relative terms. Since 2017, however, Europe has accounted for a larger share of FMS notifications and has become the main purchaser.&nbsp;</span></p>
+<div class="c-media c-media--infogram c-media--wysiwyg-full-width">
+  
+        
+<html><head>
+    <link rel="stylesheet" media="all" href="/sites/default/files/css/css_czLVgew03oOYWdOWpWXr8oqcswDafNLw0Yim6H-mP5c.css?delta=0&amp;language=en&amp;theme=bruegel&amp;include=eJxtjl0KwzAMgy_kNUcqTqKmps4PcQLrTr8yVvayJ0kfAsn3iQR1Satnfdg4VUqioGx2Os-G22eYcYJRqB2u1J5Z5QXCXEOth-CS3FS4BLh_cI3YeOogPMc1crjYZ2NdvpEyorDbRAf6ErgNqYUad06d2253_UeWWdr0KrYjkp02kD-P341QUy4" />
+<link rel="stylesheet" media="all" href="/sites/default/files/css/css_GViGbHVnEj_OaxSeFnLDzZvzmgAIthCFBXQEm6NGqGs.css?delta=1&amp;language=en&amp;theme=bruegel&amp;include=eJxtjl0KwzAMgy_kNUcqTqKmps4PcQLrTr8yVvayJ0kfAsn3iQR1Satnfdg4VUqioGx2Os-G22eYcYJRqB2u1J5Z5QXCXEOth-CS3FS4BLh_cI3YeOogPMc1crjYZ2NdvpEyorDbRAf6ErgNqYUad06d2253_UeWWdr0KrYjkp02kD-P341QUy4" />
+<link rel="stylesheet" media="all" href="https://use.typekit.net/zcx4dqn.css" />
+<link rel="stylesheet" media="all" href="/sites/default/files/css/css_uiXM4E-vz4dgLCWAhKv4cMQOKXpZIBytCVKe7nMImJI.css?delta=3&amp;language=en&amp;theme=bruegel&amp;include=eJxtjl0KwzAMgy_kNUcqTqKmps4PcQLrTr8yVvayJ0kfAsn3iQR1Satnfdg4VUqioGx2Os-G22eYcYJRqB2u1J5Z5QXCXEOth-CS3FS4BLh_cI3YeOogPMc1crjYZ2NdvpEyorDbRAf6ErgNqYUad06d2253_UeWWdr0KrYjkp02kD-P341QUy4" />
+
+  </css-placeholder></head>
+  <body >
+    <div class="infogram-embed" data-id="_/92crI2497ZD7h8Ae5MYp" data-type="interactive" data-title="FMS_Database_Figure_2"></div><script>!function(e,n,i,s){var d="InfogramEmbeds";var o=e.getElementsByTagName(n)[0];if(window[d]&&window[d].initialized)window[d].process&&window[d].process();else if(!e.getElementById(i)){var r=e.createElement(n);r.async=1,r.id=i,r.src=s,o.parentNode.insertBefore(r,o)}}(document,"script","infogram-async","https://e.infogram.com/js/dist/embed-loader-min.js");</script>
+  </body>
+
+
+
+  </html></div>
+<p><span lang="EN-US">Figure 2 displays how FMS has become more important in Europe’s overall equipment spending. As European defence budgets and equipment purchases have increased, European countries have increased their demand of domestic and foreign producers.</span></p>
+<div class="c-media c-media--infogram c-media--wysiwyg-full-width">
+  
+        
+<html><head>
+    <link rel="stylesheet" media="all" href="/sites/default/files/css/css_czLVgew03oOYWdOWpWXr8oqcswDafNLw0Yim6H-mP5c.css?delta=0&amp;language=en&amp;theme=bruegel&amp;include=eJxtjl0KwzAMgy_kNUcqTqKmps4PcQLrTr8yVvayJ0kfAsn3iQR1Satnfdg4VUqioGx2Os-G22eYcYJRqB2u1J5Z5QXCXEOth-CS3FS4BLh_cI3YeOogPMc1crjYZ2NdvpEyorDbRAf6ErgNqYUad06d2253_UeWWdr0KrYjkp02kD-P341QUy4" />
+<link rel="stylesheet" media="all" href="/sites/default/files/css/css_GViGbHVnEj_OaxSeFnLDzZvzmgAIthCFBXQEm6NGqGs.css?delta=1&amp;language=en&amp;theme=bruegel&amp;include=eJxtjl0KwzAMgy_kNUcqTqKmps4PcQLrTr8yVvayJ0kfAsn3iQR1Satnfdg4VUqioGx2Os-G22eYcYJRqB2u1J5Z5QXCXEOth-CS3FS4BLh_cI3YeOogPMc1crjYZ2NdvpEyorDbRAf6ErgNqYUad06d2253_UeWWdr0KrYjkp02kD-P341QUy4" />
+<link rel="stylesheet" media="all" href="https://use.typekit.net/zcx4dqn.css" />
+<link rel="stylesheet" media="all" href="/sites/default/files/css/css_uiXM4E-vz4dgLCWAhKv4cMQOKXpZIBytCVKe7nMImJI.css?delta=3&amp;language=en&amp;theme=bruegel&amp;include=eJxtjl0KwzAMgy_kNUcqTqKmps4PcQLrTr8yVvayJ0kfAsn3iQR1Satnfdg4VUqioGx2Os-G22eYcYJRqB2u1J5Z5QXCXEOth-CS3FS4BLh_cI3YeOogPMc1crjYZ2NdvpEyorDbRAf6ErgNqYUad06d2253_UeWWdr0KrYjkp02kD-P341QUy4" />
+
+  </css-placeholder></head>
+  <body >
+    <div class="infogram-embed" data-id="_/TJBih5YjhVGO6N8VbDk0" data-type="interactive" data-title="FMS_Database_Figure_3"></div><script>!function(e,n,i,s){var d="InfogramEmbeds";var o=e.getElementsByTagName(n)[0];if(window[d]&&window[d].initialized)window[d].process&&window[d].process();else if(!e.getElementById(i)){var r=e.createElement(n);r.async=1,r.id=i,r.src=s,o.parentNode.insertBefore(r,o)}}(document,"script","infogram-async","https://e.infogram.com/js/dist/embed-loader-min.js");</script>
+  </body>
+
+
+
+  </html></div>
+<p><span lang="EN-US">Figure 3 shows notifications for selected European countries for the entire timespan of the database. Values are in USD billions and in 2024 prices. As before, there is a noticeable change in trend in 2017, when there was a marked increase in FMS notifications. &nbsp;</span></p>
+<div class="c-media c-media--infogram c-media--wysiwyg-full-width">
+  
+        
+<html><head>
+    <link rel="stylesheet" media="all" href="/sites/default/files/css/css_czLVgew03oOYWdOWpWXr8oqcswDafNLw0Yim6H-mP5c.css?delta=0&amp;language=en&amp;theme=bruegel&amp;include=eJxtjl0KwzAMgy_kNUcqTqKmps4PcQLrTr8yVvayJ0kfAsn3iQR1Satnfdg4VUqioGx2Os-G22eYcYJRqB2u1J5Z5QXCXEOth-CS3FS4BLh_cI3YeOogPMc1crjYZ2NdvpEyorDbRAf6ErgNqYUad06d2253_UeWWdr0KrYjkp02kD-P341QUy4" />
+<link rel="stylesheet" media="all" href="/sites/default/files/css/css_GViGbHVnEj_OaxSeFnLDzZvzmgAIthCFBXQEm6NGqGs.css?delta=1&amp;language=en&amp;theme=bruegel&amp;include=eJxtjl0KwzAMgy_kNUcqTqKmps4PcQLrTr8yVvayJ0kfAsn3iQR1Satnfdg4VUqioGx2Os-G22eYcYJRqB2u1J5Z5QXCXEOth-CS3FS4BLh_cI3YeOogPMc1crjYZ2NdvpEyorDbRAf6ErgNqYUad06d2253_UeWWdr0KrYjkp02kD-P341QUy4" />
+<link rel="stylesheet" media="all" href="https://use.typekit.net/zcx4dqn.css" />
+<link rel="stylesheet" media="all" href="/sites/default/files/css/css_uiXM4E-vz4dgLCWAhKv4cMQOKXpZIBytCVKe7nMImJI.css?delta=3&amp;language=en&amp;theme=bruegel&amp;include=eJxtjl0KwzAMgy_kNUcqTqKmps4PcQLrTr8yVvayJ0kfAsn3iQR1Satnfdg4VUqioGx2Os-G22eYcYJRqB2u1J5Z5QXCXEOth-CS3FS4BLh_cI3YeOogPMc1crjYZ2NdvpEyorDbRAf6ErgNqYUad06d2253_UeWWdr0KrYjkp02kD-P341QUy4" />
+
+  </css-placeholder></head>
+  <body >
+    <div class="infogram-embed" data-id="_/9jsTpw68ip6ZQVus5wog" data-type="interactive" data-title="FMS_Database_Figure_4"></div><script>!function(e,n,i,s){var d="InfogramEmbeds";var o=e.getElementsByTagName(n)[0];if(window[d]&&window[d].initialized)window[d].process&&window[d].process();else if(!e.getElementById(i)){var r=e.createElement(n);r.async=1,r.id=i,r.src=s,o.parentNode.insertBefore(r,o)}}(document,"script","infogram-async","https://e.infogram.com/js/dist/embed-loader-min.js");</script>
+  </body>
+
+
+
+  </html></div>
+<p><span lang="EN-US">Figure 4 plots notifications involving Ukraine. The almost fivefold increase in FMS notifications involving Ukraine between 2024 and 2025 indicates that the military equipment transferred to Ukraine now seems to be switching from special instruments (such as the Presidential Drawdown Authority and the Ukraine Security Assistance Initiative) to the standard exporting vehicles used for other allies.</span></p>
+<div class="c-media c-media--infogram c-media--wysiwyg-full-width">
+  
+        
+<html><head>
+    <link rel="stylesheet" media="all" href="/sites/default/files/css/css_czLVgew03oOYWdOWpWXr8oqcswDafNLw0Yim6H-mP5c.css?delta=0&amp;language=en&amp;theme=bruegel&amp;include=eJxtjl0KwzAMgy_kNUcqTqKmps4PcQLrTr8yVvayJ0kfAsn3iQR1Satnfdg4VUqioGx2Os-G22eYcYJRqB2u1J5Z5QXCXEOth-CS3FS4BLh_cI3YeOogPMc1crjYZ2NdvpEyorDbRAf6ErgNqYUad06d2253_UeWWdr0KrYjkp02kD-P341QUy4" />
+<link rel="stylesheet" media="all" href="/sites/default/files/css/css_GViGbHVnEj_OaxSeFnLDzZvzmgAIthCFBXQEm6NGqGs.css?delta=1&amp;language=en&amp;theme=bruegel&amp;include=eJxtjl0KwzAMgy_kNUcqTqKmps4PcQLrTr8yVvayJ0kfAsn3iQR1Satnfdg4VUqioGx2Os-G22eYcYJRqB2u1J5Z5QXCXEOth-CS3FS4BLh_cI3YeOogPMc1crjYZ2NdvpEyorDbRAf6ErgNqYUad06d2253_UeWWdr0KrYjkp02kD-P341QUy4" />
+<link rel="stylesheet" media="all" href="https://use.typekit.net/zcx4dqn.css" />
+<link rel="stylesheet" media="all" href="/sites/default/files/css/css_uiXM4E-vz4dgLCWAhKv4cMQOKXpZIBytCVKe7nMImJI.css?delta=3&amp;language=en&amp;theme=bruegel&amp;include=eJxtjl0KwzAMgy_kNUcqTqKmps4PcQLrTr8yVvayJ0kfAsn3iQR1Satnfdg4VUqioGx2Os-G22eYcYJRqB2u1J5Z5QXCXEOth-CS3FS4BLh_cI3YeOogPMc1crjYZ2NdvpEyorDbRAf6ErgNqYUad06d2253_UeWWdr0KrYjkp02kD-P341QUy4" />
+
+  </css-placeholder></head>
+  <body >
+    <div class="infogram-embed" data-id="_/Mtn3oixu7lNCJTUPjfqa" data-type="interactive" data-title="FMS_Database_Figure_5"></div><script>!function(e,n,i,s){var d="InfogramEmbeds";var o=e.getElementsByTagName(n)[0];if(window[d]&&window[d].initialized)window[d].process&&window[d].process();else if(!e.getElementById(i)){var r=e.createElement(n);r.async=1,r.id=i,r.src=s,o.parentNode.insertBefore(r,o)}}(document,"script","infogram-async","https://e.infogram.com/js/dist/embed-loader-min.js");</script>
+  </body>
+
+
+
+  </html></div>
+<p><span lang="EN-US">The FMS database allows us to observe the distribution of FMS notifications within regions. Figure 5 plots the total value of FMS notifications for the entire period of the dataset, for countries in Europe.&nbsp;Within Europe, Poland has been the main customer, followed by Finland and Germany.&nbsp;</span></p>
+<div class="c-media c-media--infogram c-media--wysiwyg-full-width">
+  
+        
+<html><head>
+    <link rel="stylesheet" media="all" href="/sites/default/files/css/css_czLVgew03oOYWdOWpWXr8oqcswDafNLw0Yim6H-mP5c.css?delta=0&amp;language=en&amp;theme=bruegel&amp;include=eJxtjl0KwzAMgy_kNUcqTqKmps4PcQLrTr8yVvayJ0kfAsn3iQR1Satnfdg4VUqioGx2Os-G22eYcYJRqB2u1J5Z5QXCXEOth-CS3FS4BLh_cI3YeOogPMc1crjYZ2NdvpEyorDbRAf6ErgNqYUad06d2253_UeWWdr0KrYjkp02kD-P341QUy4" />
+<link rel="stylesheet" media="all" href="/sites/default/files/css/css_GViGbHVnEj_OaxSeFnLDzZvzmgAIthCFBXQEm6NGqGs.css?delta=1&amp;language=en&amp;theme=bruegel&amp;include=eJxtjl0KwzAMgy_kNUcqTqKmps4PcQLrTr8yVvayJ0kfAsn3iQR1Satnfdg4VUqioGx2Os-G22eYcYJRqB2u1J5Z5QXCXEOth-CS3FS4BLh_cI3YeOogPMc1crjYZ2NdvpEyorDbRAf6ErgNqYUad06d2253_UeWWdr0KrYjkp02kD-P341QUy4" />
+<link rel="stylesheet" media="all" href="https://use.typekit.net/zcx4dqn.css" />
+<link rel="stylesheet" media="all" href="/sites/default/files/css/css_uiXM4E-vz4dgLCWAhKv4cMQOKXpZIBytCVKe7nMImJI.css?delta=3&amp;language=en&amp;theme=bruegel&amp;include=eJxtjl0KwzAMgy_kNUcqTqKmps4PcQLrTr8yVvayJ0kfAsn3iQR1Satnfdg4VUqioGx2Os-G22eYcYJRqB2u1J5Z5QXCXEOth-CS3FS4BLh_cI3YeOogPMc1crjYZ2NdvpEyorDbRAf6ErgNqYUad06d2253_UeWWdr0KrYjkp02kD-P341QUy4" />
+
+  </css-placeholder></head>
+  <body >
+    <div class="infogram-embed" data-id="_/FQGsDVKxobu3QTZHCMZv" data-type="interactive" data-title="FMS_Database_Figure_6"></div><script>!function(e,n,i,s){var d="InfogramEmbeds";var o=e.getElementsByTagName(n)[0];if(window[d]&&window[d].initialized)window[d].process&&window[d].process();else if(!e.getElementById(i)){var r=e.createElement(n);r.async=1,r.id=i,r.src=s,o.parentNode.insertBefore(r,o)}}(document,"script","infogram-async","https://e.infogram.com/js/dist/embed-loader-min.js");</script>
+  </body>
+
+
+
+  </html></div>
+<p><span lang="EN-US">The Near East and South Asia is the second region in importance. Figure 6 plots the total value of FMS notifications for countries in the region.&nbsp; Saudi Arabia is the main partner in the region, amounting to almost a third of the total value of all notifications, notably with the sales in 2010 of several equipment like the Apache Helicopters and the F-15 aircrafts.&nbsp;</span></p>
+<div class="c-media c-media--infogram c-media--wysiwyg-full-width">
+  
+        
+<html><head>
+    <link rel="stylesheet" media="all" href="/sites/default/files/css/css_czLVgew03oOYWdOWpWXr8oqcswDafNLw0Yim6H-mP5c.css?delta=0&amp;language=en&amp;theme=bruegel&amp;include=eJxtjl0KwzAMgy_kNUcqTqKmps4PcQLrTr8yVvayJ0kfAsn3iQR1Satnfdg4VUqioGx2Os-G22eYcYJRqB2u1J5Z5QXCXEOth-CS3FS4BLh_cI3YeOogPMc1crjYZ2NdvpEyorDbRAf6ErgNqYUad06d2253_UeWWdr0KrYjkp02kD-P341QUy4" />
+<link rel="stylesheet" media="all" href="/sites/default/files/css/css_GViGbHVnEj_OaxSeFnLDzZvzmgAIthCFBXQEm6NGqGs.css?delta=1&amp;language=en&amp;theme=bruegel&amp;include=eJxtjl0KwzAMgy_kNUcqTqKmps4PcQLrTr8yVvayJ0kfAsn3iQR1Satnfdg4VUqioGx2Os-G22eYcYJRqB2u1J5Z5QXCXEOth-CS3FS4BLh_cI3YeOogPMc1crjYZ2NdvpEyorDbRAf6ErgNqYUad06d2253_UeWWdr0KrYjkp02kD-P341QUy4" />
+<link rel="stylesheet" media="all" href="https://use.typekit.net/zcx4dqn.css" />
+<link rel="stylesheet" media="all" href="/sites/default/files/css/css_uiXM4E-vz4dgLCWAhKv4cMQOKXpZIBytCVKe7nMImJI.css?delta=3&amp;language=en&amp;theme=bruegel&amp;include=eJxtjl0KwzAMgy_kNUcqTqKmps4PcQLrTr8yVvayJ0kfAsn3iQR1Satnfdg4VUqioGx2Os-G22eYcYJRqB2u1J5Z5QXCXEOth-CS3FS4BLh_cI3YeOogPMc1crjYZ2NdvpEyorDbRAf6ErgNqYUad06d2253_UeWWdr0KrYjkp02kD-P341QUy4" />
+
+  </css-placeholder></head>
+  <body >
+    <div class="infogram-embed" data-id="_/a1aM7qw7XkvPlUoSmp1N" data-type="interactive" data-title="FMS_Database_Figure_7"></div><script>!function(e,n,i,s){var d="InfogramEmbeds";var o=e.getElementsByTagName(n)[0];if(window[d]&&window[d].initialized)window[d].process&&window[d].process();else if(!e.getElementById(i)){var r=e.createElement(n);r.async=1,r.id=i,r.src=s,o.parentNode.insertBefore(r,o)}}(document,"script","infogram-async","https://e.infogram.com/js/dist/embed-loader-min.js");</script>
+  </body>
+
+
+
+  </html></div>
+<p><span lang="EN-US">While smaller than both Europe and the Near East-South Asia in value, Asia and the Pacific is a strategically important region for US foreign policy. The region is the third largest FMS customer of FMS, with Japan and South Korea as the largest, followed by Australia.</span></p>
+<p><span lang="ES"><strong>References</strong></span></p>
+<p><span lang="EN-US">Mejino-López, J. and G. Wolff (2025) ‘Europe’s dependence on US foreign military sales and what to do about it’ Policy Brief 27/2025, Bruegel</span></p>
+<p><span lang="EN-US">Mejino-López, J., J. Ospital and G. B. Wolff (2025) 'Understanding US foreign military sales globally since 2008: an analysis of a new dataset', &nbsp;Working Paper 27/2025, Bruegel, available at <a href="https://doi.org/10.64153/QOZC5551">https://doi.org/10.64153/QOZC5551</a></span><br>&nbsp;</p>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+  
+    
+  <section class="c-people-block c-people-block--meta o-section">
+    <div class="o-container">
+      <div class="c-people-block__headings">
+        <h2 class="c-people-block__title">
+          Authors
+        </h2>
+      </div>
+
+      <div class="c-people-block__card-container">
+                  
+      
+<article about="/people/juan-mejino-lopez" class="c-person-card">
+  <div class="c-person-card__image-container">
+    <a class="" href="/people/juan-mejino-lopez" title="View profile of Juan Mejino-López" tabindex="-1">
+                <div class="c-media c-media--image c-media--person-card">
+  
+          <img loading="lazy" src="/sites/default/files/styles/profile_picture/public/2025-10/JML%20BAM%2025%204%205.jpg?h=613b38ea&amp;itok=YdPPasKa" width="326" height="326" alt="JML BAM 25 4 5" typeof="foaf:Image" class="image-style-profile-picture" />
+
+
+
+
+  </div>
+
+
+          </a>
+  </div>
+
+  <div class="c-person-card__content-container">
+    <h3 class="c-person-card__title">
+      <a class="" href="/people/juan-mejino-lopez" title="View profile of Juan Mejino-López">
+        <span class="field field--name-title field--type-string field--label-hidden">Juan Mejino-López</span>
+
+      </a>
+    </h3>
+
+    
+    
+          <div class="c-person-card__organisation">
+                <p></p>
+    
+  
+
+      </div>
+      </div>
+</article>
+
+
+                  
+      
+<article about="/people/javier-ospital" class="c-person-card">
+  <div class="c-person-card__image-container">
+    <a class="" href="/people/javier-ospital" title="View profile of Javier Ospital" tabindex="-1">
+                <div class="c-media c-media--image c-media--person-card">
+  
+          <img loading="lazy" src="/sites/default/files/styles/profile_picture/public/2025-10/_NEA6377.jpg?h=59037d51&amp;itok=VV9mYL72" width="326" height="326" alt="JOOG headshot" typeof="foaf:Image" class="image-style-profile-picture" />
+
+
+
+
+  </div>
+
+
+          </a>
+  </div>
+
+  <div class="c-person-card__content-container">
+    <h3 class="c-person-card__title">
+      <a class="" href="/people/javier-ospital" title="View profile of Javier Ospital">
+        <span class="field field--name-title field--type-string field--label-hidden">Javier Ospital</span>
+
+      </a>
+    </h3>
+
+    
+                  <p class="c-person-card__job-title">
+            Research Assistant
+
+        </p>
+          
+      </div>
+</article>
+
+
+                  
+      
+<article about="/people/guntram-b-wolff" class="c-person-card">
+  <div class="c-person-card__image-container">
+    <a class="" href="/people/guntram-b-wolff" title="View profile of Guntram B. Wolff" tabindex="-1">
+                <div class="c-media c-media--image c-media--person-card">
+  
+          <img loading="lazy" src="/sites/default/files/styles/profile_picture/public/2025-11/GW%20BAM%2025%204%205.jpg?h=b96dd4d1&amp;itok=CUbnJ1xU" width="326" height="326" alt="GW BAM 25 4 5" typeof="foaf:Image" class="image-style-profile-picture" />
+
+
+
+
+  </div>
+
+
+          </a>
+  </div>
+
+  <div class="c-person-card__content-container">
+    <h3 class="c-person-card__title">
+      <a class="" href="/people/guntram-b-wolff" title="View profile of Guntram B. Wolff">
+        <span class="field field--name-title field--type-string field--label-hidden">Guntram B. Wolff</span>
+
+      </a>
+    </h3>
+
+    
+                  <p class="c-person-card__job-title">
+            Bruegel Senior Fellow
+
+        </p>
+          
+          <div class="c-person-card__organisation">
+                <p></p>
+    
+  
+
+      </div>
+      </div>
+</article>
+
+
+              </div>
+    </div>
+  </section>
+
+      <section class="c-meta o-section o-section--meta ">
+    <dl>
+                        <div class="c-meta__row o-container c-meta__row--field-theme">
+            <dt class="c-meta__label">Theme</dt>
+
+            <dd class="c-meta__values">
+                                                                    
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                    
+                                        <a class="o-meta-link" href="/topic/macroeconomic-policy-and-governance"
+                       target="">
+                      <span class="o-meta-link__text">Macroeconomic policy and governance</span>
+
+                                          </a>
+                                                                                                </dd>
+          </div>
+                                <div class="c-meta__row o-container c-meta__row--field-keyword">
+            <dt class="c-meta__label">Keyword</dt>
+
+            <dd class="c-meta__values">
+                                                                    
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                    
+                                        <a class="o-meta-link" href="/keyword/security"
+                       target="">
+                      <span class="o-meta-link__text">security</span>
+
+                                          </a>
+                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                    
+                                        <a class="o-meta-link" href="/keyword/transatlantic-relations"
+                       target="">
+                      <span class="o-meta-link__text">transatlantic relations</span>
+
+                                          </a>
+                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                    
+                                        <a class="o-meta-link" href="/keyword/trade-policy"
+                       target="">
+                      <span class="o-meta-link__text">trade policy</span>
+
+                                          </a>
+                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                    
+                                        <a class="o-meta-link" href="/keyword/active-dataset"
+                       target="">
+                      <span class="o-meta-link__text">active Dataset</span>
+
+                                          </a>
+                                                                                                </dd>
+          </div>
+                                <div class="c-meta__row o-container c-meta__row--langcode">
+            <dt class="c-meta__label">Language</dt>
+
+            <dd class="c-meta__values">
+                                                                    <span class="c-meta__value"><span class="c-meta__value-text">English</span></span>
+                                                                            </dd>
+          </div>
+                  </dl>
+  </section>
+
+      
+  
+  <section  about="/dataset/us-foreign-military-sales" typeof="schema:Article" class="article template-download c-card-block c-card-block--four o-section o-section--card-block c-card-block--related-content o-section--related-content">
+    <div class="o-container">
+              <header class="o-header">
+                      <h2 class="c-page-block__section-header o-header__title">
+              Related content
+            </h2>
+          
+                  </header>
+      
+      <div class="c-card-block__cards-wrapper">
+        
+        <div class="c-card-block__cards">
+                                              
+
+<article class="c-card">
+      <a class="c-card__image" href="/policy-brief/reforming-european-defence-procurement-boost-military-innovation-and-startups" title="Reforming European defence procurement to boost military innovation and startups" tabindex="-1">
+                <div class="c-media c-media--image c-media--featured-image">
+  
+            <picture>
+                  <source srcset="/sites/default/files/styles/featured_image_small_with_focal_point/public/2026-03/PB%2004.jpg.webp?h=199d8c1f&amp;itok=cK7fG_4M 1x, /sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-03/PB%2004.jpg.webp?h=199d8c1f&amp;itok=Wyof88uy 2x" media="only screen and (max-width: 480px)" type="image/webp" width="276" height="164"/>
+              <source srcset="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-03/PB%2004.jpg.webp?h=199d8c1f&amp;itok=Wyof88uy 1x" media="only screen and (max-width: 767px)" type="image/webp" width="552" height="328"/>
+              <source srcset="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-03/PB%2004.jpg.webp?h=199d8c1f&amp;itok=Wyof88uy 1x, /sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-03/PB%2004.jpg.webp?h=199d8c1f&amp;itok=Wyof88uy 2x" media="only screen and (max-width: 1017px)" type="image/webp" width="552" height="328"/>
+              <source srcset="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-03/PB%2004.jpg.webp?h=199d8c1f&amp;itok=Wyof88uy 1x" media="only screen and (max-width: 1275px)" type="image/webp" width="552" height="328"/>
+              <source srcset="/sites/default/files/styles/featured_image_large_with_focal_point/public/2026-03/PB%2004.jpg.webp?h=199d8c1f&amp;itok=75mtGyK8 1x, /sites/default/files/styles/featured_image_large_with_focal_point/public/2026-03/PB%2004.jpg.webp?h=199d8c1f&amp;itok=75mtGyK8 2x" media="only screen and (min-width: 1276px)" type="image/webp" width="1104" height="656"/>
+              <source srcset="/sites/default/files/styles/featured_image_small_with_focal_point/public/2026-03/PB%2004.jpg?h=199d8c1f&amp;itok=cK7fG_4M 1x, /sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-03/PB%2004.jpg?h=199d8c1f&amp;itok=Wyof88uy 2x" media="only screen and (max-width: 480px)" type="image/jpeg" width="276" height="164"/>
+              <source srcset="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-03/PB%2004.jpg?h=199d8c1f&amp;itok=Wyof88uy 1x" media="only screen and (max-width: 767px)" type="image/jpeg" width="552" height="328"/>
+              <source srcset="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-03/PB%2004.jpg?h=199d8c1f&amp;itok=Wyof88uy 1x, /sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-03/PB%2004.jpg?h=199d8c1f&amp;itok=Wyof88uy 2x" media="only screen and (max-width: 1017px)" type="image/jpeg" width="552" height="328"/>
+              <source srcset="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-03/PB%2004.jpg?h=199d8c1f&amp;itok=Wyof88uy 1x" media="only screen and (max-width: 1275px)" type="image/jpeg" width="552" height="328"/>
+              <source srcset="/sites/default/files/styles/featured_image_large_with_focal_point/public/2026-03/PB%2004.jpg?h=199d8c1f&amp;itok=75mtGyK8 1x, /sites/default/files/styles/featured_image_large_with_focal_point/public/2026-03/PB%2004.jpg?h=199d8c1f&amp;itok=75mtGyK8 2x" media="only screen and (min-width: 1276px)" type="image/jpeg" width="1104" height="656"/>
+                  <img loading="eager" width="552" height="328" class="c-media__image" src="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-03/PB%2004.jpg?h=199d8c1f&amp;itok=Wyof88uy" alt="Picture of jets" typeof="foaf:Image" />
+
+  </picture>
+
+
+
+  </div>
+
+
+      
+                </a>
+  
+  <small class="c-card__content-type">
+    Policy Brief
+  </small>
+
+  <h3 class="c-card__title">
+    <a href="/policy-brief/reforming-european-defence-procurement-boost-military-innovation-and-startups">
+      <span property="schema:name" class="field field--name-title field--type-string field--label-hidden">Reforming European defence procurement to boost military innovation and startups</span>
+
+    </a>
+  </h3>
+
+      <p class="c-card__description">
+        European defence procurement practices must evolve to embrace innovative startups and small firms, in order to meet modern battlefield needs
+
+    </p>
+  
+          <div class="c-card__authors">
+      
+      Ethan Kapstein, 
+        Javier Ospital and 
+        Guntram B. Wolff
+  
+    </div>
+  
+  <time class="c-card__date" datetime="2026-03-05">
+    05 March 2026
+  </time>
+
+      <div class="c-card__keywords">
+        <a href="/keyword/security" hreflang="en">security</a>
+
+    <a href="/keyword/geopolitics" hreflang="en">geopolitics</a>
+
+      <button class="c-card__keywords-expand js-keywords-expand" type="button" aria-label="Click to reveal all keywords">
+      ...
+    </button>
+    <a href="/keyword/transatlantic-relations" hreflang="en">transatlantic relations</a>
+
+  
+
+    </div>
+  </article>
+
+
+                                              
+
+<article class="c-card">
+      <a class="c-card__image" href="/first-glance/greenland-not-marginal-us-takeover-threat-strategic-test-europe" title="Greenland is not marginal: the US takeover threat is a strategic test for Europe" tabindex="-1">
+                <div class="c-media c-media--image c-media--featured-image">
+  
+            <picture>
+                  <source srcset="/sites/default/files/styles/featured_image_small_with_focal_point/public/2026-01/Guntram%20070126.jpg.webp?h=199d8c1f&amp;itok=PjeqyVPw 1x, /sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-01/Guntram%20070126.jpg.webp?h=199d8c1f&amp;itok=g03k0Vha 2x" media="only screen and (max-width: 480px)" type="image/webp" width="276" height="164"/>
+              <source srcset="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-01/Guntram%20070126.jpg.webp?h=199d8c1f&amp;itok=g03k0Vha 1x" media="only screen and (max-width: 767px)" type="image/webp" width="552" height="328"/>
+              <source srcset="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-01/Guntram%20070126.jpg.webp?h=199d8c1f&amp;itok=g03k0Vha 1x, /sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-01/Guntram%20070126.jpg.webp?h=199d8c1f&amp;itok=g03k0Vha 2x" media="only screen and (max-width: 1017px)" type="image/webp" width="552" height="328"/>
+              <source srcset="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-01/Guntram%20070126.jpg.webp?h=199d8c1f&amp;itok=g03k0Vha 1x" media="only screen and (max-width: 1275px)" type="image/webp" width="552" height="328"/>
+              <source srcset="/sites/default/files/styles/featured_image_large_with_focal_point/public/2026-01/Guntram%20070126.jpg.webp?h=199d8c1f&amp;itok=z8Fr390L 1x, /sites/default/files/styles/featured_image_large_with_focal_point/public/2026-01/Guntram%20070126.jpg.webp?h=199d8c1f&amp;itok=z8Fr390L 2x" media="only screen and (min-width: 1276px)" type="image/webp" width="1104" height="656"/>
+              <source srcset="/sites/default/files/styles/featured_image_small_with_focal_point/public/2026-01/Guntram%20070126.jpg?h=199d8c1f&amp;itok=PjeqyVPw 1x, /sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-01/Guntram%20070126.jpg?h=199d8c1f&amp;itok=g03k0Vha 2x" media="only screen and (max-width: 480px)" type="image/jpeg" width="276" height="164"/>
+              <source srcset="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-01/Guntram%20070126.jpg?h=199d8c1f&amp;itok=g03k0Vha 1x" media="only screen and (max-width: 767px)" type="image/jpeg" width="552" height="328"/>
+              <source srcset="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-01/Guntram%20070126.jpg?h=199d8c1f&amp;itok=g03k0Vha 1x, /sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-01/Guntram%20070126.jpg?h=199d8c1f&amp;itok=g03k0Vha 2x" media="only screen and (max-width: 1017px)" type="image/jpeg" width="552" height="328"/>
+              <source srcset="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-01/Guntram%20070126.jpg?h=199d8c1f&amp;itok=g03k0Vha 1x" media="only screen and (max-width: 1275px)" type="image/jpeg" width="552" height="328"/>
+              <source srcset="/sites/default/files/styles/featured_image_large_with_focal_point/public/2026-01/Guntram%20070126.jpg?h=199d8c1f&amp;itok=z8Fr390L 1x, /sites/default/files/styles/featured_image_large_with_focal_point/public/2026-01/Guntram%20070126.jpg?h=199d8c1f&amp;itok=z8Fr390L 2x" media="only screen and (min-width: 1276px)" type="image/jpeg" width="1104" height="656"/>
+                  <img loading="eager" width="552" height="328" class="c-media__image" src="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-01/Guntram%20070126.jpg?h=199d8c1f&amp;itok=g03k0Vha" alt="Guntram 070126" typeof="foaf:Image" />
+
+  </picture>
+
+
+
+  </div>
+
+
+      
+                </a>
+  
+  <small class="c-card__content-type">
+    First Glance
+  </small>
+
+  <h3 class="c-card__title">
+    <a href="/first-glance/greenland-not-marginal-us-takeover-threat-strategic-test-europe">
+      <span property="schema:name" class="field field--name-title field--type-string field--label-hidden">Greenland is not marginal: the US takeover threat is a strategic test for Europe</span>
+
+    </a>
+  </h3>
+
+      <p class="c-card__description">
+        European powers should provide backing for Nuuk and Copenhagen by establishing a greater military presence in Greenland
+
+    </p>
+  
+          <div class="c-card__authors">
+      
+      Guntram B. Wolff
+  
+    </div>
+  
+  <time class="c-card__date" datetime="2026-01-07">
+    07 January 2026
+  </time>
+
+      <div class="c-card__keywords">
+        <a href="/keyword/geopolitics" hreflang="en">geopolitics</a>
+
+    <a href="/keyword/security" hreflang="en">security</a>
+
+      <button class="c-card__keywords-expand js-keywords-expand" type="button" aria-label="Click to reveal all keywords">
+      ...
+    </button>
+    <a href="/keyword/transatlantic-relations" hreflang="en">transatlantic relations</a>
+
+    <a href="/keyword/global-governance" hreflang="en">global governance</a>
+
+  
+
+    </div>
+  </article>
+
+
+                                              
+
+<article class="c-card">
+      <a class="c-card__image" href="/podcast/europe-and-iran-war" title="Europe and the Iran war" tabindex="-1">
+                <div class="c-media c-media--image c-media--featured-image">
+  
+            <picture>
+                  <source srcset="/sites/default/files/styles/featured_image_small_with_focal_point/public/2026-03/Picture1.jpg.webp?h=8fa98512&amp;itok=R6wcAQUL 1x, /sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-03/Picture1.jpg.webp?h=8fa98512&amp;itok=oo3eAbo9 2x" media="only screen and (max-width: 480px)" type="image/webp" width="276" height="164"/>
+              <source srcset="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-03/Picture1.jpg.webp?h=8fa98512&amp;itok=oo3eAbo9 1x" media="only screen and (max-width: 767px)" type="image/webp" width="552" height="328"/>
+              <source srcset="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-03/Picture1.jpg.webp?h=8fa98512&amp;itok=oo3eAbo9 1x, /sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-03/Picture1.jpg.webp?h=8fa98512&amp;itok=oo3eAbo9 2x" media="only screen and (max-width: 1017px)" type="image/webp" width="552" height="328"/>
+              <source srcset="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-03/Picture1.jpg.webp?h=8fa98512&amp;itok=oo3eAbo9 1x" media="only screen and (max-width: 1275px)" type="image/webp" width="552" height="328"/>
+              <source srcset="/sites/default/files/styles/featured_image_large_with_focal_point/public/2026-03/Picture1.jpg.webp?h=8fa98512&amp;itok=souz9gGF 1x, /sites/default/files/styles/featured_image_large_with_focal_point/public/2026-03/Picture1.jpg.webp?h=8fa98512&amp;itok=souz9gGF 2x" media="only screen and (min-width: 1276px)" type="image/webp" width="1104" height="656"/>
+              <source srcset="/sites/default/files/styles/featured_image_small_with_focal_point/public/2026-03/Picture1.jpg?h=8fa98512&amp;itok=R6wcAQUL 1x, /sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-03/Picture1.jpg?h=8fa98512&amp;itok=oo3eAbo9 2x" media="only screen and (max-width: 480px)" type="image/jpeg" width="276" height="164"/>
+              <source srcset="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-03/Picture1.jpg?h=8fa98512&amp;itok=oo3eAbo9 1x" media="only screen and (max-width: 767px)" type="image/jpeg" width="552" height="328"/>
+              <source srcset="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-03/Picture1.jpg?h=8fa98512&amp;itok=oo3eAbo9 1x, /sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-03/Picture1.jpg?h=8fa98512&amp;itok=oo3eAbo9 2x" media="only screen and (max-width: 1017px)" type="image/jpeg" width="552" height="328"/>
+              <source srcset="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-03/Picture1.jpg?h=8fa98512&amp;itok=oo3eAbo9 1x" media="only screen and (max-width: 1275px)" type="image/jpeg" width="552" height="328"/>
+              <source srcset="/sites/default/files/styles/featured_image_large_with_focal_point/public/2026-03/Picture1.jpg?h=8fa98512&amp;itok=souz9gGF 1x, /sites/default/files/styles/featured_image_large_with_focal_point/public/2026-03/Picture1.jpg?h=8fa98512&amp;itok=souz9gGF 2x" media="only screen and (min-width: 1276px)" type="image/jpeg" width="1104" height="656"/>
+                  <img loading="eager" width="552" height="328" class="c-media__image" src="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2026-03/Picture1.jpg?h=8fa98512&amp;itok=oo3eAbo9" alt="Some of the missiles launched from Iran are spotted in the skies over Hebron as Iran&#039;s missile attacks in retaliation for US-Israeli strikes continue on February 28, 2026 in West Bank. (Photo by Wisam Hashlamoun/Anadolu via Getty Images)" typeof="foaf:Image" />
+
+  </picture>
+
+
+
+  </div>
+
+
+      
+                    <div class="c-card__play-icon">
+          <svg class="o-svg o-svg--triangle">
+  <use class="o-svg__use" xlink:href="/themes/custom/bruegel/assets/img/symbol/svg/sprite.symbol.svg?v=12#triangle"/>
+</svg>
+        </div>
+          </a>
+  
+  <small class="c-card__content-type">
+    Podcast
+  </small>
+
+  <h3 class="c-card__title">
+    <a href="/podcast/europe-and-iran-war">
+      <span property="schema:name" class="field field--name-title field--type-string field--label-hidden">Europe and the Iran war</span>
+
+    </a>
+  </h3>
+
+      <p class="c-card__description">
+        What does the conflict mean for inflation, oil prices, the economy and Ukraine? 
+
+    </p>
+  
+          <div class="c-card__authors">
+      
+      Rebecca Christie, 
+        Elina Ribakova, 
+        Simone Tagliapietra and 
+        Guntram B. Wolff
+  
+    </div>
+  
+  <time class="c-card__date" datetime="2026-03-02">
+    02 March 2026
+  </time>
+
+      <div class="c-card__keywords">
+        <a href="/keyword/security" hreflang="en">security</a>
+
+    <a href="/keyword/energy" hreflang="en">energy</a>
+
+  
+
+    </div>
+  </article>
+
+
+                                              
+
+<article class="c-card">
+      <a class="c-card__image" href="/newsletter/why-does-european-rearmament-need-european-competition" title="Why does European rearmament need European competition?" tabindex="-1">
+                <div class="c-media c-media--image c-media--featured-image">
+  
+            <picture>
+                  <source srcset="/sites/default/files/styles/featured_image_small_with_focal_point/public/2024-12/Newsletter%20image.jpg.webp?h=5b4a59a6&amp;itok=4W1QwEOo 1x, /sites/default/files/styles/featured_image_medium_with_focal_point/public/2024-12/Newsletter%20image.jpg.webp?h=5b4a59a6&amp;itok=7N_5_f-W 2x" media="only screen and (max-width: 480px)" type="image/webp" width="276" height="164"/>
+              <source srcset="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2024-12/Newsletter%20image.jpg.webp?h=5b4a59a6&amp;itok=7N_5_f-W 1x" media="only screen and (max-width: 767px)" type="image/webp" width="552" height="328"/>
+              <source srcset="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2024-12/Newsletter%20image.jpg.webp?h=5b4a59a6&amp;itok=7N_5_f-W 1x, /sites/default/files/styles/featured_image_medium_with_focal_point/public/2024-12/Newsletter%20image.jpg.webp?h=5b4a59a6&amp;itok=7N_5_f-W 2x" media="only screen and (max-width: 1017px)" type="image/webp" width="552" height="328"/>
+              <source srcset="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2024-12/Newsletter%20image.jpg.webp?h=5b4a59a6&amp;itok=7N_5_f-W 1x" media="only screen and (max-width: 1275px)" type="image/webp" width="552" height="328"/>
+              <source srcset="/sites/default/files/styles/featured_image_large_with_focal_point/public/2024-12/Newsletter%20image.jpg.webp?h=5b4a59a6&amp;itok=yJTShNcI 1x, /sites/default/files/styles/featured_image_large_with_focal_point/public/2024-12/Newsletter%20image.jpg.webp?h=5b4a59a6&amp;itok=yJTShNcI 2x" media="only screen and (min-width: 1276px)" type="image/webp" width="1104" height="656"/>
+              <source srcset="/sites/default/files/styles/featured_image_small_with_focal_point/public/2024-12/Newsletter%20image.jpg?h=5b4a59a6&amp;itok=4W1QwEOo 1x, /sites/default/files/styles/featured_image_medium_with_focal_point/public/2024-12/Newsletter%20image.jpg?h=5b4a59a6&amp;itok=7N_5_f-W 2x" media="only screen and (max-width: 480px)" type="image/jpeg" width="276" height="164"/>
+              <source srcset="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2024-12/Newsletter%20image.jpg?h=5b4a59a6&amp;itok=7N_5_f-W 1x" media="only screen and (max-width: 767px)" type="image/jpeg" width="552" height="328"/>
+              <source srcset="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2024-12/Newsletter%20image.jpg?h=5b4a59a6&amp;itok=7N_5_f-W 1x, /sites/default/files/styles/featured_image_medium_with_focal_point/public/2024-12/Newsletter%20image.jpg?h=5b4a59a6&amp;itok=7N_5_f-W 2x" media="only screen and (max-width: 1017px)" type="image/jpeg" width="552" height="328"/>
+              <source srcset="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2024-12/Newsletter%20image.jpg?h=5b4a59a6&amp;itok=7N_5_f-W 1x" media="only screen and (max-width: 1275px)" type="image/jpeg" width="552" height="328"/>
+              <source srcset="/sites/default/files/styles/featured_image_large_with_focal_point/public/2024-12/Newsletter%20image.jpg?h=5b4a59a6&amp;itok=yJTShNcI 1x, /sites/default/files/styles/featured_image_large_with_focal_point/public/2024-12/Newsletter%20image.jpg?h=5b4a59a6&amp;itok=yJTShNcI 2x" media="only screen and (min-width: 1276px)" type="image/jpeg" width="1104" height="656"/>
+                  <img loading="eager" width="552" height="328" class="c-media__image" src="/sites/default/files/styles/featured_image_medium_with_focal_point/public/2024-12/Newsletter%20image.jpg?h=5b4a59a6&amp;itok=7N_5_f-W" alt="newsletter" typeof="foaf:Image" />
+
+  </picture>
+
+
+
+  </div>
+
+
+      
+                </a>
+  
+  <small class="c-card__content-type">
+    Newsletter
+  </small>
+
+  <h3 class="c-card__title">
+    <a href="/newsletter/why-does-european-rearmament-need-european-competition">
+      <span property="schema:name" class="field field--name-title field--type-string field--label-hidden">Why does European rearmament need European competition?</span>
+
+    </a>
+  </h3>
+
+  
+          <div class="c-card__authors">
+      
+      Guntram B. Wolff
+  
+    </div>
+  
+  <time class="c-card__date" datetime="2026-02-16">
+    16 February 2026
+  </time>
+
+      <div class="c-card__keywords">
+        <a href="/keyword/whyaxis-newsletter" hreflang="en">WhyAxis newsletter</a>
+
+    <a href="/keyword/geopolitics" hreflang="en">geopolitics</a>
+
+      <button class="c-card__keywords-expand js-keywords-expand" type="button" aria-label="Click to reveal all keywords">
+      ...
+    </button>
+    <a href="/keyword/security" hreflang="en">security</a>
+
+    <a href="/keyword/industrial-policy" hreflang="en">industrial policy</a>
+
+    <a href="/keyword/competition-policy" hreflang="en">competition policy</a>
+
+  
+
+    </div>
+  </article>
+
+
+                  </div>
+      </div>
+
+          </div>
+
+  </section>
+  
+
+
+    <span class="visually-hidden">
+  <div class="block block-footnotes block-footnotes-group">
+  
+    
+      <ul class="footnotes" id="footnotes_group"></ul></div>
+  </div>
+
+  </span>
+</article>
+
+
+
+
+    
+</main>
+
+  
+<footer class="c-footer" role="contentinfo">
+  <div class="o-container">
+    <div class="c-footer__inner">
+      <div class="c-footer__newsletter">
+                
+                          <h2 class="c-footer__newsletter-header" id="footer-newsletter">Bruegel&#039;s Weekly Newsletter</h2>
+        
+                          <p class="c-footer__newsletter-description">Subscribe to The Why Axis</p>
+        
+                <iframe class="c-footer__newsletter-iframe" src="https://bruegel.my.salesforce-sites.com/events/UpdateAcc?sf=1&d=b" scrolling="no"></iframe>
+      </div>
+
+      <div class="c-footer__menus">
+                  <div class="c-footer__menu-main-navigation">
+                        
+
+<nav role="navigation" aria-labelledby="block-mainnavigation-footer-menu" id="block-mainnavigation-footer" class="c-footer__menu block block-menu navigation menu--main">
+          
+  
+
+  <h2 class="visually-hidden" id="block-mainnavigation-footer-menu">Main navigation</h2>
+
+  
+
+        
+              <ul class="c-main-menu">
+                    <li class="c-main-menu__item c-main-menu__item--collapsed">
+        <a href="/topics" title="Topics" data-drupal-link-system-path="node/27">Topics</a>
+              </li>
+                <li class="c-main-menu__item c-main-menu__item--collapsed">
+        <a href="/publications" data-drupal-link-system-path="node/89">Publications</a>
+              </li>
+                <li class="c-main-menu__item c-main-menu__item--collapsed">
+        <a href="/commentary" data-drupal-link-system-path="node/8788">Commentary</a>
+              </li>
+                <li class="c-main-menu__item c-main-menu__item--collapsed c-main-menu__item--active-trail">
+        <a href="/datasets" data-drupal-link-system-path="node/90">Datasets</a>
+              </li>
+                <li class="c-main-menu__item c-main-menu__item--collapsed">
+        <a href="/sound-economics" data-drupal-link-system-path="node/31">Podcasts</a>
+              </li>
+                <li class="c-main-menu__item c-main-menu__item--collapsed">
+        <a href="/events" data-drupal-link-system-path="node/32">Events</a>
+              </li>
+                <li class="c-main-menu__item">
+        <a href="/our-researchers" data-drupal-link-system-path="node/33">Our Researchers</a>
+              </li>
+        </ul>
+  
+
+
+  </nav>
+
+          </div>
+        
+                  <div class="c-footer__menu-secondary-navigation">
+                        
+
+<nav role="navigation" aria-labelledby="block-secondarynavigation-footer-menu" id="block-secondarynavigation-footer" class="c-footer__menu block block-menu navigation menu--secondary-navigation">
+          
+  
+
+  <h2 class="visually-hidden" id="block-secondarynavigation-footer-menu">Secondary navigation</h2>
+
+  
+
+        
+        <ul class="c-secondary-menu">
+                  <li class="c-secondary-menu__item">
+        <a href="/membership" data-drupal-link-system-path="node/101">Membership</a>
+              </li>
+                <li class="c-secondary-menu__item">
+        <a href="/partnerships" data-drupal-link-system-path="node/102">Partnerships</a>
+              </li>
+                <li class="c-secondary-menu__item">
+        <a href="/contact-us" data-drupal-link-system-path="node/43">Contact</a>
+              </li>
+                <li class="c-secondary-menu__item c-secondary-menu__item--collapsed">
+        <a href="/bruegel-european-think-tank-specialises-economics" data-drupal-link-system-path="node/34">About</a>
+              </li>
+                <li class="c-secondary-menu__item c-secondary-menu__item--collapsed">
+        <a href="/careers" data-drupal-link-system-path="node/42">Careers</a>
+              </li>
+      </ul>
+    
+
+
+  </nav>
+
+          </div>
+              </div>
+    </div>
+  </div>
+
+  <div class="c-footer__bottom">
+        <div class="o-container">
+      <div class="c-footer__bottom-inner">
+        <p class="c-footer__credit">
+          © BRUEGEL. All rights reserved. Design and development by <a href="https://www.designbysoapbox.com">Soapbox</a>.
+        </p>
+
+                <div class="c-footer__social-icons">
+                
+              <a href="https://bsky.app/profile/bruegel.org"
+         title="Bluesky&#x20;page"
+         class="c-footer__social-icon c-footer__social-icon--bluesky"
+         target="_blank">
+        <svg class="o-svg o-svg--bluesky">
+  <use class="o-svg__use" xlink:href="/themes/custom/bruegel/assets/img/symbol/svg/sprite.symbol.svg?v=12#bluesky"/>
+</svg>
+      </a>
+    
+              <a href="https://www.linkedin.com/company/bruegel"
+         title="Linkedin&#x20;page"
+         class="c-footer__social-icon c-footer__social-icon--linkedin"
+         target="_blank">
+        <svg class="o-svg o-svg--linkedin">
+  <use class="o-svg__use" xlink:href="/themes/custom/bruegel/assets/img/symbol/svg/sprite.symbol.svg?v=12#linkedin"/>
+</svg>
+      </a>
+    
+              <a href="https://www.youtube.com/user/BruegelTV"
+         title="Youtube&#x20;channel"
+         class="c-footer__social-icon c-footer__social-icon--youtube"
+         target="_blank">
+        <svg class="o-svg o-svg--youtube">
+  <use class="o-svg__use" xlink:href="/themes/custom/bruegel/assets/img/symbol/svg/sprite.symbol.svg?v=12#youtube"/>
+</svg>
+      </a>
+    
+              <a href="https://www.instagram.com/bruegel_thinktank/"
+         title="Instagram&#x20;page"
+         class="c-footer__social-icon c-footer__social-icon--instagram"
+         target="_blank">
+        <svg class="o-svg o-svg--instagram">
+  <use class="o-svg__use" xlink:href="/themes/custom/bruegel/assets/img/symbol/svg/sprite.symbol.svg?v=12#instagram"/>
+</svg>
+      </a>
+              </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+
+
+
+
+<script src="/sites/default/files/js/js_hMWJV4PVe22w7pFg4lakAnITDO6EYdi0YPJpGrwGGJQ.js?scope=footer&amp;delta=0&amp;language=en&amp;theme=bruegel&amp;include=eJxtyEEKwCAMAMEP2fokiTFoMDUSK_T57UE89bTMRpuUSTyCJRcXsmgEOQYa93vsfWkC2RqKDBJGAeOWXZy5kCW_6mgGVK1MX64uDA3J_01Hzy3cqk82O8i5-ALWwzvN"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-once/2.2.3/jquery.once.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-throttle-debounce/1.1/jquery.ba-throttle-debounce.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/svg4everybody/2.1.9/svg4everybody.min.js"></script>
+<script src="/sites/default/files/js/js_oITEL97DluSrlLeA4giYBWVN1ZbP3FmigGo7j9sLuF4.js?scope=footer&amp;delta=4&amp;language=en&amp;theme=bruegel&amp;include=eJxtyEEKwCAMAMEP2fokiTFoMDUSK_T57UE89bTMRpuUSTyCJRcXsmgEOQYa93vsfWkC2RqKDBJGAeOWXZy5kCW_6mgGVK1MX64uDA3J_01Hzy3cqk82O8i5-ALWwzvN"></script>
+
+</body>
+</html>

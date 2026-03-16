@@ -1,0 +1,1600 @@
+{
+  "source": "Bruegel US Foreign Military Sales Database (Apr 2008 \u2013 Sep 2025)",
+  "description": "US arms sold to each recipient country, millions USD at 2024 constant prices",
+  "unit": "millions USD (2024 constant prices)",
+  "recipientCountries": {
+    "Australia": {
+      "totalMillionUSD2024": 65742.67,
+      "byYear": {
+        "2008": 4309.65,
+        "2009": 1275.94,
+        "2010": 3580.25,
+        "2011": 4394.61,
+        "2012": 2182.6,
+        "2013": 4905.93,
+        "2014": 2136.79,
+        "2015": 2767.86,
+        "2016": 2755.85,
+        "2017": 3782.24,
+        "2018": 419.49,
+        "2019": 611.61,
+        "2020": 3262.68,
+        "2021": 9934.57,
+        "2022": 9279.31,
+        "2023": 4641.92,
+        "2024": 1055.0,
+        "2025": 4446.37
+      },
+      "byCategory": {
+        "Ammunition": 2255.42,
+        "Naval": 4126.05,
+        "Aircraft": 23649.63,
+        "Artillery": 2400.52,
+        "Helicopter": 14449.9,
+        "Drone": 2201.47,
+        "Missile (Naval)": 3238.69,
+        "Missile (Air)": 4769.45,
+        "Development - Aircraft": 2979.68,
+        "Modernisation": 96.38,
+        "Armoured vehicle": 62.81,
+        "Other": 507.11,
+        "Development - Naval": 2232.51,
+        "Missile (Land)": 439.35,
+        "Tank": 1932.33,
+        "Development - Missile (Naval)": 401.37
+      }
+    },
+    "Canada": {
+      "totalMillionUSD2024": 25456.82,
+      "byYear": {
+        "2008": 689.61,
+        "2010": 734.99,
+        "2011": 163.88,
+        "2014": 337.32,
+        "2017": 7326.95,
+        "2018": 377.92,
+        "2019": 542.95,
+        "2020": 2106.46,
+        "2021": 1949.53,
+        "2023": 6211.73,
+        "2024": 499.4,
+        "2025": 4516.08
+      },
+      "byCategory": {
+        "Helicopter": 730.96,
+        "Artillery": 1882.31,
+        "Air defence system": 532.87,
+        "Missile (Naval)": 1346.66,
+        "Aircraft": 14058.08,
+        "Missile (Air)": 1558.72,
+        "Other": 193.43,
+        "Development - Naval": 1949.53,
+        "Drone": 313.32,
+        "Ammunition": 2732.82,
+        "Armoured vehicle": 158.12
+      }
+    },
+    "Finland": {
+      "totalMillionUSD2024": 42259.44,
+      "byYear": {
+        "2008": 1186.0,
+        "2010": 141.34,
+        "2011": 766.96,
+        "2012": 169.47,
+        "2013": 217.36,
+        "2015": 200.47,
+        "2016": 212.62,
+        "2018": 1014.09,
+        "2020": 34994.13,
+        "2021": 104.59,
+        "2022": 1230.25,
+        "2023": 894.75,
+        "2024": 70.0,
+        "2025": 1057.41
+      },
+      "byCategory": {
+        "Missile (Air)": 3636.41,
+        "Development - Aircraft": 1002.53,
+        "Artillery": 141.34,
+        "Missile (Land)": 1006.05,
+        "Missile (Naval)": 925.91,
+        "Development - Naval": 88.18,
+        "Aircraft": 34994.13,
+        "Modernisation": 394.89,
+        "Ammunition": 70.0
+      }
+    },
+    "Germany": {
+      "totalMillionUSD2024": 39098.49,
+      "byYear": {
+        "2008": 641.66,
+        "2011": 393.31,
+        "2014": 317.03,
+        "2018": 4913.0,
+        "2019": 660.11,
+        "2020": 167.25,
+        "2021": 2029.8,
+        "2022": 8345.4,
+        "2023": 11696.84,
+        "2024": 5281.0,
+        "2025": 4653.09
+      },
+      "byCategory": {
+        "Aircraft": 12884.71,
+        "Drone": 3438.46,
+        "Development - Aircraft": 317.03,
+        "Missile (Air)": 4264.17,
+        "Missile (Land)": 5505.16,
+        "Missile (Naval)": 3910.26,
+        "Helicopter": 8497.7,
+        "Other": 281.0
+      }
+    },
+    "Iraq": {
+      "totalMillionUSD2024": 59422.91,
+      "byYear": {
+        "2008": 12704.73,
+        "2009": 1780.38,
+        "2010": 6903.25,
+        "2011": 4487.7,
+        "2012": 787.02,
+        "2013": 6766.28,
+        "2014": 18018.76,
+        "2015": 527.91,
+        "2016": 4560.79,
+        "2017": 1982.82,
+        "2018": 103.93,
+        "2023": 299.92,
+        "2024": 205.0,
+        "2025": 98.37,
+        "2026": 196.05
+      },
+      "byCategory": {
+        "Armoured vehicle": 15611.84,
+        "Naval": 1424.33,
+        "Other": 3140.78,
+        "Helicopter": 11757.17,
+        "Infantry": 598.43,
+        "Aircraft": 15230.93,
+        "Ammunition": 1447.17,
+        "Artillery": 941.5,
+        "Maintenance": 1221.43,
+        "Air defence system": 3186.57,
+        "Missile (Land)": 991.68,
+        "Missile (Air)": 3871.08
+      }
+    },
+    "Brazil": {
+      "totalMillionUSD2024": 13432.66,
+      "byYear": {
+        "2008": 740.37,
+        "2009": 10385.55,
+        "2012": 299.14,
+        "2014": 894.02,
+        "2020": 90.06,
+        "2022": 73.52,
+        "2024": 950.0
+      },
+      "byCategory": {
+        "Helicopter": 2064.47,
+        "Aircraft": 10385.55,
+        "Armoured vehicle": 299.14,
+        "Missile (Naval)": 304.37,
+        "Modernisation": 139.49,
+        "Development - Armoured vehicle": 166.12,
+        "Missile (Land)": 73.52
+      }
+    },
+    "Egypt": {
+      "totalMillionUSD2024": 37416.02,
+      "byYear": {
+        "2008": 795.37,
+        "2009": 9738.68,
+        "2010": 405.66,
+        "2011": 1742.37,
+        "2014": 87.5,
+        "2015": 209.83,
+        "2016": 401.25,
+        "2018": 1637.67,
+        "2019": 697.9,
+        "2020": 3713.75,
+        "2021": 225.92,
+        "2022": 5808.0,
+        "2024": 6419.0,
+        "2025": 5533.12
+      },
+      "byCategory": {
+        "Ammunition": 475.23,
+        "Missile (Land)": 1952.04,
+        "Helicopter": 8834.6,
+        "Aircraft": 6933.38,
+        "Naval": 2042.91,
+        "Missile (Naval)": 635.95,
+        "Development - Aircraft": 1246.54,
+        "Maintenance": 994.72,
+        "Air defence system": 5472.41,
+        "Tank": 6432.37,
+        "Other": 305.55,
+        "Missile (Air)": 736.18,
+        "Drone": 536.49,
+        "Armoured vehicle": 200.0,
+        "Modernisation": 617.65
+      }
+    },
+    "France": {
+      "totalMillionUSD2024": 9231.77,
+      "byYear": {
+        "2008": 564.09,
+        "2010": 97.53,
+        "2011": 235.99,
+        "2013": 1917.88,
+        "2015": 908.81,
+        "2016": 220.79,
+        "2020": 3023.39,
+        "2021": 1514.9,
+        "2022": 385.48,
+        "2023": 362.91
+      },
+      "byCategory": {
+        "Development - Aircraft": 800.08,
+        "Missile (Land)": 220.19,
+        "Drone": 2215.93,
+        "Aircraft": 4052.07,
+        "Missile (Air)": 341.17,
+        "Development - Naval": 1514.9,
+        "Development - Drone": 87.43
+      }
+    },
+    "Greece": {
+      "totalMillionUSD2024": 28715.58,
+      "byYear": {
+        "2008": 187.56,
+        "2011": 340.87,
+        "2013": 319.65,
+        "2014": 1062.69,
+        "2017": 3270.46,
+        "2019": 755.85,
+        "2021": 11278.59,
+        "2022": 392.51,
+        "2023": 2217.4,
+        "2024": 8890.0
+      },
+      "byCategory": {
+        "Development - Aircraft": 4225.16,
+        "Aircraft": 9919.37,
+        "Helicopter": 3161.89,
+        "Naval": 10779.74,
+        "Maintenance": 231.49,
+        "Armoured vehicle": 267.93,
+        "Drone": 130.0
+      }
+    },
+    "India": {
+      "totalMillionUSD2024": 33934.39,
+      "byYear": {
+        "2008": 768.58,
+        "2010": 11373.98,
+        "2011": 1686.0,
+        "2013": 1131.55,
+        "2014": 253.62,
+        "2015": 128.3,
+        "2017": 580.89,
+        "2018": 1171.56,
+        "2019": 5644.92,
+        "2020": 2717.19,
+        "2021": 2869.25,
+        "2024": 5387.8,
+        "2025": 220.75
+      },
+      "byCategory": {
+        "Missile (Air)": 647.2,
+        "Missile (Naval)": 1144.85,
+        "Artillery": 2046.05,
+        "Aircraft": 14116.69,
+        "Helicopter": 7595.72,
+        "Other": 228.21,
+        "Development - Aircraft": 239.35,
+        "Naval": 1286.2,
+        "Air defence system": 2401.99,
+        "Development - Missile (Naval)": 94.04,
+        "Drone": 3990.0,
+        "Ammunition": 99.13,
+        "Missile (Land)": 44.96
+      }
+    },
+    "Mexico": {
+      "totalMillionUSD2024": 4391.36,
+      "byYear": {
+        "2009": 227.0,
+        "2012": 528.96,
+        "2014": 1852.73,
+        "2015": 147.01,
+        "2018": 1635.66
+      },
+      "byCategory": {
+        "Helicopter": 2944.34,
+        "Aircraft": 617.98,
+        "Armoured vehicle": 705.08,
+        "Missile (Naval)": 123.96
+      }
+    },
+    "Morocco": {
+      "totalMillionUSD2024": 19560.02,
+      "byYear": {
+        "2009": 686.93,
+        "2011": 153.39,
+        "2012": 1303.14,
+        "2015": 209.83,
+        "2016": 147.2,
+        "2018": 1586.02,
+        "2019": 12921.97,
+        "2020": 387.71,
+        "2022": 140.18,
+        "2023": 773.99,
+        "2024": 434.37,
+        "2025": 815.29
+      },
+      "byCategory": {
+        "Aircraft": 5574.22,
+        "Helicopter": 5552.73,
+        "Missile (Air)": 1298.91,
+        "Air defence system": 87.84,
+        "Tank": 2889.16,
+        "Missile (Land)": 1594.59,
+        "Development - Aircraft": 1241.1,
+        "Ammunition": 349.29,
+        "Armoured vehicle": 307.94,
+        "Other": 140.18,
+        "Artillery": 524.06
+      }
+    },
+    "South Korea": {
+      "totalMillionUSD2024": 73468.33,
+      "byYear": {
+        "2009": 2167.61,
+        "2012": 11309.73,
+        "2013": 19919.12,
+        "2014": 1905.99,
+        "2015": 6149.17,
+        "2016": 280.76,
+        "2017": 184.32,
+        "2018": 3276.6,
+        "2019": 3009.54,
+        "2020": 1693.23,
+        "2021": 337.15,
+        "2022": 1619.41,
+        "2023": 6031.47,
+        "2024": 15440.6,
+        "2025": 143.63
+      },
+      "byCategory": {
+        "Development - Aircraft": 10931.24,
+        "Missile (Naval)": 1860.91,
+        "Helicopter": 17075.66,
+        "Missile (Air)": 3192.83,
+        "Ammunition": 1094.24,
+        "Drone": 1711.26,
+        "Aircraft": 30573.17,
+        "Missile (Land)": 2929.39,
+        "Development - Naval": 2852.69,
+        "Development - Drone": 1196.76,
+        "Naval": 50.18
+      }
+    },
+    "Chile": {
+      "totalMillionUSD2024": 1831.47,
+      "byYear": {
+        "2009": 1394.63,
+        "2010": 148.41,
+        "2016": 190.95,
+        "2021": 97.48
+      },
+      "byCategory": {
+        "Artillery": 408.0,
+        "Missile (Air)": 215.13,
+        "Air defence system": 919.91,
+        "Missile (Naval)": 288.43
+      }
+    },
+    "Bahrain": {
+      "totalMillionUSD2024": 15368.67,
+      "byYear": {
+        "2009": 109.79,
+        "2010": 98.94,
+        "2011": 69.49,
+        "2015": 200.47,
+        "2017": 5206.21,
+        "2018": 1771.7,
+        "2019": 4255.42,
+        "2022": 174.86,
+        "2023": 349.91,
+        "2024": 2200.0,
+        "2025": 931.88
+      },
+      "byCategory": {
+        "Missile (Air)": 1054.6,
+        "Missile (Land)": 3734.84,
+        "Armoured vehicle": 69.49,
+        "Aircraft": 3867.23,
+        "Naval": 356.47,
+        "Development - Aircraft": 1862.33,
+        "Helicopter": 1498.04,
+        "Ammunition": 56.69,
+        "Artillery": 668.98,
+        "Tank": 2200.0
+      }
+    },
+    "Kuwait": {
+      "totalMillionUSD2024": 53949.21,
+      "byYear": {
+        "2009": 5578.54,
+        "2010": 2251.62,
+        "2011": 131.1,
+        "2012": 5912.29,
+        "2013": 921.87,
+        "2014": 2155.81,
+        "2015": 153.7,
+        "2016": 16969.91,
+        "2017": 1581.25,
+        "2018": 541.43,
+        "2019": 353.99,
+        "2020": 7313.52,
+        "2022": 4616.8,
+        "2023": 2258.48,
+        "2024": 300.0,
+        "2025": 2124.7,
+        "2026": 784.2
+      },
+      "byCategory": {
+        "Naval": 246.15,
+        "Aircraft": 21055.88,
+        "Development - Armoured vehicle": 465.87,
+        "Other": 6380.14,
+        "Air defence system": 4530.52,
+        "Missile (Land)": 9281.94,
+        "Missile (Air)": 380.85,
+        "Helicopter": 5929.62,
+        "Development - Aircraft": 981.85,
+        "Tank": 2676.35,
+        "Ammunition": 820.8,
+        "Armoured vehicle": 353.99,
+        "Development - Missile (Air)": 149.96,
+        "Maintenance": 300.0,
+        "Development - Missile (Land)": 395.29
+      }
+    },
+    "Jordan": {
+      "totalMillionUSD2024": 6492.71,
+      "byYear": {
+        "2009": 1207.69,
+        "2015": 391.6,
+        "2016": 156.87,
+        "2020": 415.55,
+        "2021": 68.81,
+        "2022": 4252.19
+      },
+      "byCategory": {
+        "Missile (Air)": 194.36,
+        "Artillery": 968.97,
+        "Missile (Land)": 575.66,
+        "Aircraft": 4450.78,
+        "Naval": 106.92,
+        "Helicopter": 57.66,
+        "Development - Aircraft": 68.81,
+        "Ammunition": 69.55
+      }
+    },
+    "Saudi Arabia": {
+      "totalMillionUSD2024": 209451.06,
+      "byYear": {
+        "2009": 3274.42,
+        "2010": 86186.14,
+        "2011": 3063.89,
+        "2012": 10575.35,
+        "2013": 11072.56,
+        "2014": 4856.91,
+        "2015": 27845.67,
+        "2016": 6835.13,
+        "2017": 22628.61,
+        "2018": 3636.88,
+        "2019": 1179.13,
+        "2020": 823.39,
+        "2021": 1318.8,
+        "2022": 3053.73,
+        "2023": 2081.43,
+        "2024": 4637.1,
+        "2025": 4618.96,
+        "2026": 11762.96
+      },
+      "byCategory": {
+        "Development - Aircraft": 6845.16,
+        "Aircraft": 56737.06,
+        "Missile (Land)": 22084.5,
+        "Other": 5246.42,
+        "Helicopter": 53093.92,
+        "Ammunition": 3369.83,
+        "Armoured vehicle": 2792.22,
+        "Artillery": 3683.45,
+        "Development - Air defence system": 157.33,
+        "Maintenance": 4063.92,
+        "Development - Missile (Land)": 796.77,
+        "Tank": 385.17,
+        "Modernisation": 5114.35,
+        "Naval": 16569.76,
+        "Air defence system": 22683.16,
+        "Development - Naval": 540.41,
+        "Missile (Air)": 5210.05,
+        "Missile (Naval)": 77.58
+      }
+    },
+    "Thailand": {
+      "totalMillionUSD2024": 2637.08,
+      "byYear": {
+        "2009": 222.55,
+        "2010": 989.41,
+        "2012": 324.82,
+        "2013": 98.45,
+        "2014": 112.86,
+        "2015": 36.09,
+        "2017": 32.78,
+        "2019": 724.36,
+        "2021": 95.76
+      },
+      "byCategory": {
+        "Helicopter": 1239.47,
+        "Development - Aircraft": 989.41,
+        "Missile (Naval)": 91.98,
+        "Armoured vehicle": 220.46,
+        "Missile (Land)": 95.76
+      }
+    },
+    "Netherlands": {
+      "totalMillionUSD2024": 17552.35,
+      "byYear": {
+        "2009": 465.87,
+        "2010": 274.21,
+        "2012": 77.03,
+        "2013": 244.21,
+        "2015": 1856.38,
+        "2017": 191.17,
+        "2018": 2072.28,
+        "2020": 471.59,
+        "2021": 361.24,
+        "2022": 1327.32,
+        "2023": 1390.62,
+        "2024": 5883.0,
+        "2025": 2937.43
+      },
+      "byCategory": {
+        "Aircraft": 580.11,
+        "Helicopter": 3838.45,
+        "Missile (Naval)": 424.92,
+        "Ammunition": 202.54,
+        "Missile (Air)": 5015.01,
+        "Drone": 453.07,
+        "Development - Aircraft": 76.63,
+        "Air defence system": 132.27,
+        "Development - Naval": 109.36,
+        "Missile (Land)": 3909.37,
+        "Artillery": 669.82,
+        "Naval": 109.97,
+        "Development - Drone": 610.83,
+        "Other": 1420.0
+      }
+    },
+    "UAE": {
+      "totalMillionUSD2024": 76471.91,
+      "byYear": {
+        "2009": 5097.82,
+        "2010": 7618.46,
+        "2011": 1832.84,
+        "2012": 1502.15,
+        "2013": 5114.35,
+        "2014": 4844.23,
+        "2015": 1129.32,
+        "2016": 6897.81,
+        "2017": 2633.22,
+        "2018": 340.64,
+        "2019": 5971.57,
+        "2020": 27153.9,
+        "2022": 3473.68,
+        "2023": 84.98,
+        "2024": 1344.0,
+        "2025": 1432.94
+      },
+      "byCategory": {
+        "Missile (Air)": 1594.11,
+        "Aircraft": 16671.52,
+        "Helicopter": 17632.71,
+        "Ammunition": 22893.93,
+        "Missile (Land)": 10896.44,
+        "Infantry": 190.22,
+        "Artillery": 1141.31,
+        "Armoured vehicle": 3885.63,
+        "Development - Aircraft": 882.85,
+        "Other": 432.85,
+        "Development - Drone": 100.78,
+        "Air defence system": 149.56
+      }
+    },
+    "Singapore": {
+      "totalMillionUSD2024": 13234.36,
+      "byYear": {
+        "2009": 541.53,
+        "2010": 212.02,
+        "2012": 558.49,
+        "2013": 666.14,
+        "2014": 3479.73,
+        "2015": 173.74,
+        "2017": 633.29,
+        "2020": 3538.01,
+        "2022": 625.91,
+        "2023": 54.99,
+        "2024": 133.0,
+        "2025": 347.26,
+        "2026": 2270.25
+      },
+      "byCategory": {
+        "Aircraft": 6290.44,
+        "Ammunition": 2011.92,
+        "Development - Aircraft": 3785.6,
+        "Missile (Air)": 447.53,
+        "Missile (Land)": 122.74,
+        "Other": 576.13
+      }
+    },
+    "Ghana": {
+      "totalMillionUSD2024": 1008.88,
+      "byYear": {
+        "2009": 1008.88
+      },
+      "byCategory": {
+        "Aircraft": 1008.88
+      }
+    },
+    "Turkey": {
+      "totalMillionUSD2024": 42775.92,
+      "byYear": {
+        "2009": 13352.85,
+        "2011": 145.53,
+        "2012": 179.74,
+        "2014": 621.38,
+        "2015": 507.86,
+        "2018": 4409.11,
+        "2023": 258.93,
+        "2024": 23000.0,
+        "2025": 300.52
+      },
+      "byCategory": {
+        "Missile (Land)": 15981.58,
+        "Helicopter": 1925.91,
+        "Missile (Air)": 886.06,
+        "Missile (Naval)": 215.58,
+        "Naval": 414.31,
+        "Ammunition": 93.55,
+        "Development - Aircraft": 258.93,
+        "Aircraft": 23000.0
+      }
+    },
+    "Italy": {
+      "totalMillionUSD2024": 3542.37,
+      "byYear": {
+        "2009": 93.47,
+        "2015": 173.21,
+        "2020": 643.27,
+        "2023": 399.89,
+        "2024": 1727.9,
+        "2025": 504.63
+      },
+      "byCategory": {
+        "Drone": 831.47,
+        "Development - Drone": 173.21,
+        "Aircraft": 643.27,
+        "Artillery": 399.89,
+        "Missile (Air)": 664.53,
+        "Ammunition": 150.0,
+        "Development - Aircraft": 680.0
+      }
+    },
+    "Peru": {
+      "totalMillionUSD2024": 6029.43,
+      "byYear": {
+        "2009": 121.66,
+        "2011": 162.57,
+        "2016": 910.44,
+        "2025": 3364.39,
+        "2026": 1470.37
+      },
+      "byCategory": {
+        "Naval": 121.66,
+        "Missile (Naval)": 65.55,
+        "Aircraft": 3461.41,
+        "Armoured vehicle": 910.44,
+        "Development - Naval": 1470.37
+      }
+    },
+    "Taiwan": {
+      "totalMillionUSD2024": 61986.17,
+      "byYear": {
+        "2010": 9034.74,
+        "2011": 7672.21,
+        "2015": 2296.09,
+        "2017": 1794.54,
+        "2018": 415.72,
+        "2019": 13509.51,
+        "2020": 7540.84,
+        "2021": 860.09,
+        "2022": 2123.1,
+        "2023": 1858.69,
+        "2024": 3631.2,
+        "2025": 11249.44
+      },
+      "byCategory": {
+        "Helicopter": 4476.12,
+        "Naval": 621.8,
+        "Other": 1388.69,
+        "Missile (Naval)": 4499.74,
+        "Missile (Land)": 7051.54,
+        "Development - Aircraft": 1627.8,
+        "Aircraft": 19738.1,
+        "Maintenance": 687.02,
+        "Armoured vehicle": 501.18,
+        "Air defence system": 3398.78,
+        "Development - Naval": 105.33,
+        "Missile (Air)": 1939.96,
+        "Tank": 2519.49,
+        "Artillery": 9399.76,
+        "Drone": 3147.62,
+        "Development - Armoured vehicle": 107.3,
+        "Mine": 178.83,
+        "Ammunition": 332.11,
+        "Modernisation": 265.0
+      }
+    },
+    "Pakistan": {
+      "totalMillionUSD2024": 4545.38,
+      "byYear": {
+        "2010": 812.73,
+        "2011": 81.28,
+        "2014": 821.74,
+        "2015": 1272.33,
+        "2016": 952.75,
+        "2019": 157.47,
+        "2022": 447.08
+      },
+      "byCategory": {
+        "Naval": 554.09,
+        "Other": 141.34,
+        "Helicopter": 1833.47,
+        "Aircraft": 1034.03,
+        "Development - Aircraft": 731.36,
+        "Armoured vehicle": 251.09
+      }
+    },
+    "United Kingdom": {
+      "totalMillionUSD2024": 24786.88,
+      "byYear": {
+        "2010": 723.68,
+        "2011": 559.81,
+        "2012": 385.17,
+        "2013": 338.83,
+        "2014": 494.57,
+        "2015": 4116.38,
+        "2016": 5724.33,
+        "2017": 2086.82,
+        "2018": 6065.67,
+        "2020": 575.47,
+        "2022": 1360.1,
+        "2023": 1113.43,
+        "2024": 195.0,
+        "2025": 1047.62
+      },
+      "byCategory": {
+        "Armoured vehicle": 1535.13,
+        "Aircraft": 7508.63,
+        "Development - Naval": 179.61,
+        "Naval": 428.12,
+        "Other": 387.21,
+        "Missile (Naval)": 583.96,
+        "Missile (Air)": 2261.03,
+        "Missile (Land)": 600.69,
+        "Helicopter": 8418.57,
+        "Drone": 1362.94,
+        "Development - Drone": 629.87,
+        "Development - Modernisation": 94.48,
+        "Development - Air defence system": 695.45,
+        "Ammunition": 31.19,
+        "Development - Aircraft": 70.0
+      }
+    },
+    "Oman": {
+      "totalMillionUSD2024": 8233.16,
+      "byYear": {
+        "2010": 5130.8,
+        "2011": 1636.18,
+        "2012": 383.87,
+        "2013": 127.86,
+        "2016": 423.87,
+        "2018": 78.1,
+        "2022": 382.5,
+        "2023": 69.98
+      },
+      "byCategory": {
+        "Aircraft": 5563.26,
+        "Air defence system": 1636.18,
+        "Missile (Air)": 492.91,
+        "Missile (Land)": 262.74,
+        "Ammunition": 150.21,
+        "Development - Aircraft": 127.86
+      }
+    },
+    "Tunisia": {
+      "totalMillionUSD2024": 2432.57,
+      "byYear": {
+        "2010": 398.59,
+        "2013": 76.72,
+        "2014": 887.69,
+        "2016": 137.38,
+        "2019": 294.78,
+        "2020": 419.41,
+        "2024": 218.0
+      },
+      "byCategory": {
+        "Helicopter": 1423.66,
+        "Development - Aircraft": 76.72,
+        "Aircraft": 714.19,
+        "Naval": 110.0,
+        "Missile (Land)": 108.0
+      }
+    },
+    "Colombia": {
+      "totalMillionUSD2024": 228.98,
+      "byYear": {
+        "2010": 228.98
+      },
+      "byCategory": {
+        "Helicopter": 228.98
+      }
+    },
+    "Israel": {
+      "totalMillionUSD2024": 62118.17,
+      "byYear": {
+        "2010": 2826.89,
+        "2012": 830.67,
+        "2013": 3413.83,
+        "2014": 2122.84,
+        "2015": 2511.26,
+        "2016": 408.88,
+        "2017": 579.31,
+        "2019": 299.82,
+        "2020": 6947.37,
+        "2021": 3899.06,
+        "2023": 253.93,
+        "2024": 20505.8,
+        "2025": 10980.26,
+        "2026": 6538.25
+      },
+      "byCategory": {
+        "Other": 10265.37,
+        "Ammunition": 14289.68,
+        "Aircraft": 23340.7,
+        "Missile (Air)": 1444.59,
+        "Helicopter": 8179.92,
+        "Naval": 579.31,
+        "Armoured vehicle": 3840.72,
+        "Development - Armoured vehicle": 177.88
+      }
+    },
+    "Sweden": {
+      "totalMillionUSD2024": 6339.27,
+      "byYear": {
+        "2010": 771.74,
+        "2018": 4031.19,
+        "2023": 604.84,
+        "2024": 931.5
+      },
+      "byCategory": {
+        "Helicopter": 1671.74,
+        "Missile (Land)": 4031.19,
+        "Missile (Air)": 604.84,
+        "Other": 31.5
+      }
+    },
+    "Japan": {
+      "totalMillionUSD2024": 93090.15,
+      "byYear": {
+        "2010": 214.84,
+        "2012": 13597.62,
+        "2013": 1214.66,
+        "2014": 41.85,
+        "2015": 10155.95,
+        "2016": 3708.55,
+        "2017": 148.78,
+        "2018": 4792.07,
+        "2019": 14552.58,
+        "2020": 29884.36,
+        "2021": 224.2,
+        "2022": 738.18,
+        "2023": 4191.5,
+        "2024": 4723.0,
+        "2025": 4902.01
+      },
+      "byCategory": {
+        "Missile (Naval)": 5499.76,
+        "Development - Aircraft": 7051.72,
+        "Aircraft": 61090.24,
+        "Development - Naval": 690.52,
+        "Missile (Air)": 9214.97,
+        "Naval": 5141.78,
+        "Drone": 1716.78,
+        "Modernisation": 56.69,
+        "Missile (Land)": 2349.37,
+        "Development - Missile (Land)": 197.65,
+        "Ammunition": 80.67
+      }
+    },
+    "Denmark": {
+      "totalMillionUSD2024": 14444.5,
+      "byYear": {
+        "2010": 2826.89,
+        "2018": 304.86,
+        "2019": 251.95,
+        "2024": 1165.5,
+        "2025": 9851.19,
+        "2026": 44.11
+      },
+      "byCategory": {
+        "Helicopter": 2826.89,
+        "Missile (Air)": 3083.88,
+        "Missile (Naval)": 191.48,
+        "Other": 251.95,
+        "Ammunition": 206.0,
+        "Missile (Land)": 3162.35,
+        "Air defence system": 2951.22,
+        "Aircraft": 1770.73
+      }
+    },
+    "Switzerland": {
+      "totalMillionUSD2024": 22941.85,
+      "byYear": {
+        "2010": 506.01,
+        "2013": 255.72,
+        "2017": 151.41,
+        "2020": 20883.26,
+        "2022": 695.45,
+        "2024": 450.0
+      },
+      "byCategory": {
+        "Missile (Air)": 506.01,
+        "Development - Aircraft": 407.13,
+        "Aircraft": 18052.85,
+        "Air defence system": 3280.41,
+        "Missile (Land)": 695.45
+      }
+    },
+    "Malaysia": {
+      "totalMillionUSD2024": 270.64,
+      "byYear": {
+        "2011": 162.57,
+        "2015": 28.07,
+        "2024": 80.0
+      },
+      "byCategory": {
+        "Development - Aircraft": 174.4,
+        "Missile (Air)": 96.24
+      }
+    },
+    "Poland": {
+      "totalMillionUSD2024": 85328.05,
+      "byYear": {
+        "2011": 262.21,
+        "2012": 830.68,
+        "2014": 634.06,
+        "2016": 272.59,
+        "2017": 14746.04,
+        "2018": 825.13,
+        "2019": 8188.35,
+        "2020": 128.65,
+        "2022": 9686.63,
+        "2023": 31910.08,
+        "2024": 13559.1,
+        "2025": 4284.53
+      },
+      "byCategory": {
+        "Development - Naval": 262.21,
+        "Ammunition": 751.78,
+        "Other": 813.46,
+        "Missile (Air)": 21478.63,
+        "Missile (Land)": 16221.07,
+        "Aircraft": 8840.56,
+        "Artillery": 825.13,
+        "Tank": 9686.63,
+        "Development - Aircraft": 9252.9,
+        "Helicopter": 11996.76,
+        "Development - Air defence system": 3998.92,
+        "Drone": 1200.0
+      }
+    },
+    "Norway": {
+      "totalMillionUSD2024": 12523.41,
+      "byYear": {
+        "2011": 124.55,
+        "2012": 385.17,
+        "2013": 136.81,
+        "2014": 101.45,
+        "2015": 461.09,
+        "2016": 2385.14,
+        "2017": 223.82,
+        "2021": 41.28,
+        "2022": 943.83,
+        "2023": 1458.61,
+        "2024": 3055.0,
+        "2025": 3206.66
+      },
+      "byCategory": {
+        "Development - Aircraft": 124.55,
+        "Aircraft": 3073.08,
+        "Missile (Air)": 4441.82,
+        "Missile (Land)": 41.28,
+        "Helicopter": 3569.14,
+        "Ammunition": 534.08,
+        "Artillery": 580.0,
+        "Missile (Naval)": 159.46
+      }
+    },
+    "Ecuador": {
+      "totalMillionUSD2024": 141.91,
+      "byYear": {
+        "2011": 78.66,
+        "2025": 63.25
+      },
+      "byCategory": {
+        "Helicopter": 78.66,
+        "Infantry": 63.25
+      }
+    },
+    "Qatar": {
+      "totalMillionUSD2024": 72509.27,
+      "byYear": {
+        "2011": 983.28,
+        "2012": 30241.89,
+        "2013": 1747.83,
+        "2016": 30373.04,
+        "2017": 1448.27,
+        "2018": 896.94,
+        "2019": 3887.58,
+        "2022": 993.5,
+        "2025": 1936.94
+      },
+      "byCategory": {
+        "Helicopter": 13251.56,
+        "Missile (Air)": 824.66,
+        "Air defence system": 22462.15,
+        "Artillery": 521.26,
+        "Missile (Land)": 183.25,
+        "Development - Aircraft": 1697.25,
+        "Aircraft": 29867.14,
+        "Missile (Naval)": 354.36,
+        "Naval": 169.03,
+        "Development - Air defence system": 1241.67,
+        "Drone": 1936.94
+      }
+    },
+    "Argentina": {
+      "totalMillionUSD2024": 2116.91,
+      "byYear": {
+        "2011": 217.63,
+        "2015": 106.92,
+        "2016": 408.88,
+        "2019": 98.3,
+        "2020": 128.65,
+        "2022": 72.53,
+        "2024": 1084.0
+      },
+      "byCategory": {
+        "Development - Aircraft": 217.63,
+        "Helicopter": 106.92,
+        "Aircraft": 1663.71,
+        "Armoured vehicle": 128.65
+      }
+    },
+    "Indonesia": {
+      "totalMillionUSD2024": 19490.57,
+      "byYear": {
+        "2011": 983.28,
+        "2012": 1932.25,
+        "2015": 62.81,
+        "2016": 129.48,
+        "2020": 2573.1,
+        "2022": 13809.65
+      },
+      "byCategory": {
+        "Development - Aircraft": 983.28,
+        "Missile (Air)": 224.39,
+        "Helicopter": 1823.12,
+        "Missile (Land)": 77.03,
+        "Aircraft": 16382.75
+      }
+    },
+    "Hungary": {
+      "totalMillionUSD2024": 1484.28,
+      "byYear": {
+        "2011": 558.5,
+        "2019": 629.87,
+        "2020": 295.91
+      },
+      "byCategory": {
+        "Helicopter": 558.5,
+        "Missile (Air)": 925.78
+      }
+    },
+    "Bangladesh": {
+      "totalMillionUSD2024": 231.1,
+      "byYear": {
+        "2012": 231.1
+      },
+      "byCategory": {
+        "Aircraft": 231.1
+      }
+    },
+    "Lebanon": {
+      "totalMillionUSD2024": 1742.36,
+      "byYear": {
+        "2012": 80.88,
+        "2014": 228.26,
+        "2015": 1140.03,
+        "2020": 71.4,
+        "2025": 221.79
+      },
+      "byCategory": {
+        "Helicopter": 309.14,
+        "Aircraft": 617.46,
+        "Missile (Land)": 522.57,
+        "Armoured vehicle": 194.37,
+        "Development - Aircraft": 98.82
+      }
+    },
+    "Belgium": {
+      "totalMillionUSD2024": 10479.93,
+      "byYear": {
+        "2012": 112.98,
+        "2013": 86.94,
+        "2018": 8226.14,
+        "2019": 755.85,
+        "2020": 42.84,
+        "2022": 503.7,
+        "2024": 115.0,
+        "2025": 636.48
+      },
+      "byCategory": {
+        "Missile (Land)": 112.98,
+        "Missile (Air)": 1100.95,
+        "Aircraft": 8352.31,
+        "Drone": 755.85,
+        "Missile (Naval)": 42.84,
+        "Ammunition": 115.0
+      }
+    },
+    "NATO": {
+      "totalMillionUSD2024": 1163.37,
+      "byYear": {
+        "2013": 383.58,
+        "2023": 779.79
+      },
+      "byCategory": {
+        "Aircraft": 383.58,
+        "Missile (Land)": 779.79
+      }
+    },
+    "Libya": {
+      "totalMillionUSD2024": 1512.68,
+      "byYear": {
+        "2013": 751.81,
+        "2014": 760.87
+      },
+      "byCategory": {
+        "Aircraft": 751.81,
+        "Infantry": 760.87
+      }
+    },
+    "Romania": {
+      "totalMillionUSD2024": 19517.71,
+      "byYear": {
+        "2013": 584.31,
+        "2017": 6780.55,
+        "2020": 611.62,
+        "2023": 2938.71,
+        "2024": 8242.8,
+        "2025": 359.72
+      },
+      "byCategory": {
+        "Aircraft": 7784.31,
+        "Air defence system": 5521.5,
+        "Artillery": 1645.76,
+        "Missile (Naval)": 385.96,
+        "Development - Aircraft": 330.63,
+        "Armoured vehicle": 2753.76,
+        "Missile (Land)": 79.98,
+        "Missile (Air)": 932.8,
+        "Ammunition": 83.01
+      }
+    },
+    "Austria": {
+      "totalMillionUSD2024": 1225.17,
+      "byYear": {
+        "2013": 175.17,
+        "2024": 1050.0
+      },
+      "byCategory": {
+        "Helicopter": 1225.17
+      }
+    },
+    "Philippines": {
+      "totalMillionUSD2024": 9458.33,
+      "byYear": {
+        "2014": 77.36,
+        "2016": 34.07,
+        "2020": 741.06,
+        "2021": 2972.91,
+        "2025": 5632.93
+      },
+      "byCategory": {
+        "Aircraft": 8378.38,
+        "Development - Naval": 34.07,
+        "Helicopter": 697.54,
+        "Naval": 162.11,
+        "Missile (Air)": 186.23
+      }
+    },
+    "Brunei": {
+      "totalMillionUSD2024": 434.97,
+      "byYear": {
+        "2014": 434.97
+      },
+      "byCategory": {
+        "Aircraft": 434.97
+      }
+    },
+    "Estonia": {
+      "totalMillionUSD2024": 859.02,
+      "byYear": {
+        "2014": 69.75,
+        "2022": 496.75,
+        "2025": 292.52
+      },
+      "byCategory": {
+        "Missile (Land)": 362.27,
+        "Artillery": 496.75
+      }
+    },
+    "Slovakia": {
+      "totalMillionUSD2024": 5314.7,
+      "byYear": {
+        "2015": 601.42,
+        "2017": 197.49,
+        "2018": 3665.86,
+        "2023": 249.93,
+        "2024": 600.0
+      },
+      "byCategory": {
+        "Helicopter": 1398.91,
+        "Aircraft": 3665.86,
+        "Armoured vehicle": 249.93
+      }
+    },
+    "Spain": {
+      "totalMillionUSD2024": 9281.41,
+      "byYear": {
+        "2015": 324.77,
+        "2018": 2721.56,
+        "2019": 134.79,
+        "2020": 319.71,
+        "2021": 126.15,
+        "2022": 943.83,
+        "2023": 2847.43,
+        "2025": 196.75,
+        "2026": 1666.42
+      },
+      "byCategory": {
+        "Drone": 324.77,
+        "Helicopter": 2581.5,
+        "Naval": 1083.89,
+        "Armoured vehicle": 134.79,
+        "Missile (Air)": 319.71,
+        "Development - Drone": 126.15,
+        "Ammunition": 48.19,
+        "Missile (Land)": 2799.24,
+        "Aircraft": 196.75,
+        "Modernisation": 1666.42
+      }
+    },
+    "Lithuania": {
+      "totalMillionUSD2024": 2313.21,
+      "byYear": {
+        "2015": 874.06,
+        "2019": 215.16,
+        "2020": 488.89,
+        "2021": 143.35,
+        "2022": 491.78,
+        "2023": 99.97
+      },
+      "byCategory": {
+        "Armoured vehicle": 1015.71,
+        "Missile (Land)": 216.86,
+        "Helicopter": 488.89,
+        "Artillery": 491.78,
+        "Missile (Air)": 99.97
+      }
+    },
+    "Afghanistan": {
+      "totalMillionUSD2024": 81.78,
+      "byYear": {
+        "2016": 81.78
+      },
+      "byCategory": {
+        "Infantry": 81.78
+      }
+    },
+    "NATO Support and Procurement Agency": {
+      "totalMillionUSD2024": 1102.68,
+      "byYear": {
+        "2016": 314.84,
+        "2018": 403.75,
+        "2024": 250.2,
+        "2025": 133.89
+      },
+      "byCategory": {
+        "Ammunition": 718.59,
+        "Drone": 250.2,
+        "Missile (Air)": 133.89
+      }
+    },
+    "Kenya": {
+      "totalMillionUSD2024": 883.44,
+      "byYear": {
+        "2017": 883.44
+      },
+      "byCategory": {
+        "Aircraft": 550.34,
+        "Helicopter": 333.1
+      }
+    },
+    "NATO Support and Procurement Agency (NSPA)": {
+      "totalMillionUSD2024": 564.42,
+      "byYear": {
+        "2017": 439.09,
+        "2022": 22.55,
+        "2025": 102.78
+      },
+      "byCategory": {
+        "Aircraft": 439.09,
+        "Ammunition": 22.55,
+        "Missile (Air)": 102.78
+      }
+    },
+    "New Zealand": {
+      "totalMillionUSD2024": 3685.89,
+      "byYear": {
+        "2017": 1922.25,
+        "2019": 1763.64
+      },
+      "byCategory": {
+        "Aircraft": 3685.89
+      }
+    },
+    "Nigeria": {
+      "totalMillionUSD2024": 2113.2,
+      "byYear": {
+        "2017": 780.75,
+        "2022": 990.52,
+        "2025": 341.93
+      },
+      "byCategory": {
+        "Aircraft": 780.75,
+        "Helicopter": 990.52,
+        "Ammunition": 341.93
+      }
+    },
+    "Czech Republic": {
+      "totalMillionUSD2024": 8792.53,
+      "byYear": {
+        "2017": 757.05,
+        "2019": 1266.05,
+        "2023": 6268.3,
+        "2024": 322.26,
+        "2025": 178.87
+      },
+      "byCategory": {
+        "Helicopter": 2672.92,
+        "Aircraft": 5618.48,
+        "Missile (Air)": 138.26,
+        "Other": 362.87
+      }
+    },
+    "Georgia": {
+      "totalMillionUSD2024": 133.15,
+      "byYear": {
+        "2017": 98.75,
+        "2021": 34.4
+      },
+      "byCategory": {
+        "Missile (Land)": 133.15
+      }
+    },
+    "Ukraine": {
+      "totalMillionUSD2024": 4541.2,
+      "byYear": {
+        "2018": 59.21,
+        "2019": 49.38,
+        "2020": 771.93,
+        "2022": 163.93,
+        "2023": 284.92,
+        "2024": 634.4,
+        "2025": 2396.08,
+        "2026": 181.35
+      },
+      "byCategory": {
+        "Missile (Land)": 108.59,
+        "Naval": 771.93,
+        "Ammunition": 163.93,
+        "Air defence system": 1051.06,
+        "Maintenance": 348.23,
+        "Artillery": 132.78,
+        "Development - Aircraft": 573.25,
+        "Armoured vehicle": 148.23,
+        "Missile (Air)": 815.29,
+        "Other": 427.91
+      }
+    },
+    "Latvia": {
+      "totalMillionUSD2024": 581.86,
+      "byYear": {
+        "2018": 251.95,
+        "2023": 329.91
+      },
+      "byCategory": {
+        "Helicopter": 251.95,
+        "Missile (Land)": 109.97,
+        "Artillery": 219.94
+      }
+    },
+    "Bulgaria": {
+      "totalMillionUSD2024": 5995.97,
+      "byYear": {
+        "2019": 2107.55,
+        "2022": 1662.13,
+        "2023": 1499.59,
+        "2024": 114.0,
+        "2025": 612.7
+      },
+      "byCategory": {
+        "Aircraft": 3769.68,
+        "Armoured vehicle": 1499.59,
+        "Missile (Land)": 726.7
+      }
+    },
+    "Croatia": {
+      "totalMillionUSD2024": 2008.79,
+      "byYear": {
+        "2019": 144.87,
+        "2020": 973.92,
+        "2024": 890.0
+      },
+      "byCategory": {
+        "Helicopter": 644.87,
+        "Armoured vehicle": 973.92,
+        "Artillery": 390.0
+      }
+    },
+    "Guyana": {
+      "totalMillionUSD2024": 329.36,
+      "byYear": {
+        "2020": 329.36
+      },
+      "byCategory": {
+        "Helicopter": 329.36
+      }
+    },
+    "Kazakhstan": {
+      "totalMillionUSD2024": 164.81,
+      "byYear": {
+        "2020": 164.81
+      },
+      "byCategory": {
+        "Aircraft": 164.81
+      }
+    },
+    "NATO Communications and Information Agency (NCIA)": {
+      "totalMillionUSD2024": 74.54,
+      "byYear": {
+        "2021": 74.54
+      },
+      "byCategory": {
+        "Other": 74.54
+      }
+    },
+    "North Macedonia": {
+      "totalMillionUSD2024": 351.82,
+      "byYear": {
+        "2021": 240.82,
+        "2024": 111.0
+      },
+      "byCategory": {
+        "Armoured vehicle": 351.82
+      }
+    },
+    "NATO Support and Procurement Agency (NATO)": {
+      "totalMillionUSD2024": 149.96,
+      "byYear": {
+        "2023": 149.96
+      },
+      "byCategory": {
+        "Maintenance": 149.96
+      }
+    },
+    "Kosovo": {
+      "totalMillionUSD2024": 75.0,
+      "byYear": {
+        "2024": 75.0
+      },
+      "byCategory": {
+        "Missile (Land)": 75.0
+      }
+    },
+    "Zambia": {
+      "totalMillionUSD2024": 98.82,
+      "byYear": {
+        "2025": 98.82
+      },
+      "byCategory": {
+        "Helicopter": 98.82
+      }
+    },
+    "Ireland": {
+      "totalMillionUSD2024": 45.46,
+      "byYear": {
+        "2025": 45.46
+      },
+      "byCategory": {
+        "Missile (Land)": 45.46
+      }
+    },
+    "Bosnia-Herzegovina": {
+      "totalMillionUSD2024": 98.82,
+      "byYear": {
+        "2025": 98.82
+      },
+      "byCategory": {
+        "Helicopter": 98.82
+      }
+    }
+  },
+  "byEquipmentCategory": {
+    "Aircraft": 565202.03,
+    "Helicopter": 240446.44,
+    "Missile (Land)": 122296.28,
+    "Missile (Air)": 91347.94,
+    "Air defence system": 80398.4,
+    "Development - Aircraft": 62959.58,
+    "Ammunition": 56061.03,
+    "Naval": 47256.71,
+    "Armoured vehicle": 39423.98,
+    "Other": 32996.64,
+    "Artillery": 30579.36,
+    "Tank": 28721.5,
+    "Drone": 26516.57,
+    "Missile (Naval)": 26373.16,
+    "Development - Naval": 12029.69,
+    "Modernisation": 8350.87,
+    "Maintenance": 7996.77,
+    "Development - Air defence system": 6093.37,
+    "Development - Drone": 2925.03,
+    "Infantry": 1694.55,
+    "Development - Missile (Land)": 1389.71,
+    "Development - Armoured vehicle": 917.17,
+    "Development - Missile (Naval)": 495.41,
+    "Mine": 178.83,
+    "Development - Missile (Air)": 149.96,
+    "Development - Modernisation": 94.48
+  }
+}

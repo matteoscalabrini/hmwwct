@@ -149,6 +149,7 @@ export interface WarCostResult {
     economic: CostCategory;
     humanitarian: CostCategory;
     reconstruction: CostCategory;
+    armaments: CostCategory;
   };
   duration: { min: number; max: number; point: number; unit: 'years' };
   humanToll: HumanToll;

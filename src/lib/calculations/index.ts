@@ -5,6 +5,7 @@ import { calculateEconomicImpact } from './economic';
 import { calculateHumanitarianCost } from './humanitarian';
 import { calculateReconstructionCost } from './reconstruction';
 import { calculateRevenue } from './revenue';
+import { calculateArmamentCost } from './armaments';
 import { SCENARIOS } from '@/constants/conflict-scenarios';
 
 export function calculateWarCost(input: CalculationInput): WarCostResult {
@@ -12,26 +13,30 @@ export function calculateWarCost(input: CalculationInput): WarCostResult {
   const def = SCENARIOS[scenario];
   const distanceKm = haversineKm(aggressor.latlng, target.latlng);
 
-  // Run all four calculation modules
+  // Run all calculation modules
   const militaryCategory = calculateMilitaryCost(input);
   const economicCategory = calculateEconomicImpact(input, distanceKm);
   const { category: humanitarianCategory, humanToll } = calculateHumanitarianCost(input);
   const { category: reconstructionCategory, opportunityCosts } = calculateReconstructionCost(input);
+  const armamentsCategory = calculateArmamentCost(input);
 
   const directPoint =
     militaryCategory.amount +
     humanitarianCategory.amount +
-    reconstructionCategory.amount;
+    reconstructionCategory.amount +
+    armamentsCategory.amount;
 
   const directMin =
     militaryCategory.amountMin +
     humanitarianCategory.amountMin +
-    reconstructionCategory.amountMin;
+    reconstructionCategory.amountMin +
+    armamentsCategory.amountMin;
 
   const directMax =
     militaryCategory.amountMax +
     humanitarianCategory.amountMax +
-    reconstructionCategory.amountMax;
+    reconstructionCategory.amountMax +
+    armamentsCategory.amountMax;
 
   const revenue = calculateRevenue(input, directPoint);
 
@@ -41,6 +46,7 @@ export function calculateWarCost(input: CalculationInput): WarCostResult {
     ...economicCategory.sources,
     ...humanitarianCategory.sources,
     ...reconstructionCategory.sources,
+    ...armamentsCategory.sources,
   ]);
 
   // All assumptions (from line items across all categories)
@@ -49,6 +55,7 @@ export function calculateWarCost(input: CalculationInput): WarCostResult {
     ...economicCategory.items.flatMap((i) => i.assumptions),
     ...humanitarianCategory.items.flatMap((i) => i.assumptions),
     ...reconstructionCategory.items.flatMap((i) => i.assumptions),
+    ...armamentsCategory.items.flatMap((i) => i.assumptions),
   ];
 
   return {
@@ -64,6 +71,7 @@ export function calculateWarCost(input: CalculationInput): WarCostResult {
       economic: economicCategory,
       humanitarian: humanitarianCategory,
       reconstruction: reconstructionCategory,
+      armaments: armamentsCategory,
     },
     duration: {
       min: def.durationYears.min,

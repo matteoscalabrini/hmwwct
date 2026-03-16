@@ -1,0 +1,205 @@
+{
+  "source": "DoD Program Acquisition Costs by Weapon System (FY2022-2024); GAO; open-source DoD budget justification documents",
+  "description": "Approximate unit procurement costs for major weapons categories, in millions USD (2024 prices). These are point estimates; actual costs vary by variant, production lot, and buyer. Updated annually from DoD budget documents.",
+  "lastReviewed": "2025-03",
+  "categories": {
+    "cruise_missile": {
+      "label": "Cruise Missile",
+      "examples": ["Tomahawk BGM-109", "Storm Shadow", "SCALP"],
+      "unitCostMillionUSD": 2.0,
+      "rangeLow": 1.5,
+      "rangeHigh": 2.5,
+      "domain": "multi",
+      "attritionLifespan": 1
+    },
+    "short_range_missile": {
+      "label": "Short-Range Missile / AAM",
+      "examples": ["AIM-120 AMRAAM", "AIM-9X", "R-77"],
+      "unitCostMillionUSD": 0.4,
+      "rangeLow": 0.1,
+      "rangeHigh": 0.6,
+      "domain": "air",
+      "attritionLifespan": 1
+    },
+    "atgm": {
+      "label": "Anti-Tank Guided Missile",
+      "examples": ["Javelin", "Kornet", "Spike"],
+      "unitCostMillionUSD": 0.18,
+      "rangeLow": 0.08,
+      "rangeHigh": 0.3,
+      "domain": "land",
+      "attritionLifespan": 1
+    },
+    "man_portable_sam": {
+      "label": "MANPAD (Portable SAM)",
+      "examples": ["Stinger", "Igla", "Mistral"],
+      "unitCostMillionUSD": 0.12,
+      "rangeLow": 0.05,
+      "rangeHigh": 0.2,
+      "domain": "air_defense",
+      "attritionLifespan": 1
+    },
+    "air_defense_battery": {
+      "label": "Air Defence Battery (Medium-Long Range)",
+      "examples": ["Patriot PAC-3 battery", "S-400 regiment", "NASAMS"],
+      "unitCostMillionUSD": 700,
+      "rangeLow": 400,
+      "rangeHigh": 1000,
+      "domain": "air_defense",
+      "attritionLifespan": 15
+    },
+    "fighter_aircraft": {
+      "label": "Fighter Aircraft",
+      "examples": ["F-16C/D", "Su-30", "Rafale", "Eurofighter"],
+      "unitCostMillionUSD": 80,
+      "rangeLow": 50,
+      "rangeHigh": 120,
+      "domain": "air",
+      "attritionLifespan": 25
+    },
+    "stealth_fighter": {
+      "label": "5th Gen / Stealth Fighter",
+      "examples": ["F-35A", "F-22", "Su-57"],
+      "unitCostMillionUSD": 105,
+      "rangeLow": 80,
+      "rangeHigh": 200,
+      "domain": "air",
+      "attritionLifespan": 30
+    },
+    "strategic_bomber": {
+      "label": "Strategic Bomber",
+      "examples": ["B-2A Spirit", "Tu-160", "B-52H"],
+      "unitCostMillionUSD": 2000,
+      "rangeLow": 600,
+      "rangeHigh": 2500,
+      "domain": "air",
+      "attritionLifespan": 40
+    },
+    "attack_helicopter": {
+      "label": "Attack Helicopter",
+      "examples": ["AH-64E Apache", "Ka-52", "Tiger"],
+      "unitCostMillionUSD": 50,
+      "rangeLow": 30,
+      "rangeHigh": 70,
+      "domain": "air",
+      "attritionLifespan": 20
+    },
+    "transport_helicopter": {
+      "label": "Transport / Multi-Role Helicopter",
+      "examples": ["UH-60 Black Hawk", "Mi-8/17", "NH90"],
+      "unitCostMillionUSD": 22,
+      "rangeLow": 10,
+      "rangeHigh": 40,
+      "domain": "air",
+      "attritionLifespan": 25
+    },
+    "tactical_drone": {
+      "label": "Tactical / MALE Drone",
+      "examples": ["Bayraktar TB2", "MQ-9 Reaper", "Shahed-136"],
+      "unitCostMillionUSD": 5,
+      "rangeLow": 0.02,
+      "rangeHigh": 32,
+      "domain": "air",
+      "attritionLifespan": 5
+    },
+    "main_battle_tank": {
+      "label": "Main Battle Tank",
+      "examples": ["M1A2 Abrams", "T-90M", "Leopard 2A7"],
+      "unitCostMillionUSD": 10,
+      "rangeLow": 6,
+      "rangeHigh": 16,
+      "domain": "land",
+      "attritionLifespan": 30
+    },
+    "infantry_fighting_vehicle": {
+      "label": "Infantry Fighting Vehicle",
+      "examples": ["M2 Bradley", "BMP-3", "CV90"],
+      "unitCostMillionUSD": 5,
+      "rangeLow": 3,
+      "rangeHigh": 8,
+      "domain": "land",
+      "attritionLifespan": 25
+    },
+    "armoured_personnel_carrier": {
+      "label": "Armoured Personnel Carrier",
+      "examples": ["M113", "BTR-82A", "Boxer"],
+      "unitCostMillionUSD": 2.5,
+      "rangeLow": 1,
+      "rangeHigh": 5,
+      "domain": "land",
+      "attritionLifespan": 20
+    },
+    "self_propelled_artillery": {
+      "label": "Self-Propelled Artillery (155mm)",
+      "examples": ["M109A7 Paladin", "2S19 Msta-S", "PzH 2000"],
+      "unitCostMillionUSD": 6,
+      "rangeLow": 4,
+      "rangeHigh": 8,
+      "domain": "land",
+      "attritionLifespan": 25
+    },
+    "multiple_rocket_launcher": {
+      "label": "Multiple Rocket Launcher",
+      "examples": ["M270 MLRS", "BM-21 Grad", "HIMARS"],
+      "unitCostMillionUSD": 6,
+      "rangeLow": 0.5,
+      "rangeHigh": 8,
+      "domain": "land",
+      "attritionLifespan": 20
+    },
+    "shell_155mm": {
+      "label": "155mm Artillery Shell",
+      "examples": ["M795", "Krasnopol", "Excalibur PGK"],
+      "unitCostMillionUSD": 0.002,
+      "rangeLow": 0.0008,
+      "rangeHigh": 0.08,
+      "domain": "land",
+      "attritionLifespan": 1
+    },
+    "precision_bomb": {
+      "label": "Precision-Guided Bomb (250–900kg)",
+      "examples": ["JDAM GBU-31", "GBU-39 SDB", "KAB-500L"],
+      "unitCostMillionUSD": 0.05,
+      "rangeLow": 0.02,
+      "rangeHigh": 0.25,
+      "domain": "air",
+      "attritionLifespan": 1
+    },
+    "frigate": {
+      "label": "Frigate / Destroyer",
+      "examples": ["Arleigh Burke DDG", "FREMM frigate", "Type 052D"],
+      "unitCostMillionUSD": 1800,
+      "rangeLow": 800,
+      "rangeHigh": 2500,
+      "domain": "naval",
+      "attritionLifespan": 35
+    },
+    "submarine_ssn": {
+      "label": "Attack Submarine (SSN)",
+      "examples": ["Virginia-class SSN", "Astute-class", "Yasen-M"],
+      "unitCostMillionUSD": 3400,
+      "rangeLow": 800,
+      "rangeHigh": 4200,
+      "domain": "naval",
+      "attritionLifespan": 33
+    },
+    "aircraft_carrier": {
+      "label": "Aircraft Carrier (full)",
+      "examples": ["Gerald R. Ford CVN", "Queen Elizabeth", "Liaoning"],
+      "unitCostMillionUSD": 13000,
+      "rangeLow": 3000,
+      "rangeHigh": 14000,
+      "domain": "naval",
+      "attritionLifespan": 50
+    },
+    "corvette_patrol": {
+      "label": "Corvette / Patrol Vessel",
+      "examples": ["Buyan-M", "Steregushchiy", "Sa'ar 6"],
+      "unitCostMillionUSD": 300,
+      "rangeLow": 100,
+      "rangeHigh": 600,
+      "domain": "naval",
+      "attritionLifespan": 25
+    }
+  }
+}
