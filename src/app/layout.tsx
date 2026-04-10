@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { IBM_Plex_Mono, JetBrains_Mono, VT323, Workbench } from 'next/font/google';
-import Link from 'next/link';
 import './globals.css';
+import { Frame } from '@/components/terminal';
+import pkg from '../../package.json';
 
 const ibmPlexMono = IBM_Plex_Mono({
   subsets: ['latin'],
@@ -28,21 +29,8 @@ const workbench = Workbench({
 });
 
 export const metadata: Metadata = {
-  title: 'HMWWCT // STRATEGIC COST ANALYSIS SYSTEM',
-  description:
-    'Calculate the estimated economic and humanitarian cost of a hypothetical military conflict between any two countries, using real data from World Bank, SIPRI, UNHCR, and IMF.',
-  keywords: ['war cost calculator', 'military spending', 'conflict economics', 'defense budget', 'peace'],
-  openGraph: {
-    title: 'How Much Would a War Cost There?',
-    description: 'Real data. Transparent methodology. Calculate the true cost of war.',
-    type: 'website',
-    siteName: 'HMWWCT',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'How Much Would a War Cost There?',
-    description: 'Real data. Transparent methodology. Calculate the true cost of war.',
-  },
+  title: 'HMWWCT · How Much Would a War Cost There?',
+  description: 'An educational calculator for the economic and humanitarian cost of hypothetical military conflict, built from real data.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -53,38 +41,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <head />
       <body>
-        <div className="min-h-screen flex flex-col">
-          <nav className="shrink-0">
-            <div className="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-              <Link href="/" className="flex items-center gap-3 min-w-0">
-                <div
-                  className="h-2.5 w-2.5 rounded-full animate-pulse-dot shrink-0"
-                  style={{
-                    background: 'var(--accent-emerald)',
-                    boxShadow: '0 0 8px rgba(105, 209, 127, 0.5)',
-                  }}
-                />
-                <div className="min-w-0">
-                  <div className="terminal-kicker" style={{ color: 'var(--accent-cyan)' }}>
-                    HMWWCT // STRATEGIC COST ANALYSIS
-                  </div>
-                  <p className="text-xs mt-1 truncate" style={{ color: 'var(--text-muted)' }}>
-                    Transparent war-cost modeling with cited public inputs
-                  </p>
-                </div>
-              </Link>
-              <div className="flex items-center gap-2">
-                <Link href="/calculator" className="terminal-button terminal-button-subtle">
-                  Open Calculator
-                </Link>
-                <Link href="/methodology" className="terminal-button terminal-button-subtle terminal-button-ghost">
-                  Methodology
-                </Link>
-              </div>
-            </div>
-          </nav>
-          <main className="flex-1">{children}</main>
-        </div>
+        <Frame version={pkg.version}>
+          {children}
+        </Frame>
       </body>
     </html>
   );
