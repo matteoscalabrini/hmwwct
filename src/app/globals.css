@@ -174,3 +174,7 @@ html, body {
   }
   [data-scanlines] { display: none !important; }
 }
+
+@keyframes blink {
+  to { visibility: hidden; }
+}
