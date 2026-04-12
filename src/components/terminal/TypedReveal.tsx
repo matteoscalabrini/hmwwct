@@ -1,3 +1,5 @@
+'use client';
+
 import { useTypedReveal } from '@/lib/terminal/useTypedReveal';
 
 interface TypedRevealProps {
