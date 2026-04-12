@@ -26,9 +26,10 @@ interface RowProps {
   value: ReactNode;
   tone?: 'default' | 'alert' | 'phosphor';
   highlight?: boolean;
+  footnote?: string;
 }
 
-function Row({ label, value, tone = 'default', highlight = false }: RowProps) {
+function Row({ label, value, tone = 'default', highlight = false, footnote }: RowProps) {
   const valueColor =
     tone === 'alert'    ? 'var(--alert)' :
     tone === 'phosphor' ? 'var(--phosphor)' :
@@ -52,6 +53,11 @@ function Row({ label, value, tone = 'default', highlight = false }: RowProps) {
       >
         {value}
       </span>
+      {footnote && (
+        <span style={{ gridColumn: '1 / -1', fontStyle: 'italic' }} className="t-label fg-dim">
+          {footnote}
+        </span>
+      )}
     </>
   );
 }

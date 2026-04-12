@@ -8,6 +8,7 @@ import { AsciiRule } from '@/components/terminal/AsciiRule';
 import { formatCompactUsd } from '@/lib/terminal/formatters';
 import { WarClock } from './WarClock';
 import { InHumanTerms } from './InHumanTerms';
+import { buildObituary } from '@/lib/calculator/obituaries';
 
 interface RangeValue {
   min: number;
@@ -30,9 +31,13 @@ interface Props {
   result: CalculationResult | null;
   durationYears?: number;
   aggressorPop?: number;
+  aggressorName?: string;
+  aggressorGdp?: number;
+  targetName?: string;
+  targetGdp?: number;
 }
 
-export function CostAnalysisPanel({ result, durationYears, aggressorPop }: Props) {
+export function CostAnalysisPanel({ result, durationYears, aggressorPop, aggressorName, aggressorGdp, targetName, targetGdp }: Props) {
   if (!result) {
     return (
       <Panel title="COST ANALYSIS">
@@ -43,6 +48,13 @@ export function CostAnalysisPanel({ result, durationYears, aggressorPop }: Props
 
   const { total, breakdown } = result;
   const maxVal = total.max || 1;
+
+  const obituaryCtx = {
+    aggressorName: aggressorName ?? 'Aggressor',
+    aggressorGdp: aggressorGdp ?? 1,
+    targetName: targetName ?? 'Target',
+    targetGdp: targetGdp ?? 1,
+  };
 
   return (
     <Panel title="COST ANALYSIS" tone="phosphor">
@@ -62,10 +74,27 @@ export function CostAnalysisPanel({ result, durationYears, aggressorPop }: Props
         <AsciiRule />
 
         <DataTable>
-          <DataTable.Row label="MILITARY" value={formatCompactUsd(breakdown.military.point)} />
-          <DataTable.Row label="ECONOMIC" value={formatCompactUsd(breakdown.economic.point)} />
-          <DataTable.Row label="HUMANITARIAN" value={formatCompactUsd(breakdown.humanitarian.point)} tone="alert" />
-          <DataTable.Row label="RECONSTRUCTION" value={formatCompactUsd(breakdown.reconstruction.point)} />
+          <DataTable.Row
+            label="MILITARY"
+            value={formatCompactUsd(breakdown.military.point)}
+            footnote={buildObituary('military', breakdown.military.point, obituaryCtx)}
+          />
+          <DataTable.Row
+            label="ECONOMIC"
+            value={formatCompactUsd(breakdown.economic.point)}
+            footnote={buildObituary('economic', breakdown.economic.point, obituaryCtx)}
+          />
+          <DataTable.Row
+            label="HUMANITARIAN"
+            value={formatCompactUsd(breakdown.humanitarian.point)}
+            tone="alert"
+            footnote={buildObituary('humanitarian', breakdown.humanitarian.point, obituaryCtx)}
+          />
+          <DataTable.Row
+            label="RECONSTRUCTION"
+            value={formatCompactUsd(breakdown.reconstruction.point)}
+            footnote={buildObituary('reconstruction', breakdown.reconstruction.point, obituaryCtx)}
+          />
         </DataTable>
 
         {aggressorPop && <InHumanTerms totalUsd={total.point} aggressorPop={aggressorPop} />}

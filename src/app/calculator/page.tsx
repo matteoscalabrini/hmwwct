@@ -37,6 +37,11 @@ export default function CalculatorPage() {
   );
 
   const aggressorPop = params.aggressor ? countriesByIso[params.aggressor]?.population : undefined;
+  const aggressorName = params.aggressor ? countriesByIso[params.aggressor]?.name : undefined;
+  const targetName = params.target ? countriesByIso[params.target]?.name : undefined;
+  const aggressorGdp = calcResult?.inputs?.aggressorGdp ?? undefined;
+  const targetGdp = calcResult?.inputs?.targetGdp ?? undefined;
+  const targetPop = params.target ? countriesByIso[params.target]?.population : undefined;
 
   return (
     <BigBoard
@@ -59,6 +64,10 @@ export default function CalculatorPage() {
           result={calcResult ?? null}
           durationYears={calcResult?.duration?.point}
           aggressorPop={aggressorPop}
+          aggressorName={aggressorName}
+          aggressorGdp={aggressorGdp}
+          targetName={targetName}
+          targetGdp={targetGdp}
         />
       }
       humanToll={<Panel title="HUMAN TOLL">placeholder</Panel>}
