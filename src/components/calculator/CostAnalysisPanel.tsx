@@ -9,11 +9,19 @@ import { formatCompactUsd } from '@/lib/terminal/formatters';
 import { WarClock } from './WarClock';
 import { InHumanTerms } from './InHumanTerms';
 import { buildObituary } from '@/lib/calculator/obituaries';
+import { NetPositionLine } from './NetPositionLine';
 
 interface RangeValue {
   min: number;
   max: number;
   point: number;
+}
+
+interface RevenueResult {
+  totalUsd: number;
+  netPositionUsd: number;
+  breakEvenYears: number | null;
+  items: { label: string }[];
 }
 
 interface CalculationResult {
@@ -25,6 +33,7 @@ interface CalculationResult {
     reconstruction: RangeValue;
   };
   duration: RangeValue & { unit: string };
+  revenue?: RevenueResult;
 }
 
 interface Props {
@@ -46,7 +55,7 @@ export function CostAnalysisPanel({ result, durationYears, aggressorPop, aggress
     );
   }
 
-  const { total, breakdown } = result;
+  const { total, breakdown, revenue } = result;
   const maxVal = total.max || 1;
 
   const obituaryCtx = {
@@ -98,6 +107,13 @@ export function CostAnalysisPanel({ result, durationYears, aggressorPop, aggress
         </DataTable>
 
         {aggressorPop && <InHumanTerms totalUsd={total.point} aggressorPop={aggressorPop} />}
+
+        <NetPositionLine
+          netPositionUsd={revenue?.netPositionUsd ?? 0}
+          breakEvenYears={revenue?.breakEvenYears ?? null}
+          totalRevenueUsd={revenue?.totalUsd ?? 0}
+          hasItems={revenue ? revenue.items.length > 0 : false}
+        />
       </div>
     </Panel>
   );
