@@ -13,3 +13,4 @@ export { CharBar } from './CharBar';
 export { DataTable } from './DataTable';
 export { TerminalSelect } from './TerminalSelect';
 export { BlockGridMap } from './BlockGridMap';
+export { BigBoard } from './BigBoard';

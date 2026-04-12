@@ -178,3 +178,17 @@ html, body {
 @keyframes blink {
   to { visibility: hidden; }
 }
+
+@media (max-width: 1279px) {
+  .big-board {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto !important;
+    grid-template-areas:
+      "cost"
+      "params"
+      "theater"
+      "toll"
+      "per"
+      "hist" !important;
+  }
+}
