@@ -6,6 +6,8 @@ import { BigBoard } from '@/components/terminal/BigBoard';
 import { Panel } from '@/components/terminal/Panel';
 import { ConflictParametersPanel, ConflictParams } from '@/components/calculator/ConflictParametersPanel';
 import { OperationsTheaterPanel } from '@/components/calculator/OperationsTheaterPanel';
+import { CostAnalysisPanel } from '@/components/calculator/CostAnalysisPanel';
+import { useCalculate } from '@/lib/calculator/useCalculate';
 import type { RestCountryRaw } from '@/lib/api/restcountries';
 
 export default function CalculatorPage() {
@@ -20,6 +22,8 @@ export default function CalculatorPage() {
     queryFn: () => fetch('/api/countries').then((r) => r.json()),
   });
 
+  const { data: calcResult } = useCalculate(params);
+
   const countryOptions = countries.map((c) => ({
     value: c.cca3,
     label: c.name.common,
@@ -31,6 +35,8 @@ export default function CalculatorPage() {
       { name: c.name.common, population: c.population },
     ])
   );
+
+  const aggressorPop = params.aggressor ? countriesByIso[params.aggressor]?.population : undefined;
 
   return (
     <BigBoard
@@ -48,7 +54,13 @@ export default function CalculatorPage() {
           countriesByIso={countriesByIso}
         />
       }
-      cost={<Panel title="COST ANALYSIS">placeholder</Panel>}
+      cost={
+        <CostAnalysisPanel
+          result={calcResult ?? null}
+          durationYears={calcResult?.duration?.point}
+          aggressorPop={aggressorPop}
+        />
+      }
       humanToll={<Panel title="HUMAN TOLL">placeholder</Panel>}
       perPerson={<Panel title="PER PERSON">placeholder</Panel>}
       history={<Panel title="HISTORY">placeholder</Panel>}
