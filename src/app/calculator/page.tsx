@@ -3,12 +3,14 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { BigBoard } from '@/components/terminal/BigBoard';
-import { Panel } from '@/components/terminal/Panel';
 import { ConflictParametersPanel, ConflictParams } from '@/components/calculator/ConflictParametersPanel';
 import { OperationsTheaterPanel } from '@/components/calculator/OperationsTheaterPanel';
 import { CostAnalysisPanel } from '@/components/calculator/CostAnalysisPanel';
 import { HumanTollPanel } from '@/components/calculator/HumanTollPanel';
 import { useCalculate } from '@/lib/calculator/useCalculate';
+import { PerPersonPanel } from '@/components/calculator/PerPersonPanel';
+import { InsteadPanel } from '@/components/calculator/InsteadPanel';
+import { HistoryPanel } from '@/components/calculator/HistoryPanel';
 import type { RestCountryRaw } from '@/lib/api/restcountries';
 
 export default function CalculatorPage() {
@@ -77,8 +79,17 @@ export default function CalculatorPage() {
           targetPopulation={targetPop ?? null}
         />
       }
-      perPerson={<Panel title="PER PERSON">placeholder</Panel>}
-      history={<Panel title="HISTORY">placeholder</Panel>}
+      perPerson={
+        <>
+          <PerPersonPanel
+            totalCost={calcResult?.total?.point ?? null}
+            aggressorPop={aggressorPop}
+            aggressorName={aggressorName}
+          />
+          <InsteadPanel totalCost={calcResult?.total?.point ?? null} />
+        </>
+      }
+      history={<HistoryPanel totalCost={calcResult?.total?.point ?? null} />}
     />
   );
 }
