@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { IBM_Plex_Mono, JetBrains_Mono, VT323, Workbench } from 'next/font/google';
 import './globals.css';
 import { Frame } from '@/components/terminal';
+import { Providers } from '@/components/Providers';
 import pkg from '../../package.json';
 
 const ibmPlexMono = IBM_Plex_Mono({
@@ -41,9 +42,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <head />
       <body>
-        <Frame version={pkg.version}>
-          {children}
-        </Frame>
+        <Providers>
+          <Frame version={pkg.version}>
+            {children}
+          </Frame>
+        </Providers>
       </body>
     </html>
   );
