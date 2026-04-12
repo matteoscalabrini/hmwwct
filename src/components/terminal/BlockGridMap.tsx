@@ -15,10 +15,11 @@ interface BlockGridMapProps {
   aggressor: string;
   target: string;
   glowSet?: Set<string>;
+  overlay?: Map<string, string>;
   onHoverCountry?: (iso: string | null) => void;
 }
 
-export function BlockGridMap({ aggressor, target, glowSet = new Set(), onHoverCountry }: BlockGridMapProps) {
+export function BlockGridMap({ aggressor, target, glowSet = new Set(), overlay, onHoverCountry }: BlockGridMapProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayRef = useRef<HTMLCanvasElement>(null);
   const [hover, setHover] = useState<{ r: number; c: number } | null>(null);
@@ -36,12 +37,12 @@ export function BlockGridMap({ aggressor, target, glowSet = new Set(), onHoverCo
     for (let r = 0; r < ROWS; r++) {
       for (let c = 0; c < COLS; c++) {
         const iso = GRID[r][c];
-        const tone = resolveCellTone(iso, { aggressor, target, glowSet });
+        const tone = resolveCellTone(iso, { aggressor, target, glowSet, overlay });
         ctx.fillStyle = toneColor(tone);
         ctx.fillRect(c * (CELL + GAP), r * (CELL + GAP), CELL, CELL);
       }
     }
-  }, [aggressor, target, glowSet, width, height]);
+  }, [aggressor, target, glowSet, overlay, width, height]);
 
   useEffect(() => {
     const overlay = overlayRef.current;
