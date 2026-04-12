@@ -7,6 +7,7 @@ import { Panel } from '@/components/terminal/Panel';
 import { ConflictParametersPanel, ConflictParams } from '@/components/calculator/ConflictParametersPanel';
 import { OperationsTheaterPanel } from '@/components/calculator/OperationsTheaterPanel';
 import { CostAnalysisPanel } from '@/components/calculator/CostAnalysisPanel';
+import { HumanTollPanel } from '@/components/calculator/HumanTollPanel';
 import { useCalculate } from '@/lib/calculator/useCalculate';
 import type { RestCountryRaw } from '@/lib/api/restcountries';
 
@@ -70,7 +71,12 @@ export default function CalculatorPage() {
           targetGdp={targetGdp}
         />
       }
-      humanToll={<Panel title="HUMAN TOLL">placeholder</Panel>}
+      humanToll={
+        <HumanTollPanel
+          displaced={calcResult?.humanToll?.displacedPersonsPoint ?? null}
+          targetPopulation={targetPop ?? null}
+        />
+      }
       perPerson={<Panel title="PER PERSON">placeholder</Panel>}
       history={<Panel title="HISTORY">placeholder</Panel>}
     />
