@@ -1,0 +1,8 @@
+[
+  { "name": "WWII (US SHARE)", "years": "1941-1945", "costUsd2024": 4700000000000 },
+  { "name": "VIETNAM WAR", "years": "1964-1973", "costUsd2024": 1000000000000 },
+  { "name": "IRAQ WAR", "years": "2003-2011", "costUsd2024": 2400000000000 },
+  { "name": "AFGHANISTAN", "years": "2001-2021", "costUsd2024": 2300000000000 },
+  { "name": "KOREAN WAR", "years": "1950-1953", "costUsd2024": 390000000000 },
+  { "name": "GULF WAR", "years": "1991", "costUsd2024": 117000000000 }
+]
