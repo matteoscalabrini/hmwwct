@@ -12,3 +12,4 @@ export { TerminalButton } from './TerminalButton';
 export { CharBar } from './CharBar';
 export { DataTable } from './DataTable';
 export { TerminalSelect } from './TerminalSelect';
+export { BlockGridMap } from './BlockGridMap';
