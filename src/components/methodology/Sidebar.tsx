@@ -28,7 +28,7 @@ export function Sidebar({ sections }: SidebarProps) {
   }, [sections]);
 
   return (
-    <nav aria-label="Table of contents" style={{
+    <nav aria-label="Table of contents" className="methodology-sidebar" style={{
       position: 'sticky', top: 'calc(var(--header-h) + var(--s-4))',
       width: 240, flexShrink: 0, alignSelf: 'flex-start',
     }}>

@@ -243,6 +243,22 @@ html, body {
   line-height: 1.6;
 }
 
+/* ─────────────────────────────────────────────
+   RESPONSIVE
+   ───────────────────────────────────────────── */
+
+@media (max-width: 767px) {
+  /* Scale hero text down from 96px so it doesn't overflow on phones */
+  .t-hero {
+    font-size: 48px;
+  }
+
+  /* Hide methodology sidebar — TOC is not useful on narrow screens */
+  .methodology-sidebar {
+    display: none !important;
+  }
+}
+
 @media (max-width: 1279px) {
   .big-board {
     grid-template-columns: 1fr !important;
