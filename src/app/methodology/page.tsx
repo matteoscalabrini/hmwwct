@@ -546,7 +546,15 @@ export default function MethodologyPage() {
           const s = MODEL_SECTIONS.find(m => m.id === 'military-model')!;
           return (
             <>
-              <p>{s.body}</p>
+              <p>
+                The military module is anchored to direct operational spending benchmarks from Watson
+                Institute case studies and then scaled by aggressor budget, scenario class, distance,
+                and attrition. The Watson anchor for a conventional war is{' '}
+                ~$200M/day{' '}
+                <span className="t-label fg-dim">≈ cost of 50 Tomahawk cruise missiles daily</span>.
+                It does not attempt to reproduce veterans care, interest on war debt, or
+                homeland-security spillovers.
+              </p>
               <div className="formula-block">
                 {s.equations.map(eq => <span key={eq} style={{ display: 'block' }}>{eq}</span>)}
               </div>
@@ -578,7 +586,11 @@ export default function MethodologyPage() {
           const s = MODEL_SECTIONS.find(m => m.id === 'humanitarian-model')!;
           return (
             <>
-              <p>{s.body}</p>
+              <p>
+                {s.body} The per-person-year support cost of $1,500{' '}
+                <span className="t-label fg-dim">≈ UNHCR average emergency response cost per displaced person</span>{' '}
+                covers humanitarian assistance and emergency healthcare.
+              </p>
               <div className="formula-block">
                 {s.equations.map(eq => <span key={eq} style={{ display: 'block' }}>{eq}</span>)}
               </div>
@@ -614,7 +626,22 @@ export default function MethodologyPage() {
               <div className="formula-block">
                 {s.equations.map(eq => <span key={eq} style={{ display: 'block' }}>{eq}</span>)}
               </div>
-              <p><span className="fg-dim">Notes: </span>{s.notes}</p>
+              <p>
+                <span className="fg-dim">Notes: </span>
+                budgetScalar uses a power-law exponent of 0.75 (diminishing returns — larger budgets
+                buy more but not linearly). Equipment fraction defaults to 20% of military spend for
+                non-NATO states; NATO Table 8a values used when available. Unit costs cover 22 weapon
+                categories from cruise missiles ($2M{' '}
+                <span className="t-label fg-dim">≈ annual salary of 40 US teachers</span>) to
+                aircraft carriers ($13B{' '}
+                <span className="t-label fg-dim">≈ GDP of Iceland</span>). Intercept costs calibrated
+                from CSIS Iran 2026: $1.7B to intercept 700 ballistic missiles + 3,600 drones in 100
+                hours ($395K average per intercept{' '}
+                <span className="t-label fg-dim">≈ 5× cost of an Iron Dome Tamir intercept</span>).
+                Data sources: SIPRI Milex 2024 (135 countries), NATO Defence Expenditure 2025,
+                Bruegel US Foreign Military Sales 2008–2025, DoD Program Acquisition Costs FY2024,
+                GAO-24-106649 Ukraine Weapon Replacement Study.
+              </p>
             </>
           );
         })()}
@@ -664,7 +691,8 @@ export default function MethodologyPage() {
           On February 28, 2026, the United States and Israel launched a sustained air campaign
           against Iran. By Day 17, partial cost breakdowns from the Pentagon and CSIS were publicly
           available — a rare opportunity to validate the model against a live conflict and identify
-          structural gaps.
+          structural gaps. The 17-day cost reached $14–16.5B{' '}
+          <span className="t-label fg-dim">≈ what the US spends on Head Start for 3 years</span>.
         </p>
 
         <h3>Conflict Profile</h3>
@@ -674,17 +702,18 @@ export default function MethodologyPage() {
           <DataTable.Row label="OPENING"   value="160+ Tomahawk cruise missiles" />
           <DataTable.Row label="RESPONSE"  value="~700 ballistic missiles + ~3,600 drones (17 days)" />
           <DataTable.Row label="NATURE"    value="Sustained air + naval campaign. No ground forces inside Iran." />
-          <DataTable.Row label="DAY 1–6"   value="$11.3B direct cost (Pentagon, Senate briefing)" />
-          <DataTable.Row label="DAY 1–13"  value="~$14–16.5B direct cost (CSIS / Foreign Policy)" />
-          <DataTable.Row label="<2 MONTH"  value="$65B projection (Penn Wharton Budget Model)" tone="phosphor" />
-          <DataTable.Row label="INTERCEPT" value="$1.7B in first 100 hrs (CSIS)" />
+          <DataTable.Row label="DAY 1–6"   value={<>$11.3B direct cost (Pentagon, Senate briefing) <span className="t-label fg-dim">≈ annual military budget of Denmark</span></>} />
+          <DataTable.Row label="DAY 1–13"  value={<>~$14–16.5B direct cost (CSIS / Foreign Policy) <span className="t-label fg-dim">≈ Iran's annual education budget</span></>} />
+          <DataTable.Row label="<2 MONTH"  value={<>$65B projection (Penn Wharton Budget Model) <span className="t-label fg-dim">≈ 15% of Iran's pre-war GDP</span></>} tone="phosphor" />
+          <DataTable.Row label="INTERCEPT" value={<>$1.7B in first 100 hrs (CSIS) <span className="t-label fg-dim">≈ 4,300 Patriot PAC-3 interceptors</span></>} />
         </DataTable>
 
         <h3>Key Discovery: Cost Is Two-Sided</h3>
         <p>
-          The CSIS breakdown of the first 100 hours revealed that defensive intercept costs ($1.7B,
-          46%) exceeded offensive strike munitions ($1.5B, 40%) in the opening phase. The original
-          model only priced what the aggressor spends attacking. The cost of neutralizing the
+          The CSIS breakdown of the first 100 hours revealed that defensive intercept costs ($1.7B{' '}
+          <span className="t-label fg-dim">≈ 4 Nimitz-class refueling overhauls</span>, 46%)
+          exceeded offensive strike munitions ($1.5B, 40%) in the opening phase. The original model
+          only priced what the aggressor spends attacking. The cost of neutralizing the
           counter-attack was entirely absent.
         </p>
         <div className="formula-block">
