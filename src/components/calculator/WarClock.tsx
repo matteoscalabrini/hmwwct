@@ -16,7 +16,12 @@ export function WarClock({ totalPoint, durationYears }: Props) {
   if (totalPoint <= 0) return null;
 
   return (
-    <div className="t-label fg-dim" style={{ fontFamily: '"Ioskeley Mono", monospace' }}>
+    <div
+      className="t-label fg-dim"
+      aria-live="off"
+      aria-label="War cost ticker"
+      style={{ fontFamily: '"Ioskeley Mono", monospace' }}
+    >
       +{formatCompactUsd(rate)}/SEC · Σ {formatCompactUsd(accrued)}
     </div>
   );

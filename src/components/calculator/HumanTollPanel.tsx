@@ -66,6 +66,7 @@ export function HumanTollPanel({ displaced, targetPopulation }: Props) {
             &gt; EVERY ICON BELOW IS ONE PERSON. SCROLL TO GRIEVE.
           </p>
 
+          <span className="sr-only" aria-label={`${formatCount(displaced)} people displaced, shown as individual icons`} />
           <PersonMemorialCanvas
             total={displaced}
             childRatio={0.4}

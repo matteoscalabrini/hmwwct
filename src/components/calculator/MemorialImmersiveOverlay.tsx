@@ -3,6 +3,15 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { PersonMemorialCanvas } from '@/components/terminal/PersonMemorialCanvas';
 
+const FOCUSABLE = [
+  'a[href]',
+  'button:not([disabled])',
+  'input:not([disabled])',
+  'select:not([disabled])',
+  'textarea:not([disabled])',
+  '[tabindex]:not([tabindex="-1"])',
+].join(',');
+
 interface Props {
   open: boolean;
   onClose: () => void;
@@ -23,13 +32,39 @@ export function MemorialImmersiveOverlay({
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+
+      const wrap = wrapRef.current;
+      if (!wrap) return;
+      const focusable = Array.from(wrap.querySelectorAll<HTMLElement>(FOCUSABLE));
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     },
     [onClose]
   );
 
   useEffect(() => {
     if (!open) return;
+    // Move focus into the overlay on open
+    wrapRef.current?.focus();
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [open, handleKeyDown]);
@@ -80,6 +115,7 @@ export function MemorialImmersiveOverlay({
       role="dialog"
       aria-modal="true"
       aria-label="Person memorial — every icon is one person"
+      tabIndex={-1}
       style={{
         position: 'fixed',
         inset: 0,
