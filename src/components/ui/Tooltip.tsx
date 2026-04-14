@@ -109,7 +109,7 @@ export function Tooltip({ content, children, className = '' }: TooltipProps) {
         <div
           ref={tooltipRef}
           role="tooltip"
-          className="terminal-panel-strong fixed z-[120] w-72 p-3.5 text-xs shadow-xl"
+          className="terminal-panel-strong t-label fixed z-[120] w-72 p-3.5 shadow-xl"
           style={{
             left: position?.left ?? -9999,
             top: position?.top ?? -9999,
