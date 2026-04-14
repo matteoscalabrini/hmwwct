@@ -1,9 +1,30 @@
 import Link from 'next/link';
+import { AsciiRule } from '@/components/terminal/AsciiRule';
+import { DataTable } from '@/components/terminal/DataTable';
+import { MethodologyLayout } from '@/components/methodology/MethodologyLayout';
 
 export const metadata = {
   title: 'Methodology | How Much Would a War Cost There?',
   description: 'Research-style documentation of the calculator: data pipeline, public APIs, mathematical models, uncertainty treatment, and audit notes.',
 };
+
+const SECTIONS = [
+  { id: 'abstract',            label: 'ABSTRACT' },
+  { id: 'data-pipeline',       label: 'DATA PIPELINE' },
+  { id: 'live-apis',           label: 'LIVE APIS' },
+  { id: 'static-datasets',     label: 'STATIC DATASETS' },
+  { id: 'country-assembly',    label: 'COUNTRY ASSEMBLY' },
+  { id: 'military-model',      label: 'MILITARY MODEL' },
+  { id: 'economic-model',      label: 'ECONOMIC MODEL' },
+  { id: 'humanitarian-model',  label: 'HUMANITARIAN MODEL' },
+  { id: 'reconstruction-model',label: 'RECONSTRUCTION MODEL' },
+  { id: 'armaments-model',     label: 'ARMAMENTS MODEL' },
+  { id: 'revenue-counterfactual', label: 'REVENUE COUNTERFACTUAL' },
+  { id: 'aggregation',         label: 'AGGREGATION' },
+  { id: 'calibration',         label: 'CALIBRATION' },
+  { id: 'audit-notes',         label: 'AUDIT NOTES' },
+  { id: 'limitations',         label: 'LIMITATIONS' },
+];
 
 const INTERNAL_ROUTES = [
   {
@@ -226,7 +247,7 @@ const COUNTRY_ASSEMBLY_LINES = [
 
 const MODEL_SECTIONS = [
   {
-    id: '01',
+    id: 'military-model',
     title: 'Military Cost Model',
     body:
       'The military module is anchored to direct operational spending benchmarks from Watson Institute case studies and then scaled by aggressor budget, scenario class, distance, and attrition. It does not attempt to reproduce veterans care, interest on war debt, or homeland-security spillovers.',
@@ -242,7 +263,7 @@ const MODEL_SECTIONS = [
       'Operational totals are decomposed into personnel (35%), operations and logistics (40%), munitions (20%), and C3ISR (5%), with scenario-specific equipment attrition added on top.',
   },
   {
-    id: '02',
+    id: 'economic-model',
     title: 'Economic Impact Model',
     body:
       'The economic module combines bilateral trade disruption, target-country GDP contraction, capital flight, sanctions drag on the aggressor when justified by literature, and a commodity shock layer for globally important producers.',
@@ -259,7 +280,7 @@ const MODEL_SECTIONS = [
       'Live Comtrade trade volume overrides the static pair table when available. Oil, gas, and wheat shocks can scale with live FRED prices. ACLED can add a modest target fragility overlay to GDP loss and capital flight.',
   },
   {
-    id: '03',
+    id: 'humanitarian-model',
     title: 'Humanitarian Displacement Model',
     body:
       'The humanitarian module estimates displacement rather than casualties. It applies country-specific or regional UNHCR ratios, dampens skirmish exposure for large countries using land area, and prices support and emergency healthcare per displaced person-year.',
@@ -275,7 +296,7 @@ const MODEL_SECTIONS = [
       'The module then splits displaced people into IDPs and cross-border refugees according to the observed UNHCR ratio mix. ACLED can modestly scale displacement when recent target-country violence is already elevated. Human toll is displayed separately and is not monetized through a value-of-life assumption.',
   },
   {
-    id: '04',
+    id: 'reconstruction-model',
     title: 'Reconstruction Model',
     body:
       'Reconstruction is modeled as a sublinear function of GDP so that richer countries do not mechanically receive implausible rebuild bills just because their output base is larger. A 30% overlap discount is applied because part of the destruction is already expressed as lost GDP in the economic module.',
@@ -291,7 +312,7 @@ const MODEL_SECTIONS = [
       'The 20B reference point corresponds to the Afghanistan calibration point used in the code. Opportunity-cost widgets are derived from reconstruction totals but are displayed outside the main war total.',
   },
   {
-    id: '05',
+    id: 'armaments-model',
     title: 'Armaments Model',
     body:
       'The armaments module prices weapons procurement, munitions consumption, equipment attrition, and defensive intercept costs — four buckets that were absent from the original model. It uses live military expenditure from the World Bank API with SIPRI Milex as offline fallback, NATO equipment-percentage data to derive a procurement fraction, a static unit-cost table sourced from DoD annual budget documents, and scenario-based force-package tables calibrated to real conflicts.',
@@ -308,7 +329,7 @@ const MODEL_SECTIONS = [
       'budgetScalar uses a power-law exponent of 0.75 (diminishing returns — larger budgets buy more but not linearly). Equipment fraction defaults to 20% of military spend for non-NATO states; NATO Table 8a values used when available. Unit costs cover 22 weapon categories from cruise missiles ($2M) to aircraft carriers ($13B). Intercept costs calibrated from CSIS Iran 2026: $1.7B to intercept 700 ballistic missiles + 3,600 drones in 100 hours ($395K average per intercept). Data sources: SIPRI Milex 2024 (135 countries), NATO Defence Expenditure 2025, Bruegel US Foreign Military Sales 2008–2025, DoD Program Acquisition Costs FY2024, GAO-24-106649 Ukraine Weapon Replacement Study.',
   },
   {
-    id: '07',
+    id: 'revenue-counterfactual',
     title: 'Revenue Counterfactual',
     body:
       'Revenue is not subtracted from the headline projected cost. It is shown as a deliberately optimistic counterfactual: what an aggressor might hope to extract if it wins, holds territory, and manages to keep production online despite sabotage, sanctions, and infrastructure damage.',
@@ -321,20 +342,6 @@ const MODEL_SECTIONS = [
     notes:
       'Capture rates are scenario-specific: 0% for skirmish, 15% for conventional war, and 50% for occupation. The code treats this section as best-case and low-confidence by design.',
   },
-  {
-    id: '08',
-    title: 'Aggregation and Uncertainty',
-    body:
-      'The app does not run a Monte Carlo engine. Instead, each module defines its own conservative range. Headline cost and economic impact are aggregated separately, which keeps the accounting explicit and avoids folding macroeconomic spillovers into the top-line war bill.',
-    equations: [
-      'headlinePoint = military + humanitarian + reconstruction + armaments',
-      'headlineMin = militaryMin + humanitarianMin + reconstructionMin + armamentsMin',
-      'headlineMax = militaryMax + humanitarianMax + reconstructionMax + armamentsMax',
-      'economicImpactPoint = economic (reported separately)',
-    ],
-    notes:
-      'Scenario durations are normalized archetypes rather than event-specific backtests: 0.15 years for air_campaign, 0.2 years for skirmish, 1.5 years for conventional war, and 10 years for occupation at point estimate. Armaments ranges are wider than other modules due to force-package composition uncertainty.',
-  },
 ];
 
 const CALIBRATION_GAPS = [
@@ -343,28 +350,28 @@ const CALIBRATION_GAPS = [
     title: 'Defensive intercept costs — absent from model',
     finding: 'CSIS reported $1.7B in intercept costs in the first 100 hours — 46% of total direct spending. Shooting down 700 ballistic missiles and 3,600 drones costs as much as the offensive strike itself. This cost category did not exist anywhere in the calculator.',
     fix: 'Added a Defensive Intercepts line item to the armaments module. Incoming threat volume scales with target military budget × scenario threat rate. Average intercept cost $395K calibrated from CSIS Iran 2026 data (mix of SM-3 at $10M, Patriot PAC-3 at $4M, SM-2 at $2M, Iron Dome at $80K).',
-    color: 'var(--accent-red)',
+    color: 'var(--alert)',
   },
   {
     id: '02',
     title: 'No air_campaign scenario — conflict fell in a gap',
     finding: 'The four existing scenarios were precision_strike (days), skirmish (weeks), conventional (months with ground forces), occupation (years). Iran 2026 was none of these: a sustained air campaign lasting weeks to months with no ground component.',
     fix: 'Added air_campaign as a fifth scenario. Duration 18 days – 6 months (point 55 days). Watson anchor $100M–$1.2B/day (Kosovo–Iran 2026 range). Displacement multiplier 4%, GDP impact 15%/year, capital flight 7%/year. Force package: 80 fighters, 400 cruise missiles, 5,000 precision bombs, no ground forces.',
-    color: 'var(--accent-amber)',
+    color: 'var(--phosphor)',
   },
   {
     id: '03',
     title: 'Humanitarian model built for slow conflicts — not air campaigns',
     finding: 'The displacement-based model produced $14M for USA→Iran precision_strike. The real humanitarian cost by Day 17 was in the billions: 1,444 killed, 18,551 injured, 3.2 million displaced. No direct casualty cost existed in the model at all.',
     fix: 'Added a Direct Casualties line item using the WHO human-capital VSL method (GDP per capita × 100). Daily casualty rates by scenario calibrated to Iran 2026 (1.0 killed/M/day for air_campaign) and Iraq 2003 (5.0/M/day for conventional). Casualties now included in the humanitarian total.',
-    color: 'var(--accent-amber)',
+    color: 'var(--phosphor)',
   },
   {
     id: '04',
     title: 'Capital flight rates not calibrated for short air campaigns',
-    finding: 'CAPITAL_FLIGHT_PCT had entries for skirmish, conventional, and occupation but defaulted to 4% for precision_strike and the missing air_campaign. Iran\'s banking system was frozen and oil exports halted within days — a 7%+ flight rate, not 4%.',
+    finding: "CAPITAL_FLIGHT_PCT had entries for skirmish, conventional, and occupation but defaulted to 4% for precision_strike and the missing air_campaign. Iran's banking system was frozen and oil exports halted within days — a 7%+ flight rate, not 4%.",
     fix: 'Added explicit entries: air_campaign = 7%/year (banking freeze, oil export halt), precision_strike = 3%/year (short duration limits flight but investor panic is real).',
-    color: 'var(--accent-cyan)',
+    color: 'var(--fg)',
   },
 ];
 
@@ -392,517 +399,372 @@ const LIMITATIONS = [
 ];
 
 /* ------------------------------------------------------------------ */
-/*  Sub-components                                                     */
-/* ------------------------------------------------------------------ */
-
-function SectionHeader({
-  title,
-  summary,
-  accentColor = 'var(--accent-blue)',
-}: {
-  title: string;
-  summary: string;
-  accentColor?: string;
-}) {
-  return (
-    <div className="space-y-2">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="classification-label" style={{ color: accentColor }}>
-          {title}
-        </div>
-      </div>
-      <p className="max-w-3xl text-sm leading-7" style={{ color: 'var(--text-secondary)' }}>
-        {summary}
-      </p>
-    </div>
-  );
-}
-
-function EquationPanel({ lines }: { lines: string[] }) {
-  return (
-    <div className="terminal-panel-muted space-y-1.5 p-4 font-mono text-sm" style={{ color: 'var(--accent-cyan)' }}>
-      {lines.map((line) => (
-        <p key={line} className="leading-7">
-          {line}
-        </p>
-      ))}
-    </div>
-  );
-}
-
-function StatBadge({ value, label }: { value: string; label: string }) {
-  return (
-    <div className="terminal-stat px-5 py-4 text-center">
-      <p className="font-display text-4xl leading-none tracking-[0.08em]" style={{ color: 'var(--accent-blue)' }}>
-        {value}
-      </p>
-      <p className="mt-2 text-xs uppercase tracking-[0.18em]" style={{ color: 'var(--text-muted)' }}>
-        {label}
-      </p>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
 /*  Page                                                               */
 /* ------------------------------------------------------------------ */
 
 export default function MethodologyPage() {
   return (
-    <div className="grid-bg">
-      <div className="max-w-screen-xl mx-auto px-4 py-10 space-y-14 sm:px-6 lg:px-8 lg:py-14">
-      <header className="space-y-8">
-        <div className="space-y-3">
-          <p className="terminal-kicker" style={{ color: 'var(--accent-blue)' }}>
-            Technical Documentation
-          </p>
-          <h1 className="font-display text-6xl leading-none tracking-[0.08em]" style={{ color: 'var(--text)' }}>
-            Methodology
-          </h1>
-          <p className="max-w-3xl text-base leading-8" style={{ color: 'var(--text-secondary)' }}>
-            This page documents the implemented calculator, not an aspirational model. It describes the public APIs,
-            static datasets, mathematical transformations, fallback rules, uncertainty treatment, and audit notes that
-            currently drive the application.
-          </p>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-3 max-w-lg">
-          <StatBadge value="6" label="Live APIs" />
-          <StatBadge value="12" label="Static Datasets" />
-          <StatBadge value="5" label="Cost Modules" />
-        </div>
-      </header>
+    <MethodologyLayout sections={SECTIONS}>
+      <div className="longform">
 
-      <section className="space-y-6">
-        <SectionHeader
-          title="Abstract"
-          summary="The application estimates the cost of interstate conflict by merging live macroeconomic indicators with curated static conflict datasets, then evaluating a fixed scenario archetype through three headline cost modules plus a separate economic-impact module."
-        />
-        <div
-          className="terminal-panel grid gap-0 overflow-hidden lg:grid-cols-[1.3fr_0.7fr]"
-        >
-          <div className="space-y-4 p-6 text-sm leading-7 sm:p-8" style={{ color: 'var(--text-secondary)' }}>
-            <p>
-              The system treats war-cost estimation as a transparent accounting exercise. Every user-facing number must
-              either come from a named public source or from a deterministic transformation applied to those sources.
-              When live APIs fail or provide no coverage, the code falls back to explicit local datasets rather than
-              silently imputing values.
-            </p>
-            <p>
-              The calculator is intentionally conservative in scope. It prices military operations, economic
-              dislocation, humanitarian displacement support, and reconstruction. It does not claim to price the full
-              social cost of war, and it explicitly excludes nuclear escalation, long-run trauma, ecological damage,
-              alliance cascades, and other second-order effects that are either methodologically unstable or not yet
-              parameterized in code.
-            </p>
-          </div>
-          <div
-            className="flex flex-col justify-center space-y-4 border-l p-6 sm:p-8"
-            style={{ borderColor: 'var(--border)', background: 'rgba(18, 33, 27, 0.58)' }}
-          >
-            <p className="terminal-kicker">
-              Core Principle
-            </p>
-            <EquationPanel
-              lines={[
-                'headlineCost = military + humanitarian + reconstruction',
-                'economicImpact is reported separately from headlineCost',
-                'netPosition = revenue - headlineCost',
-              ]}
-            />
-          </div>
+        {/* ABSTRACT */}
+        <AsciiRule tone="mute" />
+        <h2 id="abstract">Abstract</h2>
+        <p>
+          This page documents the implemented calculator, not an aspirational model. It describes
+          the public APIs, static datasets, mathematical transformations, fallback rules, uncertainty
+          treatment, and audit notes that currently drive the application.
+        </p>
+        <p>
+          The system treats war-cost estimation as a transparent accounting exercise. Every
+          user-facing number must either come from a named public source or from a deterministic
+          transformation applied to those sources. When live APIs fail or provide no coverage, the
+          code falls back to explicit local datasets rather than silently imputing values.
+        </p>
+        <p>
+          The calculator is intentionally conservative in scope. It prices military operations,
+          economic dislocation, humanitarian displacement support, and reconstruction. It does not
+          claim to price the full social cost of war, and it explicitly excludes nuclear escalation,
+          long-run trauma, ecological damage, alliance cascades, and other second-order effects that
+          are either methodologically unstable or not yet parameterized in code.
+        </p>
+        <div className="formula-block">
+          headlineCost = military + humanitarian + reconstruction<br />
+          economicImpact is reported separately from headlineCost<br />
+          netPosition = revenue - headlineCost
         </div>
-      </section>
 
-      <section className="space-y-6">
-        <SectionHeader
-          title="System Design"
-          summary="The codebase is organized as a small Next.js application: static pages at the top, server routes in the middle, and deterministic calculation modules beneath them."
-          accentColor="var(--accent-indigo)"
-        />
-        <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-          <div
-            className="terminal-panel overflow-hidden"
-          >
-            <div className="px-6 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
-              <p className="terminal-kicker" style={{ color: 'var(--accent-indigo)' }}>
-                Internal Routes
-              </p>
-            </div>
-            {INTERNAL_ROUTES.map((item, index) => (
-              <div
-                key={item.route}
-                className="px-6 py-5 space-y-2"
-                style={{ borderBottom: index < INTERNAL_ROUTES.length - 1 ? '1px solid var(--border)' : 'none' }}
-              >
-                <p className="text-sm font-mono font-semibold" style={{ color: 'var(--accent-cyan)' }}>
-                  {item.route}
-                </p>
-                <p className="text-sm leading-7" style={{ color: 'var(--text-secondary)' }}>
-                  {item.purpose}
-                </p>
-                <p className="text-xs leading-6" style={{ color: 'var(--text-muted)' }}>
-                  Output: {item.output}
-                </p>
-              </div>
-            ))}
-          </div>
-          <div
-            className="terminal-panel space-y-5 p-6 sm:p-8"
-          >
-            <p className="terminal-kicker" style={{ color: 'var(--accent-indigo)' }}>
-              Country Assembly Pipeline
-            </p>
-            <p className="text-sm leading-7" style={{ color: 'var(--text-secondary)' }}>
-              The calculation route starts by building two enriched country objects. Geographic metadata comes from REST
-              Countries, live indicators come from World Bank, GDP can fall back to IMF DataMapper, military and
-              sanctions context can fall back to local datasets, and missing data-sparse states are explicitly labeled
-              through the <span className="font-mono text-xs" style={{ color: 'var(--accent-cyan)' }}>hasStaticFallback</span> flag.
-            </p>
-            <EquationPanel lines={COUNTRY_ASSEMBLY_LINES} />
-          </div>
-        </div>
-      </section>
+        {/* DATA PIPELINE */}
+        <AsciiRule tone="mute" />
+        <h2 id="data-pipeline">Data Pipeline</h2>
+        <p>
+          The codebase is organized as a small Next.js application: static pages at the top, server
+          routes in the middle, and deterministic calculation modules beneath them.
+        </p>
 
-      <section className="space-y-6">
-        <SectionHeader
-          title="Data Sources"
-          summary="The calculator mixes live public APIs with versioned local datasets. Live APIs are used for recency; local files are used for coverage, calibration, and transparent fallback behavior."
-          accentColor="var(--accent-emerald)"
-        />
-
-        <div
-          className="terminal-panel overflow-hidden"
-        >
-          <div className="px-6 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
-            <p className="terminal-kicker" style={{ color: 'var(--accent-emerald)' }}>
-              Live APIs
-            </p>
+        <h3>Internal Routes</h3>
+        {INTERNAL_ROUTES.map((item) => (
+          <div key={item.route} style={{ marginBottom: 'var(--s-5)' }}>
+            <DataTable>
+              <DataTable.Row label="ROUTE"   value={item.route} tone="phosphor" />
+              <DataTable.Row label="PURPOSE" value={item.purpose} />
+              <DataTable.Row label="OUTPUT"  value={item.output} />
+            </DataTable>
           </div>
-          {LIVE_APIS.map((api, index) => (
-            <div
-              key={api.name}
-              className="px-6 py-5 grid gap-4 lg:grid-cols-[1fr_1.2fr_auto]"
-              style={{ borderBottom: index < LIVE_APIS.length - 1 ? '1px solid var(--border)' : 'none' }}
-            >
-              <div className="space-y-1.5">
-                <a
-                  href={api.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm font-semibold hover:underline transition-colors"
-                  style={{ color: 'var(--accent-blue)' }}
-                >
-                  {api.name}
-                </a>
-                <p className="text-xs font-mono leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-                  {api.variables}
-                </p>
-              </div>
-              <div className="space-y-2 text-sm leading-7" style={{ color: 'var(--text-secondary)' }}>
-                <p>{api.role}</p>
-                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                  {api.fallback}
-                </p>
-              </div>
-              <div className="flex items-start">
-                <span
-                  className="rounded-full border px-3 py-1 text-xs font-medium whitespace-nowrap"
-                  style={{ background: 'rgba(18, 33, 27, 0.6)', color: 'var(--text-muted)', borderColor: 'var(--border-bright)' }}
-                >
-                  Cache: {api.cache}
-                </span>
-              </div>
-            </div>
+        ))}
+
+        <h3>Country Assembly Pipeline</h3>
+        <p>
+          The calculation route starts by building two enriched country objects. Geographic metadata
+          comes from REST Countries, live indicators come from World Bank, GDP can fall back to IMF
+          DataMapper, military and sanctions context can fall back to local datasets, and missing
+          data-sparse states are explicitly labeled through the{' '}
+          <code style={{ color: 'var(--phosphor)' }}>hasStaticFallback</code> flag.
+        </p>
+        <div id="country-assembly" className="formula-block">
+          {COUNTRY_ASSEMBLY_LINES.map((line) => (
+            <span key={line} style={{ display: 'block' }}>{line}</span>
           ))}
         </div>
 
-        <div
-          className="terminal-panel overflow-hidden"
-        >
-          <div className="px-6 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
-            <p className="terminal-kicker" style={{ color: 'var(--accent-emerald)' }}>
-              Static Datasets and Fallback Layers
-            </p>
+        <h3>Added Calculations</h3>
+        <p>
+          Recent live-data refinements do not replace the base model. They sit on top of the prior
+          architecture to improve trade realism, inflation handling, commodity scaling, and
+          target-country fragility sensitivity.
+        </p>
+        {ADDED_CALCULATIONS.map((item) => (
+          <div key={item.title} style={{ marginBottom: 'var(--s-5)' }}>
+            <h3>{item.title}</h3>
+            <p>{item.note}</p>
+            <div className="formula-block">
+              {item.lines.map((line) => (
+                <span key={line} style={{ display: 'block' }}>{line}</span>
+              ))}
+            </div>
           </div>
-          <div className="grid md:grid-cols-2">
-            {STATIC_DATASETS.map((dataset, index) => (
-              <div
-                key={dataset.name}
-                className="px-6 py-5 space-y-2"
-                style={{
-                  borderBottom: index < STATIC_DATASETS.length - 1 ? '1px solid var(--border)' : 'none',
-                  borderRight: index % 2 === 0 ? '1px solid var(--border)' : 'none',
-                }}
-              >
-                <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
-                  {dataset.name}
-                </p>
-                <p className="text-xs font-medium" style={{ color: 'var(--accent-emerald)' }}>
-                  {dataset.count}
-                </p>
-                <p className="text-xs leading-6" style={{ color: 'var(--text-muted)' }}>
-                  {dataset.note}
-                </p>
+        ))}
+
+        {/* LIVE APIS */}
+        <AsciiRule tone="mute" />
+        <h2 id="live-apis">Live APIs</h2>
+        <p>
+          The calculator mixes live public APIs with versioned local datasets. Live APIs are used for
+          recency; local files are used for coverage, calibration, and transparent fallback behavior.
+        </p>
+        {LIVE_APIS.map((api) => (
+          <div key={api.name} style={{ marginBottom: 'var(--s-5)' }}>
+            <DataTable>
+              <DataTable.Row
+                label="SOURCE"
+                value={<a href={api.url} target="_blank" rel="noopener noreferrer">{api.name}</a>}
+                tone="phosphor"
+              />
+              <DataTable.Row label="VARS"     value={api.variables} />
+              <DataTable.Row label="ROLE"     value={api.role} />
+              <DataTable.Row label="CACHE"    value={api.cache} />
+              <DataTable.Row label="FALLBACK" value={api.fallback} />
+            </DataTable>
+          </div>
+        ))}
+
+        <h3>API Endpoint Map</h3>
+        <p>
+          These are the actual upstream endpoint patterns the code calls today. The app wraps them
+          with cache control, graceful fallback, and input normalization before they influence any
+          result.
+        </p>
+        {API_ENDPOINTS.map((item) => (
+          <div key={item.name} style={{ marginBottom: 'var(--s-4)' }}>
+            <DataTable>
+              <DataTable.Row label={item.name} value={item.use} />
+              <DataTable.Row label="ENDPOINT" value={<span style={{ wordBreak: 'break-all', fontSize: 'var(--t-label)' }}>{item.endpoint}</span>} />
+            </DataTable>
+          </div>
+        ))}
+
+        {/* STATIC DATASETS */}
+        <AsciiRule tone="mute" />
+        <h2 id="static-datasets">Static Datasets</h2>
+        <p>
+          Versioned local datasets provide coverage, calibration anchors, and transparent fallback
+          behavior when live APIs are unavailable or return null.
+        </p>
+        {STATIC_DATASETS.map((dataset) => (
+          <div key={dataset.name} style={{ marginBottom: 'var(--s-4)' }}>
+            <DataTable>
+              <DataTable.Row label={dataset.count} value={dataset.name} tone="phosphor" />
+              <DataTable.Row label="NOTE" value={dataset.note} />
+            </DataTable>
+          </div>
+        ))}
+
+        {/* MILITARY MODEL */}
+        <AsciiRule tone="mute" />
+        <h2 id="military-model">Military Model</h2>
+        {(() => {
+          const s = MODEL_SECTIONS.find(m => m.id === 'military-model')!;
+          return (
+            <>
+              <p>{s.body}</p>
+              <div className="formula-block">
+                {s.equations.map(eq => <span key={eq} style={{ display: 'block' }}>{eq}</span>)}
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+              <p><span className="fg-dim">Notes: </span>{s.notes}</p>
+            </>
+          );
+        })()}
 
-      <section className="space-y-6">
-        <SectionHeader
-          title="API Endpoints"
-          summary="These are the actual upstream endpoint patterns the code calls today. The app wraps them with cache control, graceful fallback, and input normalization before they influence any result."
-          accentColor="var(--accent-blue)"
-        />
-        <div className="terminal-panel overflow-hidden">
-          <div className="px-6 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
-            <p className="terminal-kicker" style={{ color: 'var(--accent-blue)' }}>
-              External Endpoint Map
-            </p>
-          </div>
-          {API_ENDPOINTS.map((item, index) => (
-            <div
-              key={item.name}
-              className="grid gap-3 px-6 py-5 lg:grid-cols-[0.75fr_1.4fr_1fr]"
-              style={{ borderBottom: index < API_ENDPOINTS.length - 1 ? '1px solid var(--border)' : 'none' }}
-            >
-              <p className="text-sm font-semibold uppercase tracking-[0.12em]" style={{ color: 'var(--text)' }}>
-                {item.name}
-              </p>
-              <p className="font-mono text-xs leading-6" style={{ color: 'var(--accent-cyan)' }}>
-                {item.endpoint}
-              </p>
-              <p className="text-xs leading-6" style={{ color: 'var(--text-secondary)' }}>
-                {item.use}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="space-y-6">
-        <SectionHeader
-          title="Added Calculations"
-          summary="Recent live-data refinements do not replace the base model. They sit on top of the prior architecture to improve trade realism, inflation handling, commodity scaling, and target-country fragility sensitivity."
-          accentColor="var(--accent-cyan)"
-        />
-        <div className="grid gap-4 lg:grid-cols-2">
-          {ADDED_CALCULATIONS.map((item) => (
-            <div key={item.title} className="terminal-panel space-y-4 p-6">
-              <div className="space-y-2">
-                <p className="terminal-kicker" style={{ color: 'var(--accent-cyan)' }}>
-                  {item.title}
-                </p>
-                <p className="text-xs leading-6" style={{ color: 'var(--text-muted)' }}>
-                  {item.note}
-                </p>
+        {/* ECONOMIC MODEL */}
+        <AsciiRule tone="mute" />
+        <h2 id="economic-model">Economic Model</h2>
+        {(() => {
+          const s = MODEL_SECTIONS.find(m => m.id === 'economic-model')!;
+          return (
+            <>
+              <p>{s.body}</p>
+              <div className="formula-block">
+                {s.equations.map(eq => <span key={eq} style={{ display: 'block' }}>{eq}</span>)}
               </div>
-              <EquationPanel lines={item.lines} />
-            </div>
-          ))}
-        </div>
-      </section>
+              <p><span className="fg-dim">Notes: </span>{s.notes}</p>
+            </>
+          );
+        })()}
 
-      <section className="space-y-6">
-        <SectionHeader
-          title="Model Specification"
-          summary="Every category shown in the UI maps to a dedicated TypeScript module. The equations below are reduced forms of the implemented code, using the same constants and branching logic."
-          accentColor="var(--accent-amber)"
-        />
-        <div className="space-y-6">
-          {MODEL_SECTIONS.map((section) => (
-            <div
-              key={section.id}
-              className="terminal-panel grid gap-0 overflow-hidden lg:grid-cols-[1fr_1.2fr]"
-            >
-              <div className="p-6 sm:p-8 space-y-4" style={{ borderRight: '1px solid var(--border)' }}>
-                <h3 className="text-lg font-semibold uppercase tracking-[0.14em]" style={{ color: 'var(--text)' }}>
-                  {section.title}
-                </h3>
-                <p className="text-sm leading-7" style={{ color: 'var(--text-secondary)' }}>
-                  {section.body}
-                </p>
-                <p className="text-xs leading-6" style={{ color: 'var(--text-muted)' }}>
-                  {section.notes}
-                </p>
+        {/* HUMANITARIAN MODEL */}
+        <AsciiRule tone="mute" />
+        <h2 id="humanitarian-model">Humanitarian Model</h2>
+        {(() => {
+          const s = MODEL_SECTIONS.find(m => m.id === 'humanitarian-model')!;
+          return (
+            <>
+              <p>{s.body}</p>
+              <div className="formula-block">
+                {s.equations.map(eq => <span key={eq} style={{ display: 'block' }}>{eq}</span>)}
               </div>
-              <div className="p-6 sm:p-8 flex items-center">
-                <EquationPanel lines={section.equations} />
+              <p><span className="fg-dim">Notes: </span>{s.notes}</p>
+            </>
+          );
+        })()}
+
+        {/* RECONSTRUCTION MODEL */}
+        <AsciiRule tone="mute" />
+        <h2 id="reconstruction-model">Reconstruction Model</h2>
+        {(() => {
+          const s = MODEL_SECTIONS.find(m => m.id === 'reconstruction-model')!;
+          return (
+            <>
+              <p>{s.body}</p>
+              <div className="formula-block">
+                {s.equations.map(eq => <span key={eq} style={{ display: 'block' }}>{eq}</span>)}
               </div>
-            </div>
-          ))}
-        </div>
-      </section>
+              <p><span className="fg-dim">Notes: </span>{s.notes}</p>
+            </>
+          );
+        })()}
 
-      <section className="space-y-6">
-        <SectionHeader
-          title="Real-World Calibration — Operation Epic Fury (Iran, 2026)"
-          summary="On February 28, 2026, the United States and Israel launched a sustained air campaign against Iran. By Day 17, partial cost breakdowns from the Pentagon and CSIS were publicly available — a rare opportunity to validate the model against a live conflict and identify structural gaps."
-          accentColor="var(--accent-red)"
-        />
-
-        <div className="terminal-panel grid gap-0 overflow-hidden lg:grid-cols-[1fr_1fr]">
-          <div className="space-y-4 p-6 sm:p-8" style={{ borderRight: '1px solid var(--border)' }}>
-            <p className="terminal-kicker" style={{ color: 'var(--accent-red)' }}>
-              Conflict Profile
-            </p>
-            <div className="space-y-2 text-sm leading-7" style={{ color: 'var(--text-secondary)' }}>
-              <p>1,600+ sorties. 5,500+ targets struck. 160+ Tomahawk cruise missiles in the opening salvo. Iran responded with ~700 ballistic missiles and ~3,600 drones fired at US and Israeli targets in 17 days.</p>
-              <p>Nature: sustained air + naval campaign. No US or Israeli ground forces inside Iran. Duration at calibration point: 17 days ongoing.</p>
-            </div>
-            <div className="mt-4 space-y-1 font-mono text-xs" style={{ color: 'var(--text-muted)' }}>
-              <p>Day 1–6 direct cost: $11.3B (Pentagon, Senate briefing)</p>
-              <p>Day 1–13 direct cost: ~$14–16.5B (CSIS / Foreign Policy)</p>
-              <p>&lt;2 month projection: $65B (Penn Wharton Budget Model)</p>
-              <p>Intercept costs: $1.7B in first 100 hrs (CSIS)</p>
-            </div>
-          </div>
-          <div className="space-y-4 p-6 sm:p-8">
-            <p className="terminal-kicker" style={{ color: 'var(--accent-red)' }}>
-              Key Discovery: Cost Is Two-Sided
-            </p>
-            <p className="text-sm leading-7" style={{ color: 'var(--text-secondary)' }}>
-              The CSIS breakdown of the first 100 hours revealed that <span style={{ color: 'var(--text)' }}>defensive intercept costs ($1.7B, 46%) exceeded offensive strike munitions ($1.5B, 40%)</span> in the opening phase. The original model only priced what the aggressor spends attacking. The cost of neutralizing the counter-attack was entirely absent.
-            </p>
-            <div className="mt-2 font-mono text-xs space-y-1" style={{ color: 'var(--accent-cyan)' }}>
-              <p>offensive munitions: $1.5B (40%)</p>
-              <p>defensive intercepts: $1.7B (46%)</p>
-              <p>equipment losses: $359M (10%)</p>
-              <p>operations & sustainment: $196M (5%)</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <p className="terminal-kicker" style={{ color: 'var(--accent-red)' }}>
-            Four Gaps Found — Four Fixes Applied
-          </p>
-          <div className="grid gap-4 lg:grid-cols-2">
-            {CALIBRATION_GAPS.map((gap) => (
-              <div key={gap.id} className="terminal-panel space-y-3 p-6">
-                <div className="flex items-center gap-3">
-                  <span
-                    className="font-mono text-xs font-bold px-2 py-0.5 border"
-                    style={{ color: gap.color, borderColor: gap.color }}
-                  >
-                    GAP {gap.id}
-                  </span>
-                  <p className="text-sm font-semibold" style={{ color: 'var(--text)' }}>
-                    {gap.title}
-                  </p>
-                </div>
-                <p className="text-xs leading-6" style={{ color: 'var(--text-secondary)' }}>
-                  <span style={{ color: 'var(--text-muted)' }}>Found: </span>{gap.finding}
-                </p>
-                <p className="text-xs leading-6" style={{ color: 'var(--text-secondary)' }}>
-                  <span style={{ color: gap.color }}>Fix: </span>{gap.fix}
-                </p>
+        {/* ARMAMENTS MODEL */}
+        <AsciiRule tone="mute" />
+        <h2 id="armaments-model">Armaments Model</h2>
+        {(() => {
+          const s = MODEL_SECTIONS.find(m => m.id === 'armaments-model')!;
+          return (
+            <>
+              <p>{s.body}</p>
+              <div className="formula-block">
+                {s.equations.map(eq => <span key={eq} style={{ display: 'block' }}>{eq}</span>)}
               </div>
-            ))}
-          </div>
+              <p><span className="fg-dim">Notes: </span>{s.notes}</p>
+            </>
+          );
+        })()}
+
+        {/* REVENUE COUNTERFACTUAL */}
+        <AsciiRule tone="mute" />
+        <h2 id="revenue-counterfactual">Revenue Counterfactual</h2>
+        {(() => {
+          const s = MODEL_SECTIONS.find(m => m.id === 'revenue-counterfactual')!;
+          return (
+            <>
+              <p>{s.body}</p>
+              <div className="formula-block">
+                {s.equations.map(eq => <span key={eq} style={{ display: 'block' }}>{eq}</span>)}
+              </div>
+              <p><span className="fg-dim">Notes: </span>{s.notes}</p>
+            </>
+          );
+        })()}
+
+        {/* AGGREGATION */}
+        <AsciiRule tone="mute" />
+        <h2 id="aggregation">Aggregation and Uncertainty</h2>
+        <p>
+          The app does not run a Monte Carlo engine. Instead, each module defines its own
+          conservative range. Headline cost and economic impact are aggregated separately, which
+          keeps the accounting explicit and avoids folding macroeconomic spillovers into the
+          top-line war bill.
+        </p>
+        <div className="formula-block">
+          headlinePoint = military + humanitarian + reconstruction + armaments<br />
+          headlineMin = militaryMin + humanitarianMin + reconstructionMin + armamentsMin<br />
+          headlineMax = militaryMax + humanitarianMax + reconstructionMax + armamentsMax<br />
+          economicImpactPoint = economic (reported separately)
+        </div>
+        <p className="fg-dim" style={{ fontSize: 'var(--t-label)' }}>
+          Scenario durations are normalized archetypes rather than event-specific backtests: 0.15
+          years for air_campaign, 0.2 years for skirmish, 1.5 years for conventional war, and 10
+          years for occupation at point estimate. Armaments ranges are wider than other modules due
+          to force-package composition uncertainty.
+        </p>
+
+        {/* CALIBRATION */}
+        <AsciiRule tone="mute" />
+        <h2 id="calibration">Calibration — Operation Epic Fury (Iran, 2026)</h2>
+        <p>
+          On February 28, 2026, the United States and Israel launched a sustained air campaign
+          against Iran. By Day 17, partial cost breakdowns from the Pentagon and CSIS were publicly
+          available — a rare opportunity to validate the model against a live conflict and identify
+          structural gaps.
+        </p>
+
+        <h3>Conflict Profile</h3>
+        <DataTable>
+          <DataTable.Row label="SORTIES"   value="1,600+" />
+          <DataTable.Row label="TARGETS"   value="5,500+ struck" />
+          <DataTable.Row label="OPENING"   value="160+ Tomahawk cruise missiles" />
+          <DataTable.Row label="RESPONSE"  value="~700 ballistic missiles + ~3,600 drones (17 days)" />
+          <DataTable.Row label="NATURE"    value="Sustained air + naval campaign. No ground forces inside Iran." />
+          <DataTable.Row label="DAY 1–6"   value="$11.3B direct cost (Pentagon, Senate briefing)" />
+          <DataTable.Row label="DAY 1–13"  value="~$14–16.5B direct cost (CSIS / Foreign Policy)" />
+          <DataTable.Row label="<2 MONTH"  value="$65B projection (Penn Wharton Budget Model)" tone="phosphor" />
+          <DataTable.Row label="INTERCEPT" value="$1.7B in first 100 hrs (CSIS)" />
+        </DataTable>
+
+        <h3>Key Discovery: Cost Is Two-Sided</h3>
+        <p>
+          The CSIS breakdown of the first 100 hours revealed that defensive intercept costs ($1.7B,
+          46%) exceeded offensive strike munitions ($1.5B, 40%) in the opening phase. The original
+          model only priced what the aggressor spends attacking. The cost of neutralizing the
+          counter-attack was entirely absent.
+        </p>
+        <div className="formula-block">
+          offensive munitions:  $1.5B (40%)<br />
+          defensive intercepts: $1.7B (46%)<br />
+          equipment losses:     $359M (10%)<br />
+          operations &amp; sustainment: $196M (5%)
         </div>
 
-        <div className="terminal-panel overflow-hidden">
-          <div className="px-6 py-4" style={{ borderBottom: '1px solid var(--border)' }}>
-            <p className="terminal-kicker" style={{ color: 'var(--accent-red)' }}>
-              Pre / Post Results vs Real Data
-            </p>
+        <h3>Four Gaps Found — Four Fixes Applied</h3>
+        {CALIBRATION_GAPS.map((gap) => (
+          <div key={gap.id} style={{ marginBottom: 'var(--s-5)' }}>
+            <DataTable>
+              <DataTable.Row
+                label={`GAP ${gap.id}`}
+                value={gap.title}
+                tone={gap.id === '01' ? 'alert' : 'default'}
+              />
+              <DataTable.Row label="FOUND" value={gap.finding} />
+              <DataTable.Row label="FIX"   value={gap.fix} tone="phosphor" />
+            </DataTable>
           </div>
-          <div className="grid grid-cols-4 px-6 py-3 text-xs font-semibold uppercase tracking-[0.12em]" style={{ color: 'var(--text-muted)', borderBottom: '1px solid var(--border)' }}>
-            <span>Scenario</span>
-            <span>Before</span>
-            <span>After</span>
-            <span>Real</span>
-          </div>
-          {CALIBRATION_RESULTS.map((row, i) => (
-            <div
+        ))}
+
+        <h3>Pre / Post Results vs Real Data</h3>
+        <DataTable>
+          <DataTable.Row label="SCENARIO" value="BEFORE → AFTER vs REAL" tone="phosphor" />
+          {CALIBRATION_RESULTS.map((row) => (
+            <DataTable.Row
               key={row.scenario}
-              className="grid grid-cols-4 px-6 py-4 text-sm items-center"
-              style={{ borderBottom: i < CALIBRATION_RESULTS.length - 1 ? '1px solid var(--border)' : 'none' }}
-            >
-              <span className="font-mono text-xs" style={{ color: 'var(--accent-cyan)' }}>{row.scenario}</span>
-              <span style={{ color: 'var(--text-muted)' }}>{row.before}</span>
-              <span style={{ color: 'var(--text)' }}>{row.after}</span>
-              <span style={{ color: 'var(--accent-emerald)' }}>{row.real}</span>
-            </div>
+              label={row.scenario}
+              value={`${row.before} → ${row.after}  |  real: ${row.real}`}
+              tone={row.match ? 'phosphor' : 'alert'}
+            />
           ))}
-          <div className="px-6 py-4 text-xs leading-6" style={{ color: 'var(--text-muted)', borderTop: '1px solid var(--border)' }}>
-            Lesson: the pre-fix model reached a close headline figure for the wrong reasons — humanitarian was 200× too low while force-package procurement was likely too high. Sub-category composition matters as much as headline totals. A model that gets the right answer for wrong reasons will fail on the next conflict with a different error profile.
-          </div>
-        </div>
-      </section>
+        </DataTable>
+        <p style={{ fontSize: 'var(--t-label)' }} className="fg-dim">
+          Lesson: the pre-fix model reached a close headline figure for the wrong reasons —
+          humanitarian was 200× too low while force-package procurement was likely too high.
+          Sub-category composition matters as much as headline totals. A model that gets the right
+          answer for wrong reasons will fail on the next conflict with a different error profile.
+        </p>
 
-      <section className="space-y-6">
-        <SectionHeader
-          title="Calibration and Audit Notes"
-          summary="This repository was checked against the shipped data files and the running model logic. The goal was not to prove truth, but to document what the current code can defensibly claim."
-          accentColor="var(--accent-cyan)"
-        />
-        <div
-          className="terminal-panel space-y-5 p-6 sm:p-8"
-        >
-          {AUDIT_NOTES.map((note, index) => (
-            <div key={note} className="flex gap-4 items-start">
-              <span
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-bold"
-                style={{ background: 'rgba(18, 33, 27, 0.68)', color: 'var(--accent-cyan)', borderColor: 'var(--border-bright)' }}
-              >
-                {index + 1}
-              </span>
-              <p className="pt-1 text-sm leading-7" style={{ color: 'var(--text-secondary)' }}>
-                {note}
-              </p>
-            </div>
+        {/* AUDIT NOTES */}
+        <AsciiRule tone="mute" />
+        <h2 id="audit-notes">Audit Notes</h2>
+        <p>
+          This repository was checked against the shipped data files and the running model logic.
+          The goal was not to prove truth, but to document what the current code can defensibly
+          claim.
+        </p>
+        <ol>
+          {AUDIT_NOTES.map((note) => (
+            <li key={note}>{note}</li>
           ))}
-        </div>
-      </section>
+        </ol>
 
-      <section className="space-y-6">
-        <SectionHeader
-          title="Scope Limits"
-          summary="Exclusions are a methodological choice rather than an omission. The model only prices what the code can currently source, parameterize, and explain line by line."
-          accentColor="var(--accent-red)"
-        />
-        <div
-          className="terminal-panel grid gap-4 p-6 sm:p-8 md:grid-cols-2"
-        >
+        {/* LIMITATIONS */}
+        <AsciiRule tone="mute" />
+        <h2 id="limitations">Scope Limits</h2>
+        <p>
+          Exclusions are a methodological choice rather than an omission. The model only prices
+          what the code can currently source, parameterize, and explain line by line.
+        </p>
+        <ul>
           {LIMITATIONS.map((item) => (
-            <div key={item} className="flex gap-3 items-start">
-              <span
-                className="flex-shrink-0 mt-0.5 text-sm font-bold"
-                style={{ color: 'var(--accent-red)' }}
-              >
-                ✕
-              </span>
-              <p className="text-sm leading-7" style={{ color: 'var(--text-secondary)' }}>
-                {item}
-              </p>
-            </div>
+            <li key={item}>{item}</li>
           ))}
-        </div>
-      </section>
+        </ul>
 
-      <section
-        className="terminal-panel flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8"
-      >
-        <div className="space-y-2">
-          <p className="font-display text-4xl leading-none tracking-[0.08em]" style={{ color: 'var(--text)' }}>
-            Ready to run the numbers?
-          </p>
-          <p className="max-w-xl text-sm leading-7" style={{ color: 'var(--text-secondary)' }}>
-            Start with the calculator for the result, then inspect each category line item, then return here for the
-            underlying model assumptions and data pipeline.
-          </p>
-        </div>
-        <Link
-          href="/calculator"
-          className="terminal-button terminal-button-primary whitespace-nowrap"
-        >
-          Open Calculator
-        </Link>
-      </section>
+        <AsciiRule tone="mute" />
+        <p style={{ marginTop: 'var(--s-6)' }}>
+          <Link href="/calculator" style={{ color: 'var(--phosphor)' }}>
+            Open Calculator →
+          </Link>
+          {' '}
+          <span className="fg-dim">Start with the calculator for the result, then inspect each category line item, then return here for the underlying model assumptions and data pipeline.</span>
+        </p>
+
       </div>
-    </div>
+    </MethodologyLayout>
   );
 }

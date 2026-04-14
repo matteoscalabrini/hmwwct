@@ -179,6 +179,70 @@ html, body {
   to { visibility: hidden; }
 }
 
+/* ─────────────────────────────────────────────
+   LONGFORM (methodology)
+   ───────────────────────────────────────────── */
+
+.longform h2 {
+  font-size: var(--t-title);
+  text-transform: uppercase;
+  color: var(--phosphor);
+  margin-top: var(--s-8);
+  margin-bottom: var(--s-4);
+}
+
+.longform h3 {
+  font-size: var(--t-body);
+  text-transform: uppercase;
+  color: var(--fg);
+  margin-top: var(--s-6);
+  margin-bottom: var(--s-3);
+}
+
+.longform h3::before {
+  content: "> ";
+  color: var(--fg-dim);
+}
+
+.longform p {
+  font-size: var(--t-body);
+  line-height: 1.7;
+  color: var(--fg);
+  margin-bottom: var(--s-4);
+  max-width: 72ch;
+}
+
+.longform a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.longform a:hover {
+  color: var(--phosphor);
+}
+
+.longform ul, .longform ol {
+  padding-left: var(--s-5);
+  margin-bottom: var(--s-4);
+}
+
+.longform li {
+  font-size: var(--t-body);
+  line-height: 1.7;
+  color: var(--fg);
+  margin-bottom: var(--s-2);
+}
+
+.longform .formula-block {
+  border: 1px solid var(--fg-mute);
+  padding: var(--s-3);
+  margin: var(--s-3) 0;
+  font-size: var(--t-data);
+  color: var(--phosphor);
+  line-height: 1.6;
+}
+
 @media (max-width: 1279px) {
   .big-board {
     grid-template-columns: 1fr !important;
