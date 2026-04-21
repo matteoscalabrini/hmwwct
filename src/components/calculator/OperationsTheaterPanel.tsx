@@ -15,9 +15,10 @@ interface Props {
   aggressor: string | null;
   target: string | null;
   countriesByIso: Record<string, CountryInfo>;
+  onClickCountry?: (iso: string) => void;
 }
 
-export function OperationsTheaterPanel({ aggressor, target, countriesByIso }: Props) {
+export function OperationsTheaterPanel({ aggressor, target, countriesByIso, onClickCountry }: Props) {
   const [hover, setHover] = useState<string | null>(null);
   const [overlayMode, setOverlayMode] = useState<'theater' | 'trade' | 'sanctions'>('theater');
 
@@ -48,6 +49,7 @@ export function OperationsTheaterPanel({ aggressor, target, countriesByIso }: Pr
         target={target ?? ''}
         overlay={overlay}
         onHoverCountry={setHover}
+        onClickCountry={onClickCountry}
       />
       <InspectorStrip
         iso={hover}

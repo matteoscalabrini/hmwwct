@@ -38,6 +38,7 @@ interface CalculationResult {
 
 interface Props {
   result: CalculationResult | null;
+  isLoading?: boolean;
   durationYears?: number;
   aggressorPop?: number;
   aggressorName?: string;
@@ -46,7 +47,50 @@ interface Props {
   targetGdp?: number;
 }
 
-export function CostAnalysisPanel({ result, durationYears, aggressorPop, aggressorName, aggressorGdp, targetName, targetGdp }: Props) {
+const CALC_STEPS = [
+  'FETCHING WORLD BANK INDICATORS',
+  'RESOLVING MILITARY BUDGETS',
+  'COMPUTING TRADE DISRUPTION',
+  'MODELING HUMANITARIAN IMPACT',
+  'ESTIMATING RECONSTRUCTION',
+  'AGGREGATING COST RANGES',
+];
+
+function CalculatingOverlay() {
+  return (
+    <Panel title="COST ANALYSIS">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-2)' }}>
+        <p className="t-data fg-phos">&gt; CALCULATING <BlinkCursor /></p>
+        <div style={{ marginTop: 'var(--s-2)' }}>
+          {CALC_STEPS.map((step, i) => (
+            <p key={step} className="t-label fg-dim" style={{
+              animationName: 'blink',
+              animationDuration: '1s',
+              animationIterationCount: 'infinite',
+              animationDelay: `${i * 0.3}s`,
+            }}>
+              [{i < CALC_STEPS.length - 1 ? 'OK' : '..'}] {step}
+            </p>
+          ))}
+        </div>
+        <div style={{ marginTop: 'var(--s-3)', height: 6, background: 'var(--fg-mute)', overflow: 'hidden' }}>
+          <div style={{
+            height: '100%',
+            background: 'var(--phosphor)',
+            width: '60%',
+            animation: 'progress-bar 2s ease-in-out infinite',
+          }} />
+        </div>
+      </div>
+    </Panel>
+  );
+}
+
+export function CostAnalysisPanel({ result, isLoading, durationYears, aggressorPop, aggressorName, aggressorGdp, targetName, targetGdp }: Props) {
+  if (isLoading) {
+    return <CalculatingOverlay />;
+  }
+
   if (!result) {
     return (
       <Panel title="COST ANALYSIS">

@@ -114,6 +114,10 @@ export interface HumanToll {
   displacedPersonsMin: number;
   displacedPersonsMax: number;
   displacedPersonsPoint: number;
+  killedMin: number;
+  killedMax: number;
+  killedPoint: number;
+  injuredPoint: number;
   source: Source;
   note: string;
 }

@@ -228,6 +228,10 @@ export function calculateHumanitarianCost(input: CalculationInput): {
     displacedPersonsPoint: displacedPoint,
     displacedPersonsMin: displacedMin,
     displacedPersonsMax: displacedMax,
+    killedPoint,
+    killedMin,
+    killedMax,
+    injuredPoint,
     source: SOURCES.unhcr,
     note: `Displacement estimates based on UNHCR historical ratios. Direct casualties monetized via WHO human-capital VSL method (GDP/capita × 100). Casualty rates calibrated to Iran 2026 air campaign (CSIS) and Iraq 2003 invasion data.`,
   };

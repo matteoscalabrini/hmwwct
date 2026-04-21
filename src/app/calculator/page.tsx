@@ -10,7 +10,6 @@ import { HumanTollPanel } from '@/components/calculator/HumanTollPanel';
 import { useCalculate } from '@/lib/calculator/useCalculate';
 import { PerPersonPanel } from '@/components/calculator/PerPersonPanel';
 import { InsteadPanel } from '@/components/calculator/InsteadPanel';
-import { HistoryPanel } from '@/components/calculator/HistoryPanel';
 import type { RestCountryRaw } from '@/lib/api/restcountries';
 
 export default function CalculatorPage() {
@@ -25,7 +24,7 @@ export default function CalculatorPage() {
     queryFn: () => fetch('/api/countries').then((r) => r.json()),
   });
 
-  const { data: calcResult } = useCalculate(params);
+  const { data: calcResult, isFetching: isCalculating } = useCalculate(params);
 
   const countryOptions = countries.map((c) => ({
     value: c.cca3,
@@ -60,11 +59,19 @@ export default function CalculatorPage() {
           aggressor={params.aggressor}
           target={params.target}
           countriesByIso={countriesByIso}
+          onClickCountry={(iso) => {
+            if (!params.aggressor || (params.aggressor && params.target)) {
+              setParams({ ...params, aggressor: iso, target: null });
+            } else if (iso !== params.aggressor) {
+              setParams({ ...params, target: iso });
+            }
+          }}
         />
       }
       cost={
         <CostAnalysisPanel
           result={calcResult ?? null}
+          isLoading={isCalculating && !calcResult}
           durationYears={calcResult?.duration?.point}
           aggressorPop={aggressorPop}
           aggressorName={aggressorName}
@@ -75,6 +82,7 @@ export default function CalculatorPage() {
       }
       humanToll={
         <HumanTollPanel
+          killed={calcResult?.humanToll?.killedPoint ?? null}
           displaced={calcResult?.humanToll?.displacedPersonsPoint ?? null}
           targetPopulation={targetPop ?? null}
         />
@@ -89,7 +97,6 @@ export default function CalculatorPage() {
           <InsteadPanel totalCost={calcResult?.total?.point ?? null} />
         </>
       }
-      history={<HistoryPanel totalCost={calcResult?.total?.point ?? null} />}
     />
   );
 }

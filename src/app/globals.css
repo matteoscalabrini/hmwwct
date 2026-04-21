@@ -195,6 +195,12 @@ html, body {
   to { visibility: hidden; }
 }
 
+@keyframes progress-bar {
+  0%   { width: 0%; }
+  50%  { width: 80%; }
+  100% { width: 100%; }
+}
+
 /* ─────────────────────────────────────────────
    LONGFORM (methodology)
    ───────────────────────────────────────────── */
@@ -280,11 +286,10 @@ html, body {
     grid-template-columns: 1fr !important;
     grid-template-rows: auto !important;
     grid-template-areas:
-      "cost"
       "params"
       "theater"
+      "cost"
       "toll"
-      "per"
-      "hist" !important;
+      "per" !important;
   }
 }

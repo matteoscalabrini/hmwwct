@@ -9,7 +9,6 @@ test('BigBoard renders with big-board class', () => {
       cost={<div>c</div>}
       humanToll={<div>h</div>}
       perPerson={<div>pp</div>}
-      history={<div>hi</div>}
     />
   );
   expect(container.querySelector('.big-board')).toBeInTheDocument();

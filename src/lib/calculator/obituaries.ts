@@ -42,6 +42,7 @@ const TEMPLATES: Record<ObituaryCategory, ((v: number, c: Ctx) => string)[]> = {
 
 export function buildObituary(cat: ObituaryCategory, value: number, ctx: Ctx): string {
   const templates = TEMPLATES[cat];
-  const idx = Math.floor(value / 1e9) % templates.length;
-  return templates[idx](value, ctx);
+  const safe = Number.isFinite(value) && value > 0 ? value : 1;
+  const idx = Math.floor(safe / 1e9) % templates.length;
+  return templates[idx](safe, ctx);
 }

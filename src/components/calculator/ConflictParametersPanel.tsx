@@ -6,10 +6,10 @@ import { AsciiRule } from '@/components/terminal/AsciiRule';
 import { SelectOption } from '@/lib/terminal/filterMatches';
 
 const SCENARIOS = [
-  { key: 'precision_strike', label: 'PRECISION' },
-  { key: 'skirmish', label: 'SKIRMISH' },
-  { key: 'conventional', label: 'CONVENTIONAL' },
-  { key: 'occupation', label: 'OCCUPATION' },
+  { key: 'precision_strike', label: 'PRECISION', desc: 'Drones, cruise missiles, strategic bombers. Days to weeks.', duration: '~18 days' },
+  { key: 'skirmish', label: 'SKIRMISH', desc: 'Border clashes, limited ground offensives. Weeks to months.', duration: '~73 days' },
+  { key: 'conventional', label: 'CONVENTIONAL', desc: 'Full-scale ground, air, and naval operations.', duration: '~1.5 years' },
+  { key: 'occupation', label: 'OCCUPATION', desc: 'Long-term military presence, counterinsurgency.', duration: '~10 years' },
 ] as const;
 
 export interface ConflictParams {
@@ -65,6 +65,15 @@ export function ConflictParametersPanel({ countries, value, onChange }: Props) {
               </button>
             ))}
           </div>
+          {(() => {
+            const active = SCENARIOS.find((s) => s.key === value.scenario);
+            return active ? (
+              <div style={{ marginTop: 'var(--s-2)' }}>
+                <p className="t-data fg-dim">{active.desc}</p>
+                <p className="t-label fg-mute" style={{ marginTop: 'var(--s-1)' }}>DURATION: {active.duration}</p>
+              </div>
+            ) : null;
+          })()}
         </div>
       </div>
     </Panel>

@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { BigBoard } from '../BigBoard';
 
 describe('<BigBoard>', () => {
-  it('renders six named areas', () => {
+  it('renders five named areas', () => {
     render(
       <BigBoard
         parameters={<div>PARAMS</div>}
@@ -11,10 +11,9 @@ describe('<BigBoard>', () => {
         cost={<div>COST</div>}
         humanToll={<div>TOLL</div>}
         perPerson={<div>PER</div>}
-        history={<div>HIST</div>}
       />
     );
-    ['PARAMS', 'THEATER', 'COST', 'TOLL', 'PER', 'HIST'].forEach((t) =>
+    ['PARAMS', 'THEATER', 'COST', 'TOLL', 'PER'].forEach((t) =>
       expect(screen.getByText(t)).toBeInTheDocument()
     );
   });

@@ -6,31 +6,30 @@ interface Props {
   cost: ReactNode;
   humanToll: ReactNode;
   perPerson: ReactNode;
-  history: ReactNode;
 }
 
-export function BigBoard({ parameters, theater, cost, humanToll, perPerson, history }: Props) {
+export function BigBoard({ parameters, theater, cost, humanToll, perPerson }: Props) {
   return (
     <div
       className="big-board"
       style={{
         display: 'grid',
-        gap: '24px',
+        gap: '1px',
         padding: 'var(--s-4)',
-        gridTemplateColumns: 'minmax(320px, 1fr) minmax(480px, 2fr) minmax(360px, 1.2fr)',
-        gridTemplateRows: 'auto auto',
+        gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 2fr)',
+        gridTemplateRows: 'auto auto auto',
         gridTemplateAreas: `
-          "params theater cost"
-          "toll   per     hist"
+          "params  theater"
+          "cost    cost"
+          "toll    per"
         `,
       }}
     >
-      <div style={{ gridArea: 'params' }}>{parameters}</div>
-      <div style={{ gridArea: 'theater' }}>{theater}</div>
-      <div style={{ gridArea: 'cost' }}>{cost}</div>
-      <div style={{ gridArea: 'toll' }}>{humanToll}</div>
-      <div style={{ gridArea: 'per' }}>{perPerson}</div>
-      <div style={{ gridArea: 'hist' }}>{history}</div>
+      <div style={{ gridArea: 'params', overflow: 'hidden', alignSelf: 'start' }}>{parameters}</div>
+      <div style={{ gridArea: 'theater', overflow: 'hidden', alignSelf: 'start' }}>{theater}</div>
+      <div style={{ gridArea: 'cost', overflow: 'hidden', alignSelf: 'start' }}>{cost}</div>
+      <div style={{ gridArea: 'toll', overflow: 'hidden' }}>{humanToll}</div>
+      <div style={{ gridArea: 'per', overflow: 'hidden' }}>{perPerson}</div>
     </div>
   );
 }
