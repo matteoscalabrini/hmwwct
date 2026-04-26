@@ -26,9 +26,9 @@ export function BigBoard({ parameters, theater, cost, humanToll, perPerson }: Pr
         gridTemplateColumns: 'minmax(280px, 0.9fr) minmax(360px, 1.35fr) minmax(320px, 1fr)',
         gridTemplateRows: 'auto auto auto',
         gridTemplateAreas: `
-          "params  cost    cost"
-          "theater theater toll"
-          "theater theater per"
+          "params  theater theater"
+          "cost    cost    toll"
+          "cost    cost    per"
         `,
         alignItems: 'stretch',
       }}

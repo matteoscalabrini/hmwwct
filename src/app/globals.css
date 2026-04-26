@@ -396,8 +396,8 @@ html {
     grid-template-rows: auto !important;
     grid-template-areas:
       "params"
-      "cost"
       "theater"
+      "cost"
       "toll"
       "per" !important;
   }

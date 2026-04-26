@@ -18,6 +18,6 @@ describe('<BigBoard>', () => {
     );
     const board = container.querySelector('.big-board') as HTMLElement;
     expect(board).toHaveStyle({ gap: 'var(--s-5)' });
-    expect(board.style.gridTemplateAreas).toContain('params  cost    cost');
+    expect(board.style.gridTemplateAreas).toContain('params  theater theater');
   });
 });
