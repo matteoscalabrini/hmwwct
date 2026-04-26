@@ -22,7 +22,7 @@ const EXCLUDED_CODES = new Set([
 ]);
 
 // Important non-UN-member countries to supplement the REST Countries list.
-// Taiwan and Kosovo are geopolitically significant but excluded from UN membership filter.
+// Taiwan, Palestine, and Kosovo are geopolitically significant but excluded from the UN-member filter.
 import extraCountriesData from '@/lib/data/extra-countries.json';
 
 /**

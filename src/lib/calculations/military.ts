@@ -46,6 +46,9 @@ const WATSON_DAILY_ANCHOR_USD: Record<string, number> = {
   // B-52/B-2 long-range sorties. Calibrated to: Desert Fox ($125M/day), Allied Force ($54M/day).
   // Higher per-day than skirmish but total cost far lower due to short duration.
   precision_strike: 150_000_000, // $150M/day (US-budget-equivalent, munitions-dominant)
+  // Sustained air campaign: keep direct operations conservative here. Aircraft packages,
+  // munitions consumption, attrition, and defensive intercepts are priced in armaments.ts.
+  air_campaign: 112_000_000,
   skirmish: 80_000_000,          // $80M/day (Kargil-scale, US-budget-equivalent direct ops)
   conventional: 400_000_000,     // $400M/day (Gulf War 1991 direct ops, inflation-adj to 2023)
   occupation: 112_000_000,       // $112M/day (Afghanistan direct Pentagon ops, $824B/20yr)

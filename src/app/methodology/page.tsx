@@ -29,13 +29,13 @@ const SECTIONS = [
 const INTERNAL_ROUTES = [
   {
     route: '/api/countries',
-    purpose: 'Builds the selectable country list from REST Countries and appends curated records for Taiwan and Kosovo.',
-    output: '194 selectable country records with coordinates, flags, region tags, and population baselines.',
+    purpose: 'Builds the selectable country list from REST Countries and appends curated records for Taiwan, Palestine, and Kosovo.',
+    output: '195 selectable country records with coordinates, flags, region tags, and population baselines.',
   },
   {
     route: '/api/calculate',
     purpose: 'Main orchestration endpoint. Fetches live indicators, merges fallbacks, resolves sanctions, commodity, Comtrade, and ACLED data, then runs every model module.',
-    output: 'Cost ranges, line-item assumptions, data freshness labels, ACLED fragility overlays, human displacement estimate, and best-case revenue counterfactual.',
+    output: 'Cost ranges, module breakdowns, line-item assumptions, data freshness labels, ACLED fragility overlays, human toll estimates, and best-case revenue counterfactual.',
   },
   {
     route: '/api/world-bank/[indicator]',
@@ -147,7 +147,7 @@ const LIVE_APIS = [
     variables: 'cca2, cca3, name, flags, region, subregion, latlng, area, unMember, population',
     role: 'Country metadata, coordinates for distance calculations, flags, region labels, and geographic area.',
     cache: '7 days',
-    fallback: 'Taiwan and Kosovo are injected from a local curated dataset because the UN-member filter excludes them.',
+    fallback: 'Taiwan, Palestine, and Kosovo are injected from a local curated dataset because the UN-member filter excludes them.',
   },
   {
     name: 'FRED',
@@ -199,12 +199,12 @@ const STATIC_DATASETS = [
   {
     name: 'Scenario force-package table',
     count: '6 scenarios',
-    note: 'Typical weapons quantities deployed per scenario type (precision_strike, air_campaign, border_skirmish, conventional_war, occupation, naval_blockade), calibrated to historical conflicts.',
+    note: 'Typical weapons quantities deployed per package archetype. The calculator maps five UI scenarios to these packages; naval_blockade remains a reserved, non-UI package.',
   },
   {
     name: 'UNHCR-derived displacement ratios',
-    count: '25 country cases + 8 regional defaults',
-    note: 'Pre-processed IDP and refugee ratios used by the humanitarian model when estimating conflict displacement.',
+    count: '26 country cases + 8 regional defaults',
+    note: 'Pre-processed IDP and refugee ratios used by the humanitarian model for most scenarios. Sustained air campaigns use the calibrated event-level population share instead.',
   },
   {
     name: 'UN Comtrade bilateral trade pairs',
@@ -223,7 +223,7 @@ const STATIC_DATASETS = [
   },
   {
     name: 'Static fallback country file',
-    count: '13 countries',
+    count: '14 countries',
     note: 'Last-resort GDP, population, military, and trade values for data-sparse states such as North Korea, Syria, and Taiwan.',
   },
   {
@@ -233,8 +233,8 @@ const STATIC_DATASETS = [
   },
   {
     name: 'Curated extra-country file',
-    count: '2 records',
-    note: 'Taiwan and Kosovo metadata added on top of the REST Countries feed.',
+    count: '3 records',
+    note: 'Taiwan, Palestine, and Kosovo metadata added on top of the REST Countries feed.',
   },
 ];
 
@@ -250,7 +250,7 @@ const MODEL_SECTIONS = [
     id: 'military-model',
     title: 'Military Cost Model',
     body:
-      'The military module is anchored to direct operational spending benchmarks from Watson Institute case studies and then scaled by aggressor budget, scenario class, distance, and attrition. It does not attempt to reproduce veterans care, interest on war debt, or homeland-security spillovers.',
+      'The military module is anchored to direct operational spending benchmarks from Watson Institute case studies and then scaled by aggressor budget, scenario class, distance, and attrition. Air-campaign munitions, aircraft, and intercept-heavy costs are mostly captured in the separate armaments module. It does not attempt to reproduce veterans care, interest on war debt, or homeland-security spillovers.',
     equations: [
       'budgetScale = clamp(aggressorMilitaryBudget / 700B, 0.02, 3.0)',
       'watsonDaily = scenarioAnchor x cpiScalar',
@@ -281,19 +281,21 @@ const MODEL_SECTIONS = [
   },
   {
     id: 'humanitarian-model',
-    title: 'Humanitarian Displacement Model',
+    title: 'Humanitarian Model',
     body:
-      'The humanitarian module estimates displacement rather than casualties. It applies country-specific or regional UNHCR ratios, dampens skirmish exposure for large countries using land area, and prices support and emergency healthcare per displaced person-year.',
+      'The humanitarian module estimates displacement support, emergency healthcare, and direct casualty cost. It applies country-specific or regional UNHCR ratios for most scenarios, uses observed population-share calibration for sustained air campaigns, and prices casualties through a conservative GDP-per-capita human-capital method.',
     equations: [
       'displacementRatio = idpRatio + refugeeRatio',
       'populationAtRisk = skirmish && area > 100000 ? population x sqrt(100000 / area) : population',
-      'baseDisplaced = populationAtRisk x displacementRatio x scenarioDisplacementMultiplier',
+      'displacementShare = air_campaign ? scenarioDisplacementMultiplier : displacementRatio x scenarioDisplacementMultiplier',
+      'baseDisplaced = populationAtRisk x displacementShare',
       'displaced = round(baseDisplaced x fragilityMultiplier)',
       'displacementDuration = durationYears + min(durationYears x 1.5, 2)',
-      'humanitarianTotal = displaced x (1200 + 300) x displacementDuration',
+      'casualties = populationAtRiskMillions x durationDays x scenarioCasualtyRate',
+      'humanitarianTotal = displacementCost + casualtyCost',
     ],
     notes:
-      'The module then splits displaced people into IDPs and cross-border refugees according to the observed UNHCR ratio mix. ACLED can modestly scale displacement when recent target-country violence is already elevated. Human toll is displayed separately and is not monetized through a value-of-life assumption.',
+      'The module splits displaced people into IDPs and cross-border refugees according to the observed UNHCR ratio mix. ACLED can modestly scale displacement when recent target-country violence is already elevated. Direct casualty cost uses GDP per capita x 100 as a human-capital proxy, with injury cost set to 15% of VSL.',
   },
   {
     id: 'reconstruction-model',
@@ -326,7 +328,7 @@ const MODEL_SECTIONS = [
       'armamentsTotal = forcePackageCost + munitionsCost + attritionCost + interceptCost',
     ],
     notes:
-      'budgetScalar uses a power-law exponent of 0.75 (diminishing returns — larger budgets buy more but not linearly). Equipment fraction defaults to 20% of military spend for non-NATO states; NATO Table 8a values used when available. Unit costs cover 22 weapon categories from cruise missiles ($2M) to aircraft carriers ($13B). Intercept costs calibrated from CSIS Iran 2026: $1.7B to intercept 700 ballistic missiles + 3,600 drones in 100 hours ($395K average per intercept). Data sources: SIPRI Milex 2024 (135 countries), NATO Defence Expenditure 2025, Bruegel US Foreign Military Sales 2008–2025, DoD Program Acquisition Costs FY2024, GAO-24-106649 Ukraine Weapon Replacement Study.',
+      'budgetScalar uses a power-law exponent of 0.75 (diminishing returns — larger budgets buy more but not linearly). Equipment fraction defaults to 20% of military spend for non-NATO states; NATO Table 8a values used when available. Unit costs cover 22 weapon categories from cruise missiles ($2M) to aircraft carriers ($13B). Intercept costs are anchored to CSIS Iran 2026 reporting: $1.7B in the first 100 hours, with later reporting indicating roughly 700 ballistic missiles and 3,600 drones in the early campaign ($395K average per threat). Data sources: SIPRI Milex 2024 (135 countries), NATO Defence Expenditure 2025, Bruegel US Foreign Military Sales 2008–2025, DoD Program Acquisition Costs FY2024, GAO-24-106649 Ukraine Weapon Replacement Study.',
   },
   {
     id: 'revenue-counterfactual',
@@ -348,15 +350,15 @@ const CALIBRATION_GAPS = [
   {
     id: '01',
     title: 'Defensive intercept costs — absent from model',
-    finding: 'CSIS reported $1.7B in intercept costs in the first 100 hours — 46% of total direct spending. Shooting down 700 ballistic missiles and 3,600 drones costs as much as the offensive strike itself. This cost category did not exist anywhere in the calculator.',
-    fix: 'Added a Defensive Intercepts line item to the armaments module. Incoming threat volume scales with target military budget × scenario threat rate. Average intercept cost $395K calibrated from CSIS Iran 2026 data (mix of SM-3 at $10M, Patriot PAC-3 at $4M, SM-2 at $2M, Iron Dome at $80K).',
+    finding: 'CSIS reported $1.7B in intercept costs in the first 100 hours — 46% of total direct spending. The first pass had no category for the cost of neutralizing incoming ballistic missiles and drones.',
+    fix: 'Added a Defensive Intercepts line item to the armaments module. Incoming threat volume scales with target military budget × scenario threat rate. Average intercept cost $395K is calibrated from the Iran 2026 opening phase and later missile/drone reporting.',
     color: 'var(--alert)',
   },
   {
     id: '02',
     title: 'No air_campaign scenario — conflict fell in a gap',
     finding: 'The four existing scenarios were precision_strike (days), skirmish (weeks), conventional (months with ground forces), occupation (years). Iran 2026 was none of these: a sustained air campaign lasting weeks to months with no ground component.',
-    fix: 'Added air_campaign as a fifth scenario. Duration 18 days – 6 months (point 55 days). Watson anchor $100M–$1.2B/day (Kosovo–Iran 2026 range). Displacement multiplier 4%, GDP impact 15%/year, capital flight 7%/year. Force package: 80 fighters, 400 cruise missiles, 5,000 precision bombs, no ground forces.',
+    fix: 'Added air_campaign as a fifth scenario. Duration 18 days – 6 months (point 55 days). Operational spending remains conservative in the military module, while the air-specific aircraft, munitions, attrition, and intercept burden is priced in armaments. Displacement multiplier 4%, GDP impact 15%/year, capital flight 7%/year.',
     color: 'var(--phosphor)',
   },
   {
@@ -373,18 +375,66 @@ const CALIBRATION_GAPS = [
     fix: 'Added explicit entries: air_campaign = 7%/year (banking freeze, oil export halt), precision_strike = 3%/year (short duration limits flight but investor panic is real).',
     color: 'var(--fg)',
   },
+  {
+    id: '05',
+    title: 'Air-campaign displacement was double-damped',
+    finding: 'The methodology intended air_campaign displacementMultiplier = 4% as an observed population share. The code multiplied that by Iran’s historical UNHCR displacement ratio again, yielding ~293K displaced for USA→Iran instead of the reported ~3.2M.',
+    fix: 'For air_campaign only, displacementMultiplier is now treated as the calibrated population share. Other scenarios continue to use UNHCR historical ratios × scenario multiplier. USA→Iran air_campaign now produces ~3.7M displaced, close to the UN/HRA figure.',
+    color: 'var(--phosphor)',
+  },
 ];
 
 const CALIBRATION_RESULTS = [
   { scenario: 'precision_strike (18d)', before: '$13.30B', after: '$13.75B', real: '$14–16.5B (Day 13–17)', match: true },
-  { scenario: 'air_campaign (55d)', before: '—', after: '$58.17B', real: '$65B projection (Penn Wharton)', match: true },
+  { scenario: 'air_campaign (39d)', before: '$52.26B', after: '$53.61B', real: 'PWBM narrow direct: $27–28B Day 32, $38–47B Apr 30', match: false },
+  { scenario: 'air_campaign (55d)', before: '$58.17B', after: '$60.06B', real: '$38–47B two-month direct projection (PWBM)', match: true },
+  { scenario: 'human toll (39d)', before: '293K displaced', after: '3.7M displaced / 3.6K killed', real: '~3.2M displaced / 3.6K deaths', match: true },
+  { scenario: 'economic impact (39d)', before: '$191.74B', after: '$191.74B', real: '$144B likely; $50–300B range (FDD)', match: true },
+];
+
+const CALIBRATION_SOURCES = [
+  {
+    name: 'CSIS — First 100 hours',
+    url: 'https://www.csis.org/analysis/37-billion-estimated-cost-epic-furys-first-100-hours',
+    use: '$3.7B first-100-hours cost and intercept-cost structure.',
+  },
+  {
+    name: 'CSIS — Day 12 update',
+    url: 'https://www.csis.org/analysis/iran-war-cost-estimate-update-113-billion-day-6-165-billion-day-12',
+    use: '$11.3B Day 6 and $16.5B Day 12 direct-cost benchmark.',
+  },
+  {
+    name: 'CSIS — Ceasefire munitions',
+    url: 'https://www.csis.org/analysis/last-rounds-status-key-munitions-iran-war-ceasefire',
+    use: '39-day campaign, 13,000+ targets, and key munitions depletion.',
+  },
+  {
+    name: 'Penn Wharton Budget Model',
+    url: 'https://budgetmodel.wharton.upenn.edu/blog/BE2026-2/',
+    use: '$27–28B Day 32 and $38–47B two-month narrow direct-cost projection.',
+  },
+  {
+    name: 'HRANA — Day 39 casualties',
+    url: 'https://www.en-hrana.org/day-39-of-u-s-and-israeli-attacks-on-iran-extensive-damage-to-the-rail-network-and-roads/',
+    use: '3,636 documented deaths in Iran by April 7.',
+  },
+  {
+    name: 'HRA / Airwars / CIVIC',
+    url: 'https://www.en-hrana.org/wp-content/uploads/2026/03/FINAL-Civilian-Harm-in-Iran-after-One-Month-of-War.pdf',
+    use: '~3.2M displaced and civilian infrastructure damage.',
+  },
+  {
+    name: 'FDD — Iran economic damage',
+    url: 'https://www.fdd.org/analysis/2026/04/23/evaluating-the-economic-damage-to-iran-from-operation-epic-fury-an-initial-estimate/',
+    use: '$144B likely economic damage, with $50–300B range.',
+  },
 ];
 
 const AUDIT_NOTES = [
   'Import-time JSON validation is enforced in validated.ts for bilateral trade pairs and commodity producer datasets, including schema shape, ISO alpha-3 keys, numeric bounds, and duplicate-pair normalization.',
-  'The repository currently ships 75 bilateral trade pairs, 25 country displacement cases, 8 regional displacement defaults, 84 SIPRI entries, 13 static fallback countries, 8 sanctions regimes, and 32 commodity shock records.',
+  'The repository currently ships 75 bilateral trade pairs, 26 country displacement cases, 8 regional displacement defaults, 84 SIPRI entries, 14 static fallback countries, 8 sanctions regimes, and 32 commodity shock records.',
   'World Bank retrieval now requests the 10 most recent observations so the app can use the latest non-null value instead of defaulting to a fallback too early.',
-  'The old methodology-page validation table has been removed. The current calculator uses archetypal scenario durations, so claiming historical event-level tolerance bands without reparameterizing duration and context would overstate precision.',
+  'The Iran calibration table uses reparameterized 39-day and 55-day comparisons. Other historical claims remain archetypal scenario checks rather than event-level backtests.',
   'When FRED is unavailable, the model remains runnable. Commodity shocks stay on 2023 baselines and the CPI scalar remains 1.0, which preserves deterministic behavior instead of fabricating live prices.',
 ];
 
@@ -423,13 +473,14 @@ export default function MethodologyPage() {
         </p>
         <p>
           The calculator is intentionally conservative in scope. It prices military operations,
-          economic dislocation, humanitarian displacement support, and reconstruction. It does not
-          claim to price the full social cost of war, and it explicitly excludes nuclear escalation,
-          long-run trauma, ecological damage, alliance cascades, and other second-order effects that
-          are either methodologically unstable or not yet parameterized in code.
+          armaments and intercepts, economic dislocation, humanitarian displacement support, direct
+          casualty cost, and reconstruction. It does not claim to price the full social cost of war,
+          and it explicitly excludes nuclear escalation, long-run trauma, ecological damage, alliance
+          cascades, and other second-order effects that are either methodologically unstable or not
+          yet parameterized in code.
         </p>
         <div className="formula-block">
-          headlineCost = military + humanitarian + reconstruction<br />
+          headlineCost = military + humanitarian + reconstruction + armaments<br />
           economicImpact is reported separately from headlineCost<br />
           netPosition = revenue - headlineCost
         </div>
@@ -552,8 +603,10 @@ export default function MethodologyPage() {
                 and attrition. The Watson anchor for a conventional war is{' '}
                 ~$200M/day{' '}
                 <span className="t-label fg-dim">≈ cost of 50 Tomahawk cruise missiles daily</span>.
-                It does not attempt to reproduce veterans care, interest on war debt, or
-                homeland-security spillovers.
+                Air-campaign munitions, aircraft packages, and defensive intercepts are handled in
+                the armaments module, keeping this module focused on operations, personnel,
+                logistics, and wear. It does not attempt to reproduce veterans care, interest on war
+                debt, or homeland-security spillovers.
               </p>
               <div className="formula-block">
                 {s.equations.map(eq => <span key={eq} style={{ display: 'block' }}>{eq}</span>)}
@@ -634,9 +687,10 @@ export default function MethodologyPage() {
                 categories from cruise missiles ($2M{' '}
                 <span className="t-label fg-dim">≈ annual salary of 40 US teachers</span>) to
                 aircraft carriers ($13B{' '}
-                <span className="t-label fg-dim">≈ GDP of Iceland</span>). Intercept costs calibrated
-                from CSIS Iran 2026: $1.7B to intercept 700 ballistic missiles + 3,600 drones in 100
-                hours ($395K average per intercept{' '}
+                <span className="t-label fg-dim">≈ GDP of Iceland</span>). Intercept costs are
+                anchored to CSIS Iran 2026 reporting: $1.7B in the first 100 hours, then checked
+                against later reporting of roughly 700 ballistic missiles and 3,600 drones in the
+                early campaign ($395K average per threat{' '}
                 <span className="t-label fg-dim">≈ 5× cost of an Iron Dome Tamir intercept</span>).
                 Data sources: SIPRI Milex 2024 (135 countries), NATO Defence Expenditure 2025,
                 Bruegel US Foreign Military Sales 2008–2025, DoD Program Acquisition Costs FY2024,
@@ -689,22 +743,24 @@ export default function MethodologyPage() {
         <h2 id="calibration">Calibration — Operation Epic Fury (Iran, 2026)</h2>
         <p>
           On February 28, 2026, the United States and Israel launched a sustained air campaign
-          against Iran. By Day 17, partial cost breakdowns from the Pentagon and CSIS were publicly
-          available — a rare opportunity to validate the model against a live conflict and identify
-          structural gaps. The 17-day cost reached $14–16.5B{' '}
+          against Iran. The first validation pass used Day 17 reporting; the late-April reassessment
+          can now compare the model against a 38–39 day campaign and a ceasefire that took effect
+          on April 8. The 17-day cost reached $14–16.5B{' '}
           <span className="t-label fg-dim">≈ what the US spends on Head Start for 3 years</span>.
         </p>
 
         <h3>Conflict Profile</h3>
         <DataTable>
-          <DataTable.Row label="SORTIES"   value="1,600+" />
-          <DataTable.Row label="TARGETS"   value="5,500+ struck" />
+          <DataTable.Row label="SORTIES"   value="1,600+ in early reporting" />
+          <DataTable.Row label="TARGETS"   value="13,000+ struck over 39 days" />
           <DataTable.Row label="OPENING"   value="160+ Tomahawk cruise missiles" />
           <DataTable.Row label="RESPONSE"  value="~700 ballistic missiles + ~3,600 drones (17 days)" />
           <DataTable.Row label="NATURE"    value="Sustained air + naval campaign. No ground forces inside Iran." />
           <DataTable.Row label="DAY 1–6"   value={<>$11.3B direct cost (Pentagon, Senate briefing) <span className="t-label fg-dim">≈ annual military budget of Denmark</span></>} />
-          <DataTable.Row label="DAY 1–13"  value={<>~$14–16.5B direct cost (CSIS / Foreign Policy) <span className="t-label fg-dim">≈ Iran's annual education budget</span></>} />
-          <DataTable.Row label="<2 MONTH"  value={<>$65B projection (Penn Wharton Budget Model) <span className="t-label fg-dim">≈ 15% of Iran's pre-war GDP</span></>} tone="phosphor" />
+          <DataTable.Row label="DAY 1–12"  value={<>$16.5B direct cost (CSIS) <span className="t-label fg-dim">≈ Iran&apos;s annual education budget</span></>} />
+          <DataTable.Row label="DAY 20"    value="$16.2–23.4B incremental cost (AEI via Axios)" />
+          <DataTable.Row label="2 MONTH"   value={<>$38–47B direct projection; $5B indirect excluded (PWBM) <span className="t-label fg-dim">narrow federal spending only</span></>} tone="phosphor" />
+          <DataTable.Row label="HUMAN"     value="HRANA Day 39: 3,636 documented deaths; UN/HRA: ~3.2M displaced" />
           <DataTable.Row label="INTERCEPT" value={<>$1.7B in first 100 hrs (CSIS) <span className="t-label fg-dim">≈ 4,300 Patriot PAC-3 interceptors</span></>} />
         </DataTable>
 
@@ -723,7 +779,7 @@ export default function MethodologyPage() {
           operations &amp; sustainment: $196M (5%)
         </div>
 
-        <h3>Four Gaps Found — Four Fixes Applied</h3>
+        <h3>Five Gaps Found — Five Fixes Applied</h3>
         {CALIBRATION_GAPS.map((gap) => (
           <div key={gap.id} style={{ marginBottom: 'var(--s-5)' }}>
             <DataTable>
@@ -738,7 +794,7 @@ export default function MethodologyPage() {
           </div>
         ))}
 
-        <h3>Pre / Post Results vs Real Data</h3>
+        <h3>Pre / Post Results vs Late-April Data</h3>
         <DataTable>
           <DataTable.Row label="SCENARIO" value="BEFORE → AFTER vs REAL" tone="phosphor" />
           {CALIBRATION_RESULTS.map((row) => (
@@ -751,11 +807,27 @@ export default function MethodologyPage() {
           ))}
         </DataTable>
         <p style={{ fontSize: 'var(--t-label)' }} className="fg-dim">
-          Lesson: the pre-fix model reached a close headline figure for the wrong reasons —
-          humanitarian was 200× too low while force-package procurement was likely too high.
-          Sub-category composition matters as much as headline totals. A model that gets the right
-          answer for wrong reasons will fail on the next conflict with a different error profile.
+          Lesson: the original 18-day strike comparison still matched the early direct-cost snapshot,
+          but late-April data makes the accounting boundary visible. Public US cost estimates are
+          narrow federal military outlays; this calculator’s headline also includes humanitarian and
+          reconstruction costs. The human-toll and economic-impact modules now match the updated
+          evidence better than the direct military spending module, which remains high for the observed
+          39-day campaign.
         </p>
+
+        <h3>Calibration Sources</h3>
+        {CALIBRATION_SOURCES.map((source) => (
+          <div key={source.name} style={{ marginBottom: 'var(--s-4)' }}>
+            <DataTable>
+              <DataTable.Row
+                label="SOURCE"
+                value={<a href={source.url} target="_blank" rel="noopener noreferrer">{source.name}</a>}
+                tone="phosphor"
+              />
+              <DataTable.Row label="USED FOR" value={source.use} />
+            </DataTable>
+          </div>
+        ))}
 
         {/* AUDIT NOTES */}
         <AsciiRule tone="mute" />

@@ -31,8 +31,9 @@ export const SCENARIOS: Record<string, ScenarioDefinition> = {
     intensityMultiplier: 0.9,
     // Air campaigns cause significant civilian casualties and infrastructure destruction
     // but less population displacement than ground wars. Kosovo: ~850K displaced of 1.8M (47%)
-    // but Iran-scale: ~3.2M of 89M in 17 days (3.6%) due to size and limited ground presence.
-    // Use 0.04 (4%) as the point estimate for large-country air campaigns.
+    // but Iran-scale: ~3.2M of 89M in weeks (3.6%) due to size and limited ground presence.
+    // In humanitarian.ts, air_campaign uses this as a direct population share rather than
+    // multiplying it by long-run UNHCR displacement ratios again.
     displacementMultiplier: 0.04,
     // Infrastructure heavily targeted (power grid, bridges, military sites, oil facilities).
     // Kosovo: ~$2B reconstruction over 2yr for $10B GDP → ~10%/yr. Libya: ~15%/yr.

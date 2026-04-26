@@ -100,7 +100,14 @@ export function calculateHumanitarianCost(input: CalculationInput): {
     populationAtRisk = population * Math.sqrt(areaFraction);
   }
 
-  const baseDisplacedPoint = populationAtRisk * totalDisplacementRatio * def.displacementMultiplier;
+  // Air campaigns are calibrated from event-level displacement shares (Iran 2026:
+  // ~3.2M of ~89M people), not from long-run UNHCR conflict displacement ratios.
+  const displacementShare =
+    scenario === 'air_campaign'
+      ? def.displacementMultiplier
+      : totalDisplacementRatio * def.displacementMultiplier;
+
+  const baseDisplacedPoint = populationAtRisk * displacementShare;
   const displacedPoint = Math.round(baseDisplacedPoint * acledFragilityMultiplier);
   const displacedMin = Math.round(displacedPoint * 0.5);
   const displacedMax = Math.round(displacedPoint * 1.8);
@@ -249,7 +256,7 @@ export function calculateHumanitarianCost(input: CalculationInput): {
       color: '#b45309',
       items,
       methodology: `Humanitarian costs include IDP support, cross-border refugee resettlement, emergency healthcare, and direct casualty costs. ` +
-        `${formatNum(displacedPoint)} displaced persons (${(totalDisplacementRatio * def.displacementMultiplier * 100).toFixed(1)}% of ${populationAtRisk < population ? `${formatNum(populationAtRisk)} pop-at-risk` : `population`}` +
+        `${formatNum(displacedPoint)} displaced persons (${(displacementShare * 100).toFixed(1)}% of ${populationAtRisk < population ? `${formatNum(populationAtRisk)} pop-at-risk` : `population`}` +
         `${acledOverlayActive ? ` × ${acledFragilityMultiplier.toFixed(3)} ACLED overlay` : ''}). ` +
         `Direct casualties: ${formatNum(killedPoint)} killed, ${formatNum(injuredPoint)} injured over ${durationDays.toFixed(0)} days at ${casualtyRates.killed}/M/day killed rate. ` +
         `VSL = $${formatNum(vsl)} (GDP/capita × 100, WHO method). ` +

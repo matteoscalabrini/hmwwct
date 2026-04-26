@@ -1,6 +1,6 @@
 # Real-World Calibration Report: Operation Epic Fury (Iran, 2026)
 
-**Date:** March 16, 2026
+**Date:** March 16, 2026; reassessed April 26, 2026
 **Author:** HMWWCT Development Session
 **Purpose:** Document the process of using a live conflict to validate and improve the war cost calculator.
 
@@ -10,7 +10,27 @@
 
 On February 28, 2026, the United States and Israel launched coordinated surprise airstrikes against Iran (Operation Epic Fury / Operation Roaring Lion). By Day 17 (March 16, 2026), partial cost data had been reported by the Pentagon, CSIS, and multiple congressional sources — giving us an unusually rare opportunity: a live conflict with real cost data available while the model was running.
 
-This report documents how we used that data to identify gaps, re-run the calculator, and apply four targeted improvements to the underlying algorithms.
+This report documents how we used that data to identify gaps, re-run the calculator, and apply targeted improvements to the underlying algorithms.
+
+## April 26 Reassessment
+
+A month of additional reporting changed the validation frame:
+
+- CSIS now describes the campaign as more than 13,000 targets struck over 39 days before a ceasefire.
+- Penn Wharton’s current benchmark is no longer a $65B sub-two-month headline. It estimates $27-28B in U.S. federal direct spending through Day 32 and $38-47B through April 30, excluding roughly $5B in indirect costs.
+- HRANA’s Day 39 documentation records 1,701 civilian fatalities, 1,221 military fatalities, and 714 unclassified fatalities in Iran, for 3,636 documented deaths.
+- HRA/Airwars/CIVIC report approximately 3.2M displaced people in Iran, consistent with earlier UN-reported displacement.
+- FDD’s initial economic-damage estimate for Iran is $50-300B, with a most likely estimate of about $144B.
+
+**Validation verdict after reassessment:**
+
+| Model area | Current match |
+|---|---|
+| Human toll deaths | Strong. A 39-day air_campaign run estimates 3,571 killed vs HRANA’s 3,636 documented deaths. |
+| Displacement | Fixed. The code had double-damped air-campaign displacement, producing only 293K displaced. It now estimates 3.66M, close to the reported ~3.2M. |
+| Economic impact | Reasonable. The 39-day model estimates $191.7B vs FDD’s $144B most likely estimate and $50-300B range. |
+| Direct U.S. military cost | Mixed/high. Military + armaments at 39 days estimates $45.86B, above a likely Day 39 extrapolation from PWBM but near PWBM’s $38-47B two-month projection. |
+| Headline calculator total | Not directly comparable to public budget estimates because the calculator includes humanitarian and reconstruction categories that PWBM excludes. |
 
 ---
 
@@ -48,7 +68,8 @@ Multiple independent sources reported partial cost figures by Day 17:
 | First 36 hours (munitions only) | $5.6B | Pentagon / Washington Post |
 | First 6 days | $11.3B ($1.88B/day) | Pentagon (Senate briefing) |
 | First 12–13 days | ~$14–16.5B | CSIS / Foreign Policy |
-| Projected if <2 months | $65B | Penn Wharton Budget Model |
+| First 32 days | $27–28B | Penn Wharton Budget Model |
+| Projected through April 30 | $38–47B direct, plus ~$5B indirect excluded | Penn Wharton Budget Model |
 
 **CSIS breakdown of first 100 hours:**
 
@@ -118,6 +139,18 @@ The displacement-based humanitarian model worked well for multi-year ground wars
 
 The `CAPITAL_FLIGHT_PCT` map in the economic module had entries for `skirmish`, `conventional`, and `occupation` but defaulted to 4% for both `precision_strike` and `air_campaign`. Iran's banking system was effectively frozen and oil exports halted within days — a 7%+ capital flight rate, not 4%.
 
+### Gap 5 — Air-campaign displacement was double-damped
+
+The methodology intended `air_campaign.displacementMultiplier = 0.04` to mean "about 4% of the target population displaced," calibrated from Iran's reported 3.2M displaced out of roughly 89M people.
+
+The implementation instead calculated:
+
+```text
+populationAtRisk x UNHCR historical displacementRatio x scenarioDisplacementMultiplier
+```
+
+For Iran, the UNHCR ratio is 8%, so the code used `0.08 x 0.04 = 0.0032`, producing only ~293K displaced in the air-campaign scenario. That contradicted the written methodology and the validation data.
+
 ---
 
 ## 6. Fixes Applied
@@ -150,7 +183,7 @@ Added a fifth conflict scenario between `precision_strike` and `skirmish`.
 | Parameter | Value | Rationale |
 |---|---|---|
 | Duration | 0.05–0.5 years, point 0.15 (55 days) | Kosovo: 78 days; Iran 2026: ongoing at Day 17 |
-| Watson daily cost | $100M–$1.2B/day | Kosovo ($54M/day) to Iran 2026 ($891M/day) range |
+| Operational daily cost | $112M/day US-reference anchor | Kept conservative in `military.ts`; aircraft packages, munitions, attrition, and intercepts are priced in `armaments.ts` |
 | `displacementMultiplier` | 0.04 (4%) | Iran: 3.2M/89M = 3.6% in 17 days |
 | `gdpImpactPct` target | 15%/year | Chatham House Iran GDP forecast: -10% |
 | `equipmentAttritionPct` | 8% | Kosovo 14 aircraft lost; Iran: 3 F-15EX |
@@ -189,6 +222,13 @@ Added scenario-specific capital flight percentages for `precision_strike` (3%/ye
 **Before:** Both scenarios defaulted to 4% (catch-all)
 **After:** `air_campaign` = 7% (banking freeze, oil exports halted; calibrated to Iran 2026 immediate capital controls); `precision_strike` = 3% (short duration limits flight but investor panic is real)
 
+### Fix 5 — Air-campaign displacement share (`humanitarian.ts`)
+
+For `air_campaign`, the humanitarian module now treats `displacementMultiplier` as a direct observed population share. Other scenarios still use the historical UNHCR ratio multiplied by the scenario dampener.
+
+**Before:** USA→Iran air_campaign = ~293K displaced
+**After:** USA→Iran air_campaign = ~3.66M displaced
+
 ---
 
 ## 7. Post-Fix Calculator Output
@@ -209,12 +249,26 @@ Added scenario-specific capital flight percentages for `precision_strike` (3%/ye
 |---|---|---|
 | Military | $9.67B | Watson anchor scaled to US budget |
 | Armaments | $39.51B | Force package + munitions + intercepts |
-| Humanitarian | $5.89B | $5.72B casualties + $165M displacement |
+| Humanitarian | $7.78B | Casualties + air-campaign displacement share |
 | Reconstruction | $3.10B | Infrastructure repair |
-| **TOTAL** | **$58.17B** | **vs Penn Wharton $65B (<2 months)** |
+| **TOTAL** | **$60.06B** | **broader than public direct-spending estimates** |
 | Economic impact | $196.44B | Dominated by $180B oil/commodity shock |
 
-The `air_campaign` scenario at 55 days produces $58B — 11% below Penn Wharton's $65B projection for a sub-2-month conflict, which is well within model uncertainty.
+The `air_campaign` scenario at 55 days produces $60.06B headline cost, of which $49.18B is military plus armaments. That military/armaments figure is slightly above Penn Wharton's $38-47B direct federal projection through April 30, while the broader headline is not directly comparable because it includes humanitarian and reconstruction costs.
+
+### `air_campaign` (39 days) — observed campaign length
+
+| Category | Amount | Notes |
+|---|---|---|
+| Military | $6.89B | Lower duration than the 55-day archetype |
+| Armaments | $38.97B | Munitions and intercepts dominate |
+| Humanitarian | $5.55B | 3.66M displaced, 3,571 killed, 28,569 injured |
+| Reconstruction | $2.21B | Infrastructure repair |
+| **TOTAL** | **$53.61B** | broader calculator headline |
+| Military + armaments only | **$45.86B** | closest comparison to public U.S. budget estimates |
+| Economic impact | $191.74B | within FDD's $50-300B range |
+
+At the observed 39-day length, the model matches deaths and displacement well after the displacement fix. It remains high against likely direct federal outlays through the ceasefire, but near the high end of the two-month PWBM projection once munitions replacement and sustained air defense are included.
 
 ---
 
@@ -228,11 +282,11 @@ For Iran 2026 specifically, defensive intercepts were abnormally high. Iran's 70
 
 ### Economic impact is the most uncertain module
 
-The $180B "global commodity price shock" is driven by the oil module for Iran as a major producer. The real Hormuz closure impact is $500B–$1T+ globally. The model uses a static calibration from the commodity-producers dataset that was built around a $70–80/barrel oil baseline. With live FRED prices at $119/barrel (a 50%+ spike), the oil shock scalar works partially — but the underlying baseline shock figure for Iran was calibrated at lower prices.
+The ~$180B "global commodity price shock" is driven by the oil module for Iran as a major producer. FDD's April 23 estimate puts direct economic damage to Iran at $50–300B, with a most likely estimate of about $144B. The model's 39-day economic-impact point estimate, $191.7B, sits inside that range but remains sensitive to oil-price and Strait of Hormuz assumptions.
 
-### Humanitarian still conservative
+### Humanitarian still incomplete
 
-Even after Fix 3, the humanitarian total ($382M for precision_strike, $5.89B for air_campaign) is below the real humanitarian cost. Three things are not modeled:
+After Fix 5, displacement is no longer the main mismatch. The humanitarian total is still incomplete because three important cost channels are not modeled:
 1. **Medical infrastructure destruction** — hospitals bombed → long-term healthcare cost for remaining population
 2. **Food security shock** — agricultural supply chains disrupted → malnutrition costs months after fighting ends
 3. **Psychological/mental health** — WHO estimates 1 in 5 people in conflict zones develop mental health conditions; long-term cost not captured
@@ -264,7 +318,11 @@ The four-scenario taxonomy (precision_strike → skirmish → conventional → o
 | Source | Role |
 |---|---|
 | CSIS — "$3.7 Billion: Estimated Cost of Epic Fury's First 100 Hours" (2026) | Primary calibration for defensive intercepts and daily cost rate |
-| Penn Wharton Budget Model — Iran war projection (2026) | Benchmark for air_campaign 2-month estimate |
+| CSIS — "Last Rounds? Status of Key Munitions at the Iran War Ceasefire" (2026) | 39-day campaign length, target count, and munitions depletion reassessment |
+| Penn Wharton Budget Model — Iran war projection (2026) | Benchmark for direct federal spending through Day 32 and two-month projection |
+| HRANA — Day 39 Iran war casualty documentation (2026) | Updated death-count validation for the 39-day run |
+| HRA / Airwars / CIVIC — Civilian Harm in Iran after One Month of War (2026) | Displacement and civilian-harm validation |
+| FDD — Economic damage to Iran from Operation Epic Fury (2026) | Benchmark for target-country economic damage |
 | Pentagon / NBC News — Senate briefing on 6-day cost ($11.3B) | Ground truth for 6-day direct cost |
 | Foreign Policy — "The Economic Costs of the Iran War" (2026) | 12-13 day cost estimate ($14B) |
 | RAND — Ukraine munitions requirements analysis | Daily munitions consumption rates |
@@ -278,12 +336,12 @@ The four-scenario taxonomy (precision_strike → skirmish → conventional → o
 
 ## 11. Summary
 
-The Iran 2026 calibration exercise produced four improvements that make the model more accurate for short, high-intensity air campaigns — a conflict type that was underrepresented in the original calibration data (which was built around Afghanistan and Ukraine).
+The Iran 2026 calibration exercise produced five improvements that make the model more accurate for short, high-intensity air campaigns — a conflict type that was underrepresented in the original calibration data (which was built around Afghanistan and Ukraine).
 
-The headline result — $58B for a 55-day air campaign vs Penn Wharton's $65B projection — represents a 11% underestimate, which is within the model's stated uncertainty range and a significant improvement over the pre-fix state where no comparable scenario existed.
+The late-April headline result is more nuanced than the original March validation. A 39-day air campaign now produces $53.61B in broad calculator cost and $45.86B in military plus armaments. The latter is high against likely direct federal spending through the ceasefire, but near the high end of Penn Wharton's $38-47B two-month projection. The model's death estimate and displacement estimate now match the updated public evidence closely.
 
 The most valuable outcome is not the improved number, but the identification of the **defensive intercept gap** as the largest structural omission in the model. Modern peer-state conflict is a two-way cost equation. Any calculator that only models what the aggressor spends attacking will systematically underestimate total war cost when the defender has significant ballistic missile and drone capabilities.
 
 ---
 
-*This report documents model development decisions and calibration rationale. All cost figures are estimates with significant uncertainty. The conflict referenced is ongoing and all figures are subject to change.*
+*This report documents model development decisions and calibration rationale. All cost figures are estimates with significant uncertainty. The conflict reporting changed materially between March 16 and April 26, 2026, so this document distinguishes early live-war validation from the later 39-day reassessment.*
