@@ -42,4 +42,11 @@ describe('<ReadingProgress>', () => {
     // Bar should contain either filled or empty block chars
     expect(bar.textContent).toMatch(/[█░]/);
   });
+
+  it('reserves the methodology progress height', () => {
+    render(<ReadingProgress />);
+    expect(screen.getByRole('progressbar')).toHaveStyle({
+      height: 'var(--methodology-progress-h)',
+    });
+  });
 });

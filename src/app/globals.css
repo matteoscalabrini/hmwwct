@@ -62,6 +62,7 @@
   --header-h: 48px;
   --status-h: 24px;
   --frame-pad: var(--s-4);
+  --methodology-progress-h: 24px;
 }
 
 /* ─────────────────────────────────────────────
@@ -85,6 +86,10 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* ─────────────────────────────────────────────
    TYPOGRAPHY UTILITIES
    ───────────────────────────────────────────── */
@@ -94,7 +99,7 @@ html, body {
   font-size: var(--t-hero);
   line-height: 1.0;
   font-weight: 400;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
 }
 
 .t-title {
@@ -188,6 +193,9 @@ html, body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
+  html {
+    scroll-behavior: auto;
+  }
   [data-scanlines] { display: none !important; }
 }
 
@@ -199,6 +207,76 @@ html, body {
   0%   { width: 0%; }
   50%  { width: 80%; }
   100% { width: 100%; }
+}
+
+/* ─────────────────────────────────────────────
+   LANDING
+   ───────────────────────────────────────────── */
+
+.landing-hero {
+  min-height: calc(100vh - var(--header-h) - var(--status-h));
+  min-height: calc(100svh - var(--header-h) - var(--status-h));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(var(--s-4), 5vh, var(--s-8)) var(--s-7);
+}
+
+.landing-scroll-cue {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  width: fit-content;
+  margin-top: clamp(var(--s-5), 5vh, var(--s-7));
+  color: var(--phosphor);
+  text-decoration: none;
+  filter: drop-shadow(0 0 12px rgba(74, 255, 122, 0.38));
+  animation: scroll-cue-float 1.5s ease-in-out infinite;
+}
+
+.landing-scroll-cue__icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid var(--phosphor);
+  background: var(--phosphor);
+  color: var(--bg);
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.landing-scroll-cue__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+}
+
+.landing-scroll-cue:hover,
+.landing-scroll-cue:focus-visible {
+  color: var(--fg);
+}
+
+.landing-scroll-cue:hover .landing-scroll-cue__icon,
+.landing-scroll-cue:focus-visible .landing-scroll-cue__icon {
+  border-color: var(--fg);
+  background: var(--fg);
+}
+
+.landing-weight {
+  scroll-margin-top: var(--header-h);
+}
+
+@keyframes scroll-cue-float {
+  0%, 100% {
+    opacity: 0.76;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(var(--s-2));
+  }
 }
 
 /* ─────────────────────────────────────────────
@@ -266,6 +344,20 @@ html, body {
 }
 
 /* ─────────────────────────────────────────────
+   CALCULATOR
+   ───────────────────────────────────────────── */
+
+.big-board__cell > section,
+.big-board__stack > section {
+  width: 100%;
+}
+
+.big-board__stack {
+  flex-direction: column;
+  gap: var(--s-5);
+}
+
+/* ─────────────────────────────────────────────
    RESPONSIVE
    ───────────────────────────────────────────── */
 
@@ -273,6 +365,21 @@ html, body {
   /* Scale hero text down from 96px so it doesn't overflow on phones */
   .t-hero {
     font-size: 48px;
+  }
+
+  .landing-hero {
+    padding-right: var(--s-4);
+    padding-left: var(--s-4);
+  }
+
+  .landing-scroll-cue {
+    margin-top: var(--s-6);
+  }
+
+  .landing-scroll-cue__icon {
+    width: 48px;
+    height: 48px;
+    font-size: 32px;
   }
 
   /* Hide methodology sidebar — TOC is not useful on narrow screens */
@@ -283,12 +390,14 @@ html, body {
 
 @media (max-width: 1279px) {
   .big-board {
+    gap: var(--s-4) !important;
+    padding: var(--s-4) !important;
     grid-template-columns: 1fr !important;
     grid-template-rows: auto !important;
     grid-template-areas:
       "params"
-      "theater"
       "cost"
+      "theater"
       "toll"
       "per" !important;
   }

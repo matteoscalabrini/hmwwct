@@ -17,6 +17,15 @@ interface RangeValue {
   point: number;
 }
 
+interface CategoryValue {
+  min?: number | null;
+  max?: number | null;
+  point?: number | null;
+  amount?: number | null;
+  amountMin?: number | null;
+  amountMax?: number | null;
+}
+
 interface RevenueResult {
   totalUsd: number;
   netPositionUsd: number;
@@ -27,10 +36,11 @@ interface RevenueResult {
 interface CalculationResult {
   total: RangeValue;
   breakdown: {
-    military: RangeValue;
-    economic: RangeValue;
-    humanitarian: RangeValue;
-    reconstruction: RangeValue;
+    military: CategoryValue;
+    economic: CategoryValue;
+    humanitarian: CategoryValue;
+    reconstruction: CategoryValue;
+    armaments?: CategoryValue;
   };
   duration: RangeValue & { unit: string };
   revenue?: RevenueResult;
@@ -55,6 +65,11 @@ const CALC_STEPS = [
   'ESTIMATING RECONSTRUCTION',
   'AGGREGATING COST RANGES',
 ];
+
+function resolveCategoryPoint(category: CategoryValue): number {
+  const value = category.point ?? category.amount ?? 0;
+  return Number.isFinite(value) ? value : 0;
+}
 
 function CalculatingOverlay() {
   return (
@@ -101,6 +116,11 @@ export function CostAnalysisPanel({ result, isLoading, durationYears, aggressorP
 
   const { total, breakdown, revenue } = result;
   const maxVal = total.max || 1;
+  const militaryPoint = resolveCategoryPoint(breakdown.military);
+  const economicPoint = resolveCategoryPoint(breakdown.economic);
+  const humanitarianPoint = resolveCategoryPoint(breakdown.humanitarian);
+  const reconstructionPoint = resolveCategoryPoint(breakdown.reconstruction);
+  const armamentsPoint = breakdown.armaments ? resolveCategoryPoint(breakdown.armaments) : null;
 
   const obituaryCtx = {
     aggressorName: aggressorName ?? 'Aggressor',
@@ -126,27 +146,46 @@ export function CostAnalysisPanel({ result, isLoading, durationYears, aggressorP
 
         <AsciiRule />
 
+        <p className="t-label fg-dim" style={{ margin: 0 }}>
+          DIRECT COST COMPONENTS
+        </p>
+
         <DataTable>
           <DataTable.Row
             label="MILITARY"
-            value={formatCompactUsd(breakdown.military.point)}
-            footnote={buildObituary('military', breakdown.military.point, obituaryCtx)}
+            value={formatCompactUsd(militaryPoint)}
+            footnote={buildObituary('military', militaryPoint, obituaryCtx)}
           />
-          <DataTable.Row
-            label="ECONOMIC"
-            value={formatCompactUsd(breakdown.economic.point)}
-            footnote={buildObituary('economic', breakdown.economic.point, obituaryCtx)}
-          />
+          {armamentsPoint !== null && (
+            <DataTable.Row
+              label="ARMAMENTS"
+              value={formatCompactUsd(armamentsPoint)}
+            />
+          )}
           <DataTable.Row
             label="HUMANITARIAN"
-            value={formatCompactUsd(breakdown.humanitarian.point)}
+            value={formatCompactUsd(humanitarianPoint)}
             tone="alert"
-            footnote={buildObituary('humanitarian', breakdown.humanitarian.point, obituaryCtx)}
+            footnote={buildObituary('humanitarian', humanitarianPoint, obituaryCtx)}
           />
           <DataTable.Row
             label="RECONSTRUCTION"
-            value={formatCompactUsd(breakdown.reconstruction.point)}
-            footnote={buildObituary('reconstruction', breakdown.reconstruction.point, obituaryCtx)}
+            value={formatCompactUsd(reconstructionPoint)}
+            footnote={buildObituary('reconstruction', reconstructionPoint, obituaryCtx)}
+          />
+        </DataTable>
+
+        <AsciiRule />
+
+        <p className="t-label fg-dim" style={{ margin: 0 }}>
+          SEPARATE SYSTEMIC IMPACT
+        </p>
+
+        <DataTable>
+          <DataTable.Row
+            label="ECONOMIC"
+            value={formatCompactUsd(economicPoint)}
+            footnote={buildObituary('economic', economicPoint, obituaryCtx)}
           />
         </DataTable>
 

@@ -25,4 +25,13 @@ describe('<BlockGridMap>', () => {
     );
     expect(container.querySelector('canvas')?.getAttribute('aria-label')).toContain('Map');
   });
+
+  it('renders the mocked map with smaller dense cells', () => {
+    const { container } = render(
+      <BlockGridMap aggressor="USA" target="RUS" />
+    );
+    const canvas = container.querySelector('canvas');
+    expect(canvas?.width).toBe(6);
+    expect(canvas?.height).toBe(6);
+  });
 });

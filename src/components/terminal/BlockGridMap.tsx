@@ -6,7 +6,7 @@ import { resolveCellTone, toneColor } from '@/lib/terminal/mapPaint';
 
 const GRID = gridData as (string | null)[][];
 
-const CELL = 4;
+const CELL = 2;
 const GAP = 1;
 const STEP = CELL + GAP;
 

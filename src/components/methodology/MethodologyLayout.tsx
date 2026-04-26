@@ -13,7 +13,13 @@ export function MethodologyLayout({ sections, children }: Props) {
   return (
     <>
       <ReadingProgress />
-      <div style={{ display: 'flex', gap: 'var(--s-7)', padding: 'var(--s-4)', maxWidth: 1200, margin: '0 auto' }}>
+      <div style={{
+        display: 'flex',
+        gap: 'var(--s-7)',
+        padding: 'calc(var(--methodology-progress-h) + var(--s-6)) var(--s-4) var(--s-4)',
+        maxWidth: 1200,
+        margin: '0 auto',
+      }}>
         <Sidebar sections={sections} />
         <main style={{ flex: 1, maxWidth: '72ch' }}>
           {children}

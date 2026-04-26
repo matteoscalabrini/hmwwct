@@ -5,14 +5,7 @@ import { BlinkCursor } from '@/components/terminal/BlinkCursor';
 export function Act1Boot() {
   return (
     <section
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        padding: 'var(--s-8) var(--s-7)',
-        position: 'relative',
-      }}
+      className="landing-hero"
     >
       {/* Hero heading */}
       <h1
@@ -35,23 +28,22 @@ export function Act1Boot() {
       </p>
 
       {/* Scroll hint */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 'var(--s-7)',
-          left: 'var(--s-7)',
-        }}
+      <a
+        href="#weight-data"
+        className="landing-scroll-cue"
+        aria-label="Scroll down for more data and the calculator"
       >
         <span
-          className="t-label fg-dim"
-          style={{
-            animation: 'blink 1.4s steps(2, start) infinite',
-          }}
-          aria-label="Scroll down to begin"
+          className="landing-scroll-cue__icon"
+          aria-hidden="true"
         >
-          ↓ BEGIN
+          ↓
         </span>
-      </div>
+        <span className="landing-scroll-cue__text">
+          <span className="t-label">MORE BELOW</span>
+          <span className="t-label fg-dim">DATA + CALCULATOR</span>
+        </span>
+      </a>
     </section>
   );
 }

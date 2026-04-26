@@ -54,4 +54,11 @@ describe('<Sidebar>', () => {
     expect(screen.getByRole('navigation', { name: 'Table of contents' })).toBeInTheDocument();
     expect(screen.queryAllByRole('link')).toHaveLength(0);
   });
+
+  it('sits below the fixed reading progress bar', () => {
+    render(<Sidebar sections={MOCK_SECTIONS} />);
+    expect(screen.getByRole('navigation', { name: 'Table of contents' })).toHaveStyle({
+      top: 'calc(var(--header-h) + var(--methodology-progress-h) + var(--s-5))',
+    });
+  });
 });

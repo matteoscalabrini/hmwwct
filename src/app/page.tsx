@@ -19,7 +19,9 @@ export default function Home() {
   return (
     <main>
       <Act1Boot />
-      <Act2Weight />
+      <div id="weight-data" className="landing-weight">
+        <Act2Weight />
+      </div>
       <Act3Call />
     </main>
   );

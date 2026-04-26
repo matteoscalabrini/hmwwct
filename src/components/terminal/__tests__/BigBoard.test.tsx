@@ -4,7 +4,7 @@ import { BigBoard } from '../BigBoard';
 
 describe('<BigBoard>', () => {
   it('renders five named areas', () => {
-    render(
+    const { container } = render(
       <BigBoard
         parameters={<div>PARAMS</div>}
         theater={<div>THEATER</div>}
@@ -16,5 +16,8 @@ describe('<BigBoard>', () => {
     ['PARAMS', 'THEATER', 'COST', 'TOLL', 'PER'].forEach((t) =>
       expect(screen.getByText(t)).toBeInTheDocument()
     );
+    const board = container.querySelector('.big-board') as HTMLElement;
+    expect(board).toHaveStyle({ gap: 'var(--s-5)' });
+    expect(board.style.gridTemplateAreas).toContain('params  cost    cost');
   });
 });

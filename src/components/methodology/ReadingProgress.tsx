@@ -23,8 +23,10 @@ export function ReadingProgress() {
     <div aria-label="Reading progress" role="progressbar" aria-valuenow={pct}
       className="t-label" style={{
         position: 'fixed', top: 'var(--header-h)', left: 0, right: 0,
+        height: 'var(--methodology-progress-h)',
         background: 'var(--bg)', borderBottom: '1px solid var(--fg-mute)',
-        padding: '2px var(--s-4)', zIndex: 40, color: 'var(--fg-dim)',
+        display: 'flex', alignItems: 'center',
+        padding: '0 var(--s-4)', zIndex: 40, color: 'var(--fg-dim)',
         whiteSpace: 'nowrap', overflow: 'hidden',
       }}>
       <span style={{ color: 'var(--phosphor)' }}>{bar}</span> {pct}%

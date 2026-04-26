@@ -149,20 +149,19 @@ function main() {
   const objectKey = Object.keys(topo.objects)[0];
   const fc = topojson.feature(topo, topo.objects[objectKey]) as unknown as GeoJSON.FeatureCollection;
 
-  // Resolution 160×80, latMax 75° chosen deliberately:
-  //   • Produces 152 unique ISO codes (all major territories represented)
-  //   • Raw output is ~68 KB (< 7 KB gzipped) — well within budget
-  //   • Each cell ≈ 2.25° lon × 1.875° lat, enough to identify every country
-  //     larger than ~50 000 km², including tiny Gulf/Caribbean states
-  //   • Higher resolutions (320×160) offer diminishing returns and multiply
-  //     build time and bundle size without adding visible countries
-  const grid = rasterizeGrid(fc, { cols: 160, rows: 80, latMax: 75 });
+  // Resolution 320×160, latMax 75°:
+  //   • Each cell ≈ 1.125° lon × 0.94° lat, which keeps narrow peninsulas and
+  //     medium-size states more recognizable in the dotted terminal map
+  //   • The raw JSON is still small enough for this static visual asset
+  const cols = 320;
+  const rows = 160;
+  const grid = rasterizeGrid(fc, { cols, rows, latMax: 75 });
   const outPath = resolve(process.cwd(), 'src/lib/data/map-grid.json');
   mkdirSync(dirname(outPath), { recursive: true });
   writeFileSync(outPath, JSON.stringify(grid));
 
   const filled = grid.flat().filter((c) => c !== null).length;
-  const total = 160 * 80;
+  const total = cols * rows;
   console.log(`Wrote ${outPath}: ${filled}/${total} cells filled (${Math.round((filled / total) * 100)}%)`);
 }
 

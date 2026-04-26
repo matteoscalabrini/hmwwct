@@ -29,7 +29,7 @@ export function Sidebar({ sections }: SidebarProps) {
 
   return (
     <nav aria-label="Table of contents" className="methodology-sidebar" style={{
-      position: 'sticky', top: 'calc(var(--header-h) + var(--s-4))',
+      position: 'sticky', top: 'calc(var(--header-h) + var(--methodology-progress-h) + var(--s-5))',
       width: 240, flexShrink: 0, alignSelf: 'flex-start',
     }}>
       <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 'var(--s-1)' }}>

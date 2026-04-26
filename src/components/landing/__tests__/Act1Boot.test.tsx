@@ -16,9 +16,11 @@ describe('<Act1Boot>', () => {
     expect(screen.getByText(/TERMINAL FOR COUNTING WHAT WARS DESTROY/)).toBeInTheDocument();
   });
 
-  it('renders the scroll hint with ↓', () => {
+  it('renders the scroll hint with a data/calculator destination', () => {
     render(<Act1Boot />);
+    const cue = screen.getByRole('link', { name: /more data and the calculator/i });
+    expect(cue).toHaveAttribute('href', '#weight-data');
     expect(screen.getByText(/↓/)).toBeInTheDocument();
-    expect(screen.getByText(/BEGIN/)).toBeInTheDocument();
+    expect(screen.getByText(/DATA \+ CALCULATOR/)).toBeInTheDocument();
   });
 });
