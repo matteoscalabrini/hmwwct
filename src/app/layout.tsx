@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { IBM_Plex_Mono, JetBrains_Mono, VT323, Workbench } from 'next/font/google';
 import './globals.css';
 import { Frame } from '@/components/terminal';
@@ -49,6 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </Frame>
         </Providers>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
