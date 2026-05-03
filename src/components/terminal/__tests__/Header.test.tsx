@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import type { AnchorHTMLAttributes, ReactNode } from 'react';
 import { Header } from '../Header';
 
 vi.mock('next/navigation', () => ({
@@ -8,7 +9,9 @@ vi.mock('next/navigation', () => ({
 }));
 
 vi.mock('next/link', () => ({
-  default: ({ children, href, ...props }: any) => <a href={href} {...props}>{children}</a>,
+  default: ({ children, href, ...props }: AnchorHTMLAttributes<HTMLAnchorElement> & { children: ReactNode; href: string }) => (
+    <a href={href} {...props}>{children}</a>
+  ),
 }));
 
 describe('<Header>', () => {

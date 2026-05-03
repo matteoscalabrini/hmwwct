@@ -6,14 +6,14 @@ export function useTicker(ratePerSecond: number, enabled: boolean) {
 
   useEffect(() => {
     if (!enabled || ratePerSecond <= 0) {
-      setAccrued(0);
-      return;
+      const raf = requestAnimationFrame(() => setAccrued(0));
+      return () => cancelAnimationFrame(raf);
     }
 
     // Honor prefers-reduced-motion
     if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setAccrued(ratePerSecond);
-      return;
+      const raf = requestAnimationFrame(() => setAccrued(ratePerSecond));
+      return () => cancelAnimationFrame(raf);
     }
 
     startRef.current = performance.now();
@@ -27,5 +27,5 @@ export function useTicker(ratePerSecond: number, enabled: boolean) {
     return () => cancelAnimationFrame(raf);
   }, [ratePerSecond, enabled]);
 
-  return accrued;
+  return enabled && ratePerSecond > 0 ? accrued : 0;
 }

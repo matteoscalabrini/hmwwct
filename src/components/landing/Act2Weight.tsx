@@ -28,8 +28,8 @@ function WeightFactSection({ fact }: WeightFactSectionProps) {
 
   useEffect(() => {
     if (prefersReducedMotion()) {
-      setDisplayed(fact.value);
-      return;
+      const raf = requestAnimationFrame(() => setDisplayed(fact.value));
+      return () => cancelAnimationFrame(raf);
     }
 
     const el = ref.current;

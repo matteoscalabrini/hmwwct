@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Analytics } from '@vercel/analytics/next';
 import { IBM_Plex_Mono, JetBrains_Mono, VT323, Workbench } from 'next/font/google';
 import './globals.css';
 import { Frame } from '@/components/terminal';
@@ -47,6 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
           </Frame>
         </Providers>
+        <Analytics />
       </body>
     </html>
   );

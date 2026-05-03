@@ -14,23 +14,28 @@ export function useTypedReveal(fullText: string, totalDurationMs: number): strin
 
   useEffect(() => {
     if (prefersReducedMotion()) {
-      setRevealed(fullText);
-      return;
+      const id = window.setTimeout(() => setRevealed(fullText), 0);
+      return () => window.clearTimeout(id);
     }
 
-    setRevealed('');
     const chars = Array.from(fullText);
-    if (chars.length === 0) return;
+    const resetId = window.setTimeout(() => setRevealed(''), 0);
+    if (chars.length === 0) {
+      return () => window.clearTimeout(resetId);
+    }
 
     const intervalMs = Math.max(1, Math.floor(totalDurationMs / chars.length));
     let i = 0;
-    const id = setInterval(() => {
+    const id = window.setInterval(() => {
       i += 1;
       setRevealed(chars.slice(0, i).join(''));
-      if (i >= chars.length) clearInterval(id);
+      if (i >= chars.length) window.clearInterval(id);
     }, intervalMs);
 
-    return () => clearInterval(id);
+    return () => {
+      window.clearTimeout(resetId);
+      window.clearInterval(id);
+    };
   }, [fullText, totalDurationMs]);
 
   return revealed;

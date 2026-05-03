@@ -22,19 +22,24 @@ export function TerminalSelect({ label, value, options, onChange }: TerminalSele
 
   useEffect(() => {
     if (open) {
-      setQuery('');
-      setCursor(0);
       inputRef.current?.focus();
     }
   }, [open]);
 
-  useEffect(() => {
-    setCursor(0);
-  }, [query]);
-
   const commit = (v: string) => {
     onChange(v);
     setOpen(false);
+  };
+
+  const openMenu = () => {
+    setQuery('');
+    setCursor(0);
+    setOpen(true);
+  };
+
+  const updateQuery = (nextQuery: string) => {
+    setQuery(nextQuery.toUpperCase());
+    setCursor(0);
   };
 
   const handleKey = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -57,7 +62,7 @@ export function TerminalSelect({ label, value, options, onChange }: TerminalSele
     return (
       <button
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={openMenu}
         aria-label={label}
         style={{
           display: 'flex',
@@ -90,7 +95,7 @@ export function TerminalSelect({ label, value, options, onChange }: TerminalSele
           ref={inputRef}
           type="text"
           value={query}
-          onChange={(e) => setQuery(e.target.value.toUpperCase())}
+          onChange={(e) => updateQuery(e.target.value)}
           onKeyDown={handleKey}
           placeholder="SEARCH"
           className="t-data fg"
