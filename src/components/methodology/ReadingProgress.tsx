@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 
 export function ReadingProgress() {
   const [pct, setPct] = useState(0);
+  const [barChars, setBarChars] = useState(40);
 
   useEffect(() => {
     const update = () => {
@@ -16,8 +17,15 @@ export function ReadingProgress() {
     return () => window.removeEventListener('scroll', update);
   }, []);
 
-  const filled = Math.round(pct / 100 * 40);
-  const bar = '█'.repeat(filled) + '░'.repeat(40 - filled);
+  useEffect(() => {
+    const update = () => setBarChars(window.innerWidth < 480 ? 28 : 40);
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
+  const filled = Math.round(pct / 100 * barChars);
+  const bar = '█'.repeat(filled) + '░'.repeat(barChars - filled);
 
   return (
     <div aria-label="Reading progress" role="progressbar" aria-valuenow={pct}
@@ -29,7 +37,10 @@ export function ReadingProgress() {
         padding: '0 var(--s-4)', zIndex: 40, color: 'var(--fg-dim)',
         whiteSpace: 'nowrap', overflow: 'hidden',
       }}>
-      <span style={{ color: 'var(--accent)' }}>{bar}</span> {pct}%
+      <span aria-hidden="true" style={{ flex: '1 1 auto', minWidth: 0, overflow: 'hidden' }}>
+        <span style={{ color: 'var(--accent)' }}>{bar}</span>
+      </span>
+      <span style={{ flex: '0 0 auto', marginLeft: 'var(--s-2)' }}>{pct}%</span>
     </div>
   );
 }

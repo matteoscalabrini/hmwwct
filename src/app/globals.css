@@ -497,6 +497,21 @@ html {
   .methodology-sidebar {
     display: none !important;
   }
+
+  /* Stack methodology label/value rows — long dataset and API labels
+     cannot share a line with their values on narrow screens. */
+  .longform .data-table {
+    grid-template-columns: minmax(0, 1fr) !important;
+    row-gap: var(--s-1) !important;
+  }
+
+  .longform .data-table [data-cell="sep"] {
+    display: none;
+  }
+
+  .longform .data-table [data-cell="value"] {
+    margin-bottom: var(--s-3);
+  }
 }
 
 @media (max-width: 1279px) {

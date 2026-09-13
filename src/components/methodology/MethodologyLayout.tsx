@@ -21,7 +21,7 @@ export function MethodologyLayout({ sections, children }: Props) {
         margin: '0 auto',
       }}>
         <Sidebar sections={sections} />
-        <main style={{ flex: 1, maxWidth: '72ch' }}>
+        <main style={{ flex: 1, minWidth: 0, maxWidth: '72ch' }}>
           {children}
         </main>
       </div>
