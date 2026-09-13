@@ -26,7 +26,7 @@ interface Props {
   casualtyRatio?: number;
 }
 
-const COLORS = ['#4aff7a', '#7a9585', '#ff3b3b']; // adult, child, casualty
+const COLORS = ['#ffffff', '#9a9a9a', '#4d4d4d']; // adult, child, casualty
 
 export function MemorialImmersiveOverlay({
   open,

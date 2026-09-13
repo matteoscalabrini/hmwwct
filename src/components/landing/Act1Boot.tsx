@@ -9,7 +9,7 @@ export function Act1Boot() {
     >
       {/* Hero heading */}
       <h1
-        className="t-hero fg-phos"
+        className="t-hero fg-accent"
         style={{ margin: 0, textAlign: 'left' }}
       >
         HOW MUCH

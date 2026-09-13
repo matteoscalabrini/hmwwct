@@ -361,7 +361,7 @@ export function calculateArmamentCost(input: CalculationInput): CostCategory {
     amount: totalPoint,
     amountMin: totalLow,
     amountMax: totalHigh,
-    color: '#ff6b35',
+    color: '#b3b3b3',
     items,
     methodology: `
 Armament costs calculated in four buckets:

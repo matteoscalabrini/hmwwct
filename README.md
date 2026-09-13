@@ -33,7 +33,7 @@ All numbers cite real sources. No black boxes.
 | [UN Comtrade API](https://comtradeplus.un.org/) | Optional live bilateral trade replacement |
 | [ACLED](https://acleddata.com/) | Optional live political-violence overlay |
 | [Watson Institute](https://watson.brown.edu/costsofwar/) | War cost anchors (US Afghanistan/Iraq benchmarks) |
-| [REST Countries](https://restcountries.com/) | Country metadata, flags, region |
+| [mledoze/countries](https://github.com/mledoze/countries) + [World Bank](https://data.worldbank.org/) + [flagcdn](https://flagcdn.com) | Static country dataset (`npm run build:countries`) — REST Countries v3.1 was deprecated in 2026 |
 
 ---
 

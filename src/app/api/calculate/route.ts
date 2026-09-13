@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
-import { ConflictScenario, SanctionsInfo } from '@/types';
+import { ConflictScenario, RestCountryRaw, SanctionsInfo } from '@/types';
 import { fetchCountryIndicators } from '@/lib/api/worldbank';
-import { fetchAllCountries, RestCountryRaw } from '@/lib/api/restcountries';
 import { enrichCountry } from '@/lib/utils/enrichCountry';
 import { calculateWarCost } from '@/lib/calculations';
 import { fetchCommodityPrices, fetchCpiScalar } from '@/lib/api/fred';
 import { fetchComtradeBilateralTrade } from '@/lib/api/comtrade';
 import { fetchAcledConflictSignal } from '@/lib/api/acled';
 import sanctionsData from '@/lib/data/sanctions-regimes.json';
+import countriesData from '@/lib/data/countries.json';
 
 const VALID_SCENARIOS = new Set<ConflictScenario>(['precision_strike', 'air_campaign', 'skirmish', 'conventional', 'occupation']);
 
@@ -52,15 +52,16 @@ export async function POST(req: Request) {
     // connections are actually aborted (not just a wrapper promise).
     const signal = AbortSignal.timeout(15_000);
 
-    const [allCountries, aggressorLive, targetLive, commodityPrices, cpiScalar] = await Promise.all([
-      fetchAllCountries(signal),
+    const [aggressorLive, targetLive, commodityPrices, cpiScalar] = await Promise.all([
       fetchCountryIndicators(aggressorCode, signal),
       fetchCountryIndicators(targetCode, signal),
       fetchCommodityPrices(signal).catch(() => undefined),
       fetchCpiScalar(signal).catch(() => 1.0),
     ]);
 
-    const countriesMap = new Map<string, RestCountryRaw>(allCountries.map((c) => [c.cca3, c]));
+    const countriesMap = new Map<string, RestCountryRaw>(
+      (countriesData.countries as RestCountryRaw[]).map((c) => [c.cca3, c])
+    );
 
     const aggressorRaw = countriesMap.get(aggressorCode);
     const targetRaw = countriesMap.get(targetCode);

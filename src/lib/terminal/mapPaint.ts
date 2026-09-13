@@ -22,11 +22,11 @@ export function toneColor(tone: CellTone): string {
   switch (tone) {
     case 'ocean':     return palette.bg;
     case 'neutral':   return palette.fgMute;
-    case 'glow':      return palette.phosphor;
-    case 'aggressor': return palette.phosphor;
+    case 'glow':      return palette.accent;
+    case 'aggressor': return palette.accent;
     case 'target':    return palette.alert;
-    case 'glow-high': return '#4aff7a';
-    case 'glow-med':  return '#2bc957';
-    case 'glow-low':  return '#7a9585';
+    case 'glow-high': return '#ffffff';
+    case 'glow-med':  return '#b3b3b3';
+    case 'glow-low':  return '#6a6a6a';
   }
 }

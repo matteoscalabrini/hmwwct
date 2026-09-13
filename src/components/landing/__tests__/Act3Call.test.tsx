@@ -35,7 +35,11 @@ describe('<Act3Call>', () => {
   it('renders the secondary nav links', () => {
     render(<Act3Call />);
     expect(screen.getByRole('link', { name: /METHODOLOGY/i })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /SOURCES/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /GITHUB/i })).toBeInTheDocument();
+  });
+
+  it('does not link to the nonexistent /sources page', () => {
+    render(<Act3Call />);
+    expect(screen.queryByRole('link', { name: /SOURCES/i })).not.toBeInTheDocument();
   });
 });

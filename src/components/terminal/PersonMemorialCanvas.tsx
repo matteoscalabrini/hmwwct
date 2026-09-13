@@ -49,7 +49,7 @@ export function PersonMemorialCanvas({
     if (typeof OffscreenCanvas === 'undefined') return;
 
     const sheet = createSpriteSheet({
-      adult: getCss('--phosphor'),
+      adult: getCss('--accent'),
       child: getCss('--fg-dim'),
       casualty: getCss('--alert'),
     });
@@ -120,6 +120,6 @@ export function PersonMemorialCanvas({
 function getCss(name: string): string {
   return (
     getComputedStyle(document.documentElement).getPropertyValue(name).trim() ||
-    '#4aff7a'
+    '#ffffff'
   );
 }

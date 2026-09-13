@@ -96,7 +96,7 @@ export function BootSequence({ onComplete }: BootSequenceProps) {
         {BOOT_LINES.slice(0, visibleCount).map((line, i) => (
           <div
             key={i}
-            className="t-body fg-phos"
+            className="t-body fg-accent"
             style={{
               fontFamily: '"Ioskeley Mono", monospace',
               minHeight: '1.55em',

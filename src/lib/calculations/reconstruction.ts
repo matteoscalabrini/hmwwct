@@ -142,7 +142,7 @@ export function calculateReconstructionCost(input: CalculationInput): {
       amount: reconstructionCost,
       amountMin: reconstructionMin,
       amountMax: reconstructionMax,
-      color: '#4a5568',
+      color: '#6a6a6a',
       items,
       methodology: `Reconstruction costs based on World Bank post-conflict studies. For ${def.label.toLowerCase()}, ` +
         `reconstruction typically runs ${(def.reconstructionRate.min * 100).toFixed(0)}–${(def.reconstructionRate.max * 100).toFixed(0)}%/yr of the target nation's effective GDP × conflict duration. ` +

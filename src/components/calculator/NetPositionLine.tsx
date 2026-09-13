@@ -21,7 +21,6 @@ export function NetPositionLine({ netPositionUsd, breakEvenYears, totalRevenueUs
   }
 
   const isLoss = netPositionUsd < 0;
-  const color = isLoss ? 'var(--alert)' : 'var(--phosphor)';
   const breakEvenText = breakEvenYears === null
     ? 'NEVER'
     : breakEvenYears > 500
@@ -33,7 +32,17 @@ export function NetPositionLine({ netPositionUsd, breakEvenYears, totalRevenueUs
       <AsciiRule />
       <div style={{ marginTop: 'var(--s-2)', display: 'flex', flexDirection: 'column', gap: 'var(--s-1)' }}>
         <div className="t-label fg-dim">NET POSITION</div>
-        <div className="t-data" style={{ color, fontWeight: 700 }}>
+        <div
+          className="t-data"
+          style={{
+            fontWeight: 700,
+            padding: isLoss ? '2px 6px' : undefined,
+            background: isLoss ? 'var(--accent)' : 'transparent',
+            color: isLoss ? 'var(--bg)' : 'var(--accent)',
+            width: 'fit-content',
+            maxWidth: '100%',
+          }}
+        >
           {isLoss ? '' : '+'}{formatCompactUsd(netPositionUsd)} · BREAK-EVEN: {breakEvenText}
         </div>
         {totalRevenueUsd > 0 && (

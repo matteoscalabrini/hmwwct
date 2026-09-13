@@ -253,7 +253,7 @@ export function calculateHumanitarianCost(input: CalculationInput): {
       amount: totalAmount,
       amountMin: totalAmountMin,
       amountMax: totalAmountMax,
-      color: '#b45309',
+      color: '#9a9a9a',
       items,
       methodology: `Humanitarian costs include IDP support, cross-border refugee resettlement, emergency healthcare, and direct casualty costs. ` +
         `${formatNum(displacedPoint)} displaced persons (${(displacementShare * 100).toFixed(1)}% of ${populationAtRisk < population ? `${formatNum(populationAtRisk)} pop-at-risk` : `population`}` +

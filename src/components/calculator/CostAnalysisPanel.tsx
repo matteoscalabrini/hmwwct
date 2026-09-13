@@ -5,6 +5,7 @@ import { DataTable } from '@/components/terminal/DataTable';
 import { CharBar } from '@/components/terminal/CharBar';
 import { BlinkCursor } from '@/components/terminal/BlinkCursor';
 import { AsciiRule } from '@/components/terminal/AsciiRule';
+import { AnimatedNumber } from '@/components/terminal/AnimatedNumber';
 import { formatCompactUsd } from '@/lib/terminal/formatters';
 import { WarClock } from './WarClock';
 import { InHumanTerms } from './InHumanTerms';
@@ -75,7 +76,7 @@ function CalculatingOverlay() {
   return (
     <Panel title="COST ANALYSIS">
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-2)' }}>
-        <p className="t-data fg-phos">&gt; CALCULATING <BlinkCursor /></p>
+        <p className="t-data fg-accent">&gt; CALCULATING <BlinkCursor /></p>
         <div style={{ marginTop: 'var(--s-2)' }}>
           {CALC_STEPS.map((step, i) => (
             <p key={step} className="t-label fg-dim" style={{
@@ -91,7 +92,7 @@ function CalculatingOverlay() {
         <div style={{ marginTop: 'var(--s-3)', height: 6, background: 'var(--fg-mute)', overflow: 'hidden' }}>
           <div style={{
             height: '100%',
-            background: 'var(--phosphor)',
+            background: 'var(--accent)',
             width: '60%',
             animation: 'progress-bar 2s ease-in-out infinite',
           }} />
@@ -130,13 +131,15 @@ export function CostAnalysisPanel({ result, isLoading, durationYears, aggressorP
   };
 
   return (
-    <Panel title="COST ANALYSIS" tone="phosphor">
+    <Panel title="COST ANALYSIS" tone="accent">
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-4)' }}>
         {durationYears && <WarClock totalPoint={total.point} durationYears={durationYears} />}
 
-        <div className="t-hero fg-phos">
-          {formatCompactUsd(total.point)}
-        </div>
+        <AnimatedNumber
+          className="t-hero fg-accent"
+          value={total.point}
+          format={formatCompactUsd}
+        />
 
         <CharBar
           label="RANGE"

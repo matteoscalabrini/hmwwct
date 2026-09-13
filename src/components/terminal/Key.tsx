@@ -14,7 +14,7 @@ export function Key({ children, active = false }: KeyProps) {
         display: 'inline-block',
         padding: '1px 4px',
         color: active ? 'var(--bg)' : 'var(--fg-dim)',
-        background: active ? 'var(--phosphor)' : 'transparent',
+        background: active ? 'var(--accent)' : 'transparent',
       }}
     >
       [{children}]

@@ -24,18 +24,18 @@ export function DataTable({ children }: DataTableProps) {
 interface RowProps {
   label: string;
   value: ReactNode;
-  tone?: 'default' | 'alert' | 'phosphor';
+  tone?: 'default' | 'alert' | 'accent';
   highlight?: boolean;
   footnote?: string;
 }
 
 function Row({ label, value, tone = 'default', highlight = false, footnote }: RowProps) {
+  const inverted = highlight || tone === 'alert';
+  const bg = inverted ? 'var(--accent)' : 'transparent';
+  const fg = inverted ? 'var(--bg)' : undefined;
   const valueColor =
-    tone === 'alert'    ? 'var(--alert)' :
-    tone === 'phosphor' ? 'var(--phosphor)' :
+    tone === 'accent' ? 'var(--accent)' :
                           'var(--fg)';
-  const bg = highlight ? 'var(--phosphor)' : 'transparent';
-  const fg = highlight ? 'var(--bg)' : undefined;
 
   return (
     <>
@@ -49,7 +49,7 @@ function Row({ label, value, tone = 'default', highlight = false, footnote }: Ro
       <span aria-hidden="true" className="fg-mute">│</span>
       <span
         data-tone={tone}
-        style={{ color: highlight ? 'var(--bg)' : valueColor, background: bg }}
+        style={{ color: fg ?? valueColor, background: bg, padding: inverted ? '0 4px' : undefined }}
       >
         {value}
       </span>

@@ -5,7 +5,7 @@ interface CharBarProps {
   value: number;
   displayValue: string;
   width?: number;
-  tone?: 'default' | 'alert' | 'phosphor-bright';
+  tone?: 'default' | 'alert' | 'accent-bright';
   translation?: string;
   percent?: number;
 }
@@ -24,8 +24,8 @@ export function CharBar({
 
   const fillColor =
     tone === 'alert'            ? 'var(--alert)' :
-    tone === 'phosphor-bright'  ? 'var(--phosphor)' :
-                                  'var(--phosphor-d)';
+    tone === 'accent-bright'  ? 'var(--accent)' :
+                                  'var(--accent-d)';
 
   return (
     <div className="t-data" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--s-1)' }}>
@@ -39,7 +39,7 @@ export function CharBar({
       >
         <span className="t-label fg-dim">{label}</span>
         <span style={{ whiteSpace: 'nowrap' }}>
-          <span data-filled style={{ color: fillColor }}>{'█'.repeat(filled)}</span>
+          <span key={filled} data-filled className="charbar-fill" style={{ color: fillColor }}>{'█'.repeat(filled)}</span>
           <span className="fg-mute">{'░'.repeat(empty)}</span>
         </span>
         <span className="fg">{displayValue}</span>

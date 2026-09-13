@@ -12,6 +12,6 @@ export { TerminalButton } from './TerminalButton';
 export { CharBar } from './CharBar';
 export { DataTable } from './DataTable';
 export { TerminalSelect } from './TerminalSelect';
-export { BlockGridMap } from './BlockGridMap';
+export { ParticleGlobe } from './ParticleGlobe';
 export { BigBoard } from './BigBoard';
 export { PersonMemorialCanvas } from './PersonMemorialCanvas';

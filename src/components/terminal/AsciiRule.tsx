@@ -1,10 +1,10 @@
 interface AsciiRuleProps {
   char?: string;
-  tone?: 'default' | 'phosphor' | 'mute';
+  tone?: 'default' | 'accent' | 'mute';
 }
 
 export function AsciiRule({ char = '─', tone = 'default' }: AsciiRuleProps) {
-  const colorClass = tone === 'phosphor' ? 'fg-phos' : tone === 'mute' ? 'fg-mute' : 'fg-dim';
+  const colorClass = tone === 'accent' ? 'fg-accent' : tone === 'mute' ? 'fg-mute' : 'fg-dim';
   return (
     <div
       role="separator"

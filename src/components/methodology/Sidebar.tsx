@@ -36,7 +36,7 @@ export function Sidebar({ sections }: SidebarProps) {
         {sections.map(s => (
           <li key={s.id}>
             <a href={`#${s.id}`} className="t-label"
-              style={{ color: activeId === s.id ? 'var(--phosphor)' : 'var(--fg-dim)', textDecoration: 'none', display: 'block', padding: 'var(--s-1) 0' }}>
+              style={{ color: activeId === s.id ? 'var(--accent)' : 'var(--fg-dim)', textDecoration: 'none', display: 'block', padding: 'var(--s-1) 0' }}>
               {s.label}
             </a>
           </li>

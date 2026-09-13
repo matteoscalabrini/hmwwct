@@ -31,8 +31,8 @@ export function TerminalButton({
         gap: '0.5ch',
         padding: 'var(--s-2) var(--s-3)',
         background: 'transparent',
-        border: '1px solid var(--phosphor)',
-        color: isDisabled ? 'var(--fg-dim)' : 'var(--phosphor)',
+        border: '1px solid var(--accent)',
+        color: isDisabled ? 'var(--fg-dim)' : 'var(--accent)',
         cursor: isDisabled ? 'not-allowed' : 'pointer',
         fontFamily: '"Ioskeley Mono", monospace',
       }}

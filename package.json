@@ -9,7 +9,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "build:map": "tsx scripts/build-map-grid.ts"
+    "build:map": "tsx scripts/build-map-grid.ts",
+    "build:countries": "tsx scripts/build-countries.ts"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.21",
@@ -35,6 +36,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
     "jsdom": "^29.0.2",
+    "playwright-core": "^1.62.1",
     "tailwindcss": "^4",
     "topojson-client": "^3.1.0",
     "tsx": "^4.21.0",

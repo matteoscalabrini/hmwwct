@@ -29,8 +29,8 @@ describe('filterMatches', () => {
     expect(r.map(o => o.value)).toEqual(['JPN']);
   });
 
-  it('limits to top 8 results', () => {
+  it('returns all matches without truncation (list scrolls)', () => {
     const many = Array.from({ length: 50 }, (_, i) => ({ value: `X${i}`, label: `Xland ${i}` }));
-    expect(filterMatches(many, 'x')).toHaveLength(8);
+    expect(filterMatches(many, 'x')).toHaveLength(50);
   });
 });

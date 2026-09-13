@@ -12,8 +12,8 @@ interface StatusStripProps {
 export function StatusStrip({ uplink, sources, sourceTotal, version }: StatusStripProps) {
   const clock = useLiveClock();
   const dotColor =
-    uplink === 'NOMINAL'  ? 'var(--phosphor)' :
-    uplink === 'QUERYING' ? 'var(--phosphor)' :
+    uplink === 'NOMINAL'  ? 'var(--accent)' :
+    uplink === 'QUERYING' ? 'var(--accent)' :
                             'var(--alert)';
 
   return (
@@ -39,8 +39,8 @@ export function StatusStrip({ uplink, sources, sourceTotal, version }: StatusStr
         <span aria-hidden="true" style={{ color: dotColor }}>●</span>
         <span className="fg-dim">{uplink}</span>
       </span>
-      <span className="fg-dim">SOURCES {sources}/{sourceTotal}</span>
-      <span className="fg-dim">{clock}</span>
+      <span className="fg-dim status-strip__sources">SOURCES {sources}/{sourceTotal}</span>
+      <span className="fg-dim status-strip__clock">{clock}</span>
       <span className="fg-dim" style={{ marginLeft: 'auto' }}>WOPR v{version}</span>
     </footer>
   );

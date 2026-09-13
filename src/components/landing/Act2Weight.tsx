@@ -73,17 +73,10 @@ function WeightFactSection({ fact }: WeightFactSectionProps) {
   return (
     <div
       ref={ref}
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        justifyContent: 'center',
-        padding: 'var(--s-8) var(--s-7)',
-      }}
+      className="landing-section"
     >
       <div
-        className="t-hero fg-phos"
+        className="t-hero fg-accent"
         aria-label={`${fact.prefix}${formatFactValue(fact.value)}`}
       >
         {fact.prefix}{formatFactValue(displayed)}

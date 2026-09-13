@@ -1,5 +1,5 @@
 import { Country } from '@/types';
-import { RestCountryRaw } from '@/lib/api/restcountries';
+import { RestCountryRaw } from '@/types';
 import sipriData from '@/lib/data/sipri-military.json';
 import staticFallback from '@/lib/data/static-fallback.json';
 

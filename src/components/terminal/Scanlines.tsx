@@ -9,7 +9,7 @@ export function Scanlines() {
         pointerEvents: 'none',
         zIndex: 50,
         backgroundImage:
-          'repeating-linear-gradient(to bottom, transparent 0, transparent 2px, rgba(74, 255, 122, 0.03) 2px, rgba(74, 255, 122, 0.03) 3px)',
+          'repeating-linear-gradient(to bottom, transparent 0, transparent 2px, rgba(255, 255, 255, 0.025) 2px, rgba(255, 255, 255, 0.025) 3px)',
         mixBlendMode: 'screen',
       }}
     />

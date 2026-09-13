@@ -29,7 +29,7 @@ export function ReadingProgress() {
         padding: '0 var(--s-4)', zIndex: 40, color: 'var(--fg-dim)',
         whiteSpace: 'nowrap', overflow: 'hidden',
       }}>
-      <span style={{ color: 'var(--phosphor)' }}>{bar}</span> {pct}%
+      <span style={{ color: 'var(--accent)' }}>{bar}</span> {pct}%
     </div>
   );
 }

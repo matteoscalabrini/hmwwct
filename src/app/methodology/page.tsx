@@ -61,9 +61,9 @@ const API_ENDPOINTS = [
     use: 'Fallback nominal GDP in current USD when World Bank GDP is absent.',
   },
   {
-    name: 'REST Countries',
-    endpoint: 'GET https://restcountries.com/v3.1/all?fields=cca2,cca3,name,flags,region,subregion,latlng,area,unMember,population',
-    use: 'Country identity, map coordinates, area, population, and region metadata.',
+    name: 'Static country dataset (mledoze/countries + World Bank + flagcdn)',
+    endpoint: 'npm run build:countries → src/lib/data/countries.json',
+    use: 'Country identity, map coordinates, area, population, and region metadata. Regenerated from keyless sources when needed.',
   },
   {
     name: 'FRED',
@@ -142,12 +142,12 @@ const LIVE_APIS = [
     fallback: 'Used only when World Bank GDP is null; otherwise skipped to avoid extra latency.',
   },
   {
-    name: 'REST Countries v3.1',
-    url: 'https://restcountries.com/v3.1',
+    name: 'Static country dataset',
+    url: 'https://github.com/mledoze/countries',
     variables: 'cca2, cca3, name, flags, region, subregion, latlng, area, unMember, population',
     role: 'Country metadata, coordinates for distance calculations, flags, region labels, and geographic area.',
-    cache: '7 days',
-    fallback: 'Taiwan, Palestine, and Kosovo are injected from a local curated dataset because the UN-member filter excludes them.',
+    cache: 'Committed to the repo; regenerate with npm run build:countries',
+    fallback: 'Population comes from the World Bank SP.POP.TOTL latest non-null value. Taiwan, Palestine, and Kosovo are injected from a local curated dataset because the UN-member filter excludes them.',
   },
   {
     name: 'FRED',
@@ -239,7 +239,7 @@ const STATIC_DATASETS = [
 ];
 
 const COUNTRY_ASSEMBLY_LINES = [
-  'country = merge(restcountries, worldbank, imf?, sipri, staticFallback?)',
+  'country = merge(staticCountries, worldbank, imf?, sipri, staticFallback?)',
   'militaryBudget = WB.MS.MIL.XPND.CD ?? SIPRI.expenditureUsd ?? GDP x (militaryPctGDP / 100) ?? staticFallback',
   'goldReserves = max(FI.RES.TOTL.CD - FI.RES.XGLD.CD, 0)',
   'distanceKm = haversine(aggressor.latlng, target.latlng)',
@@ -359,14 +359,14 @@ const CALIBRATION_GAPS = [
     title: 'No air_campaign scenario — conflict fell in a gap',
     finding: 'The four existing scenarios were precision_strike (days), skirmish (weeks), conventional (months with ground forces), occupation (years). Iran 2026 was none of these: a sustained air campaign lasting weeks to months with no ground component.',
     fix: 'Added air_campaign as a fifth scenario. Duration 18 days – 6 months (point 55 days). Operational spending remains conservative in the military module, while the air-specific aircraft, munitions, attrition, and intercept burden is priced in armaments. Displacement multiplier 4%, GDP impact 15%/year, capital flight 7%/year.',
-    color: 'var(--phosphor)',
+    color: 'var(--accent)',
   },
   {
     id: '03',
     title: 'Humanitarian model built for slow conflicts — not air campaigns',
     finding: 'The displacement-based model produced $14M for USA→Iran precision_strike. The real humanitarian cost by Day 17 was in the billions: 1,444 killed, 18,551 injured, 3.2 million displaced. No direct casualty cost existed in the model at all.',
     fix: 'Added a Direct Casualties line item using the WHO human-capital VSL method (GDP per capita × 100). Daily casualty rates by scenario calibrated to Iran 2026 (1.0 killed/M/day for air_campaign) and Iraq 2003 (5.0/M/day for conventional). Casualties now included in the humanitarian total.',
-    color: 'var(--phosphor)',
+    color: 'var(--accent)',
   },
   {
     id: '04',
@@ -380,7 +380,7 @@ const CALIBRATION_GAPS = [
     title: 'Air-campaign displacement was double-damped',
     finding: 'The methodology intended air_campaign displacementMultiplier = 4% as an observed population share. The code multiplied that by Iran’s historical UNHCR displacement ratio again, yielding ~293K displaced for USA→Iran instead of the reported ~3.2M.',
     fix: 'For air_campaign only, displacementMultiplier is now treated as the calibrated population share. Other scenarios continue to use UNHCR historical ratios × scenario multiplier. USA→Iran air_campaign now produces ~3.7M displaced, close to the UN/HRA figure.',
-    color: 'var(--phosphor)',
+    color: 'var(--accent)',
   },
 ];
 
@@ -497,7 +497,7 @@ export default function MethodologyPage() {
         {INTERNAL_ROUTES.map((item) => (
           <div key={item.route} style={{ marginBottom: 'var(--s-5)' }}>
             <DataTable>
-              <DataTable.Row label="ROUTE"   value={item.route} tone="phosphor" />
+              <DataTable.Row label="ROUTE"   value={item.route} tone="accent" />
               <DataTable.Row label="PURPOSE" value={item.purpose} />
               <DataTable.Row label="OUTPUT"  value={item.output} />
             </DataTable>
@@ -510,7 +510,7 @@ export default function MethodologyPage() {
           comes from REST Countries, live indicators come from World Bank, GDP can fall back to IMF
           DataMapper, military and sanctions context can fall back to local datasets, and missing
           data-sparse states are explicitly labeled through the{' '}
-          <code style={{ color: 'var(--phosphor)' }}>hasStaticFallback</code> flag.
+          <code style={{ color: 'var(--accent)' }}>hasStaticFallback</code> flag.
         </p>
         <div id="country-assembly" className="formula-block">
           {COUNTRY_ASSEMBLY_LINES.map((line) => (
@@ -549,7 +549,7 @@ export default function MethodologyPage() {
               <DataTable.Row
                 label="SOURCE"
                 value={<a href={api.url} target="_blank" rel="noopener noreferrer">{api.name}</a>}
-                tone="phosphor"
+                tone="accent"
               />
               <DataTable.Row label="VARS"     value={api.variables} />
               <DataTable.Row label="ROLE"     value={api.role} />
@@ -584,7 +584,7 @@ export default function MethodologyPage() {
         {STATIC_DATASETS.map((dataset) => (
           <div key={dataset.name} style={{ marginBottom: 'var(--s-4)' }}>
             <DataTable>
-              <DataTable.Row label={dataset.count} value={dataset.name} tone="phosphor" />
+              <DataTable.Row label={dataset.count} value={dataset.name} tone="accent" />
               <DataTable.Row label="NOTE" value={dataset.note} />
             </DataTable>
           </div>
@@ -759,7 +759,7 @@ export default function MethodologyPage() {
           <DataTable.Row label="DAY 1–6"   value={<>$11.3B direct cost (Pentagon, Senate briefing) <span className="t-label fg-dim">≈ annual military budget of Denmark</span></>} />
           <DataTable.Row label="DAY 1–12"  value={<>$16.5B direct cost (CSIS) <span className="t-label fg-dim">≈ Iran&apos;s annual education budget</span></>} />
           <DataTable.Row label="DAY 20"    value="$16.2–23.4B incremental cost (AEI via Axios)" />
-          <DataTable.Row label="2 MONTH"   value={<>$38–47B direct projection; $5B indirect excluded (PWBM) <span className="t-label fg-dim">narrow federal spending only</span></>} tone="phosphor" />
+          <DataTable.Row label="2 MONTH"   value={<>$38–47B direct projection; $5B indirect excluded (PWBM) <span className="t-label fg-dim">narrow federal spending only</span></>} tone="accent" />
           <DataTable.Row label="HUMAN"     value="HRANA Day 39: 3,636 documented deaths; UN/HRA: ~3.2M displaced" />
           <DataTable.Row label="INTERCEPT" value={<>$1.7B in first 100 hrs (CSIS) <span className="t-label fg-dim">≈ 4,300 Patriot PAC-3 interceptors</span></>} />
         </DataTable>
@@ -789,20 +789,20 @@ export default function MethodologyPage() {
                 tone={gap.id === '01' ? 'alert' : 'default'}
               />
               <DataTable.Row label="FOUND" value={gap.finding} />
-              <DataTable.Row label="FIX"   value={gap.fix} tone="phosphor" />
+              <DataTable.Row label="FIX"   value={gap.fix} tone="accent" />
             </DataTable>
           </div>
         ))}
 
         <h3>Pre / Post Results vs Late-April Data</h3>
         <DataTable>
-          <DataTable.Row label="SCENARIO" value="BEFORE → AFTER vs REAL" tone="phosphor" />
+          <DataTable.Row label="SCENARIO" value="BEFORE → AFTER vs REAL" tone="accent" />
           {CALIBRATION_RESULTS.map((row) => (
             <DataTable.Row
               key={row.scenario}
               label={row.scenario}
               value={`${row.before} → ${row.after}  |  real: ${row.real}`}
-              tone={row.match ? 'phosphor' : 'alert'}
+              tone={row.match ? 'accent' : 'alert'}
             />
           ))}
         </DataTable>
@@ -822,7 +822,7 @@ export default function MethodologyPage() {
               <DataTable.Row
                 label="SOURCE"
                 value={<a href={source.url} target="_blank" rel="noopener noreferrer">{source.name}</a>}
-                tone="phosphor"
+                tone="accent"
               />
               <DataTable.Row label="USED FOR" value={source.use} />
             </DataTable>
@@ -858,7 +858,7 @@ export default function MethodologyPage() {
 
         <AsciiRule tone="mute" />
         <p style={{ marginTop: 'var(--s-6)' }}>
-          <Link href="/calculator" style={{ color: 'var(--phosphor)' }}>
+          <Link href="/calculator" style={{ color: 'var(--accent)' }}>
             Open Calculator →
           </Link>
           {' '}

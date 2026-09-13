@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { BigBoard } from '@/components/terminal/BigBoard';
 import { ConflictParametersPanel, ConflictParams } from '@/components/calculator/ConflictParametersPanel';
@@ -10,7 +10,7 @@ import { HumanTollPanel } from '@/components/calculator/HumanTollPanel';
 import { useCalculate } from '@/lib/calculator/useCalculate';
 import { PerPersonPanel } from '@/components/calculator/PerPersonPanel';
 import { InsteadPanel } from '@/components/calculator/InsteadPanel';
-import type { RestCountryRaw } from '@/lib/api/restcountries';
+import type { RestCountryRaw } from '@/types';
 
 export default function CalculatorPage() {
   const [params, setParams] = useState<ConflictParams>({
@@ -24,17 +24,39 @@ export default function CalculatorPage() {
     queryFn: () => fetch('/api/countries').then((r) => r.json()),
   });
 
+  // Shareable deep-link: /calculator?from=USA&to=RUS pre-seeds the selection.
+  // Seeding must happen post-hydration (URL isn't known during SSR), hence an
+  // effect rather than lazy state init — one-shot, no cascading renders.
+  useEffect(() => {
+    if (!countries.length) return;
+    const sp = new URLSearchParams(window.location.search);
+    const pick = (key: string) => {
+      const code = sp.get(key)?.toUpperCase();
+      return code && countries.some((c) => c.cca3 === code) ? code : null;
+    };
+    const from = pick('from');
+    const to = pick('to');
+    if (from || to) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setParams((p) => ({ ...p, aggressor: from ?? p.aggressor, target: to ?? p.target }));
+    }
+  }, [countries]);
+
   const { data: calcResult, isFetching: isCalculating } = useCalculate(params);
+
+  // Tiny 16px flags — w80 PNG is the right flagcdn size for the icon slot.
+  const flag80 = (c: RestCountryRaw) => c.flags.png.replace('w320', 'w80');
 
   const countryOptions = countries.map((c) => ({
     value: c.cca3,
     label: c.name.common,
+    flag: flag80(c),
   }));
 
   const countriesByIso = Object.fromEntries(
     countries.map((c) => [
       c.cca3,
-      { name: c.name.common, population: c.population },
+      { name: c.name.common, population: c.population, flag: flag80(c) },
     ])
   );
 

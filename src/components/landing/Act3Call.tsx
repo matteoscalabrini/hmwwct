@@ -7,20 +7,11 @@ export function Act3Call() {
   const router = useRouter();
 
   return (
-    <section
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        justifyContent: 'center',
-        padding: 'var(--s-8) var(--s-7)',
-      }}
-    >
-      <p className="t-title fg-phos" style={{ margin: 0 }}>
+    <section className="landing-section">
+      <p className="t-title fg-accent" style={{ margin: 0 }}>
         &gt; ENOUGH READING.
       </p>
-      <p className="t-title fg-phos" style={{ marginTop: 'var(--s-4)', marginBottom: 0 }}>
+      <p className="t-title fg-accent" style={{ marginTop: 'var(--s-4)', marginBottom: 0 }}>
         &gt; RUN THE NUMBERS YOURSELF.
       </p>
 
@@ -38,20 +29,10 @@ export function Act3Call() {
           href="/methodology"
           className="fg-dim"
           style={{ textDecoration: 'none' }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--phosphor)')}
+          onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--accent)')}
           onMouseLeave={(e) => (e.currentTarget.style.color = '')}
         >
           METHODOLOGY
-        </a>
-        <span aria-hidden="true">·</span>
-        <a
-          href="/sources"
-          className="fg-dim"
-          style={{ textDecoration: 'none' }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--phosphor)')}
-          onMouseLeave={(e) => (e.currentTarget.style.color = '')}
-        >
-          SOURCES
         </a>
         <span aria-hidden="true">·</span>
         <a
@@ -60,7 +41,7 @@ export function Act3Call() {
           rel="noopener noreferrer"
           className="fg-dim"
           style={{ textDecoration: 'none' }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--phosphor)')}
+          onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--accent)')}
           onMouseLeave={(e) => (e.currentTarget.style.color = '')}
         >
           GITHUB

@@ -369,7 +369,7 @@ export function calculateEconomicImpact(
     amount: total,
     amountMin: total * 0.6,
     amountMax: total * 1.6,
-    color: '#c41230',
+    color: '#d4d4d4',
     items,
     methodology:
       `Economic costs include: bilateral trade disruption (${(TRADE_DISRUPTION_FACTOR * 100).toFixed(0)}% of trade lost × 50% overlap discount, WTO historical average), ` +

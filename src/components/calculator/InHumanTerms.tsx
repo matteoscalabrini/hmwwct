@@ -46,7 +46,7 @@ export function InHumanTerms({ totalUsd, aggressorPop }: Props) {
         padding: 'var(--s-2) 0',
       }}
     >
-      <span className="fg-phos">&gt;</span> {frames[i].value} {frames[i].label}
+      <span className="fg-accent">&gt;</span> {frames[i].value} {frames[i].label}
       <span className="t-label fg-mute" style={{ marginLeft: '1ch' }}>
         [{i + 1}/{frames.length}] CLICK TO CYCLE
       </span>

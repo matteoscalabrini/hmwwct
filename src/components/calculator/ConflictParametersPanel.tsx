@@ -54,8 +54,8 @@ export function ConflictParametersPanel({ countries, value, onChange }: Props) {
                 style={{
                   padding: 'var(--s-1) var(--s-2)',
                   border: '1px solid',
-                  borderColor: value.scenario === s.key ? 'var(--phosphor)' : 'var(--fg-mute)',
-                  background: value.scenario === s.key ? 'var(--phosphor)' : 'transparent',
+                  borderColor: value.scenario === s.key ? 'var(--accent)' : 'var(--fg-mute)',
+                  background: value.scenario === s.key ? 'var(--accent)' : 'transparent',
                   color: value.scenario === s.key ? 'var(--bg)' : 'var(--fg-dim)',
                   cursor: 'pointer',
                   fontFamily: '"Ioskeley Mono", monospace',

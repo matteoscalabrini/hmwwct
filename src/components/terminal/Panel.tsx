@@ -3,14 +3,14 @@ import { Stamp } from './Stamp';
 
 interface PanelProps {
   title: string;
-  tone?: 'default' | 'phosphor' | 'alert';
+  tone?: 'default' | 'accent' | 'alert';
   children: ReactNode;
   className?: string;
 }
 
 export function Panel({ title, tone = 'default', children, className = '' }: PanelProps) {
   const borderColor =
-    tone === 'phosphor' ? 'var(--phosphor)' :
+    tone === 'accent' ? 'var(--accent)' :
     tone === 'alert'    ? 'var(--alert)' :
                           'var(--fg-mute)';
 

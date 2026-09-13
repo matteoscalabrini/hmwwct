@@ -216,7 +216,7 @@ export function calculateMilitaryCost(input: CalculationInput): CostCategory {
     amount: total,
     amountMin: total * (1 - rangeFactor),
     amountMax: total * (1 + rangeFactor),
-    color: '#1e3a5f',
+    color: '#ffffff',
     items,
     methodology: `Military costs scaled from Watson Institute benchmarks: ` +
       `$${(watsonDaily / 1e6).toFixed(0)}M/day (${scenario} scenario, US reference) × ` +

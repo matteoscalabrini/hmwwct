@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Panel } from '@/components/terminal/Panel';
-import { BlockGridMap } from '@/components/terminal/BlockGridMap';
+import { ParticleGlobe } from '@/components/terminal/ParticleGlobe';
 import { InspectorStrip } from './InspectorStrip';
 import { buildTradeOverlay, buildSanctionsOverlay } from '@/lib/calculator/geographyOfLoss';
 
@@ -29,25 +29,31 @@ export function OperationsTheaterPanel({ aggressor, target, countriesByIso, onCl
     overlay = buildSanctionsOverlay(aggressor);
   }
 
+  const namesByIso = useMemo(
+    () => Object.fromEntries(Object.entries(countriesByIso).map(([iso, c]) => [iso, c.name])),
+    [countriesByIso]
+  );
+
   return (
     <Panel title="OPERATIONS THEATER">
       <div style={{ display: 'flex', gap: 'var(--s-2)', marginBottom: 'var(--s-2)' }}>
         {(['theater', 'trade', 'sanctions'] as const).map(mode => (
           <button key={mode} onClick={() => setOverlayMode(mode)}
             className="t-label" style={{
-              background: overlayMode === mode ? 'var(--phosphor)' : 'transparent',
+              background: overlayMode === mode ? 'var(--accent)' : 'transparent',
               color: overlayMode === mode ? 'var(--bg)' : 'var(--fg-dim)',
-              border: '1px solid var(--fg-mute)', padding: 'var(--s-1) var(--s-2)',
+              border: '1px solid var(--fg-mute)', padding: 'var(--s-2) var(--s-3)',
               cursor: 'pointer',
             }}>
             {mode === 'theater' ? 'THEATER' : mode === 'trade' ? 'TRADE IMPACT' : 'SANCTIONS REACH'}
           </button>
         ))}
       </div>
-      <BlockGridMap
+      <ParticleGlobe
         aggressor={aggressor ?? ''}
         target={target ?? ''}
         overlay={overlay}
+        namesByIso={namesByIso}
         onHoverCountry={setHover}
         onClickCountry={onClickCountry}
       />
